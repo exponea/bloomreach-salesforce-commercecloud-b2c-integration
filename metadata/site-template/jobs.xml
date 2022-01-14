@@ -1,0 +1,327 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jobs xmlns="http://www.demandware.com/xml/impex/jobs/2015-07-01">
+    <job job-id="Bloomreach- Generate (Pre-Init) CSV Files" priority="0">
+        <description/>
+        <parameters/>
+        <flow>
+            <context site-id="RefArch"/>
+            <step step-id="GeneratePurchaseCSVPreInit" type="custom.BloomreachGeneratePurchaseCSV" enforce-restart="false">
+                <description/>
+                <parameters>
+                    <parameter name="OPEN">true</parameter>
+                    <parameter name="NEW">true</parameter>
+                    <parameter name="TargetFolder">src/bloomreach/preinit</parameter>
+                    <parameter name="FileNamePrefix">purchase-pre-init</parameter>
+                    <parameter name="MaxNumberOfRows">1000000</parameter>
+                    <parameter name="UpdateFromDatePreference">false</parameter>
+                    <parameter name="GeneratePreInitFile">true</parameter>
+                </parameters>
+            </step>
+            <step step-id="generatePurchaseOrderProductPreInit" type="custom.BloomreachGeneratePurchaseProductsCSV" enforce-restart="false">
+                <description/>
+                <parameters>
+                    <parameter name="OPEN">true</parameter>
+                    <parameter name="NEW">true</parameter>
+                    <parameter name="TargetFolder">src/bloomreach/preinit</parameter>
+                    <parameter name="FileNamePrefix">purchase-product-pre-init</parameter>
+                    <parameter name="GeneratePreInitFile">true</parameter>
+                </parameters>
+            </step>
+            <step step-id="generateMasterProductFeedPreInit" type="custom.Exponea.Generate.MasterProductFeed" enforce-restart="false">
+                <description/>
+                <parameters>
+                    <parameter name="TargetFolder">src/bloomreach/preinit</parameter>
+                    <parameter name="FileNamePrefix">master-products-pre-init</parameter>
+                    <parameter name="MaxNumberOfRows">1000000</parameter>
+                    <parameter name="GeneratePreInitFile">true</parameter>
+                </parameters>
+            </step>
+            <step step-id="generateVariationProductFeedPreInit" type="custom.Exponea.Generate.VariationProductFeed" enforce-restart="false">
+                <description/>
+                <parameters>
+                    <parameter name="TargetFolder">src/bloomreach/preinit</parameter>
+                    <parameter name="FileNamePrefix">variation-products-pre-init</parameter>
+                    <parameter name="MaxNumberOfRows">1000000</parameter>
+                    <parameter name="GeneratePreInitFile">true</parameter>
+                </parameters>
+            </step>
+            <step step-id="generateCustomerFeedPreInit" type="custom.Exponea.Generate.CustomerFeed" enforce-restart="false">
+                <description/>
+                <parameters>
+                    <parameter name="TargetFolder">src/bloomreach/preinit</parameter>
+                    <parameter name="FileNamePrefix">customers-pre-init</parameter>
+                    <parameter name="MaxNumberOfRows">1000000</parameter>
+                    <parameter name="GeneratePreInitFile">true</parameter>
+                </parameters>
+            </step>
+            <step step-id="generateMasterProductInventoryFeedPreInit" type="custom.Exponea.Generate.MasterProductInventoryFeed" enforce-restart="false">
+                <description/>
+                <parameters>
+                    <parameter name="TargetFolder">src/bloomreach/preinit</parameter>
+                    <parameter name="FileNamePrefix">master-product-inventory-pre-init</parameter>
+                    <parameter name="MaxNumberOfRows">1000000</parameter>
+                    <parameter name="GeneratePreInitFile">true</parameter>
+                </parameters>
+            </step>
+            <step step-id="generateVariationProductInventoryFeedPreInit" type="custom.Exponea.Generate.VariationProductInventoryFeed" enforce-restart="false">
+                <description/>
+                <parameters>
+                    <parameter name="TargetFolder">src/bloomreach/preinit</parameter>
+                    <parameter name="FileNamePrefix">variation-product-inventory-pre-init</parameter>
+                    <parameter name="MaxNumberOfRows">1000000</parameter>
+                    <parameter name="GeneratePreInitFile">true</parameter>
+                </parameters>
+            </step>
+        </flow>
+        <rules/>
+        <triggers>
+            <run-once enabled="false">
+                <date>2021-11-22Z</date>
+                <time>19:32:12.000Z</time>
+            </run-once>
+        </triggers>
+    </job>
+	<job job-id="Bloomreach-Purchase Product Feed (FullExport)" priority="0">
+        <description/>
+        <parameters/>
+        <flow>
+            <context site-id="RefArch"/>
+            <step step-id="generatePurchaseOrderProductFeedFull" type="custom.BloomreachGeneratePurchaseProductsCSV" enforce-restart="false">
+                <description/>
+                <parameters>
+                    <parameter name="OPEN">true</parameter>
+                    <parameter name="NEW">true</parameter>
+                    <parameter name="TargetFolder">src/bloomreach/PurchaseProductFeed</parameter>
+                    <parameter name="FileNamePrefix">purchase-product-feed-FULL</parameter>
+                </parameters>
+            </step>
+        </flow>
+        <rules/>
+        <triggers>
+            <run-once enabled="false">
+                <date>2021-11-12Z</date>
+                <time>10:26:28.000Z</time>
+            </run-once>
+        </triggers>
+    </job>
+	
+	
+    <job job-id="Bloomreach-Purchase Feed (FullExport)" priority="0">
+        <description/>
+        <parameters/>
+        <flow>
+            <context site-id="RefArch"/>
+            <step step-id="generatepurchasefeedFull" type="custom.BloomreachGeneratePurchaseCSV" enforce-restart="false">
+                <description/>
+                <parameters>
+                    <parameter name="OPEN">true</parameter>
+                    <parameter name="NEW">true</parameter>
+                    <parameter name="TargetFolder">src/bloomreach/PurchaseFeed</parameter>
+                    <parameter name="FileNamePrefix">purchase-feed-FULL</parameter>
+                    <parameter name="MaxNumberOfRows">1000000</parameter>
+                </parameters>
+            </step>
+        </flow>
+        <rules/>
+        <triggers>
+            <run-once enabled="false">
+                <date>2021-11-10Z</date>
+                <time>06:48:27.000Z</time>
+            </run-once>
+        </triggers>
+    </job>
+    
+    <job job-id="Bloomreach - MasterProductFeed (Full Export)" priority="0">
+        <description/>
+        <parameters/>
+        <flow>
+            <context site-id="RefArch"/>
+            <step step-id="generateMasterProductFeed" type="custom.Exponea.Generate.MasterProductFeed" enforce-restart="false">
+                <description/>
+                <parameters>
+                    <parameter name="TargetFolder">src/bloomreach/masterProductFeed</parameter>
+                    <parameter name="FileNamePrefix">master-product-feed-FULL</parameter>
+                    <parameter name="MaxNumberOfRows">1000000</parameter>
+                </parameters>
+            </step>
+        </flow>
+        <rules/>
+        <triggers>
+            <run-once enabled="false">
+                <date>2021-10-28Z</date>
+                <time>16:00:45.000Z</time>
+            </run-once>
+        </triggers>
+    </job>
+
+    <job job-id="Bloomreach - VariationProductFeed (Full Export)" priority="0">
+        <description/>
+        <parameters/>
+        <flow>
+            <context site-id="RefArch"/>
+            <step step-id="generateVariationProductFeed" type="custom.Exponea.Generate.VariationProductFeed" enforce-restart="false">
+                <description/>
+                <parameters>
+                    <parameter name="TargetFolder">src/bloomreach/variationProductFeed</parameter>
+                    <parameter name="FileNamePrefix">variation-product-feed-FULL</parameter>
+                    <parameter name="MaxNumberOfRows">1000000</parameter>
+                </parameters>
+            </step>
+        </flow>
+        <rules/>
+        <triggers>
+            <run-once enabled="false">
+                <date>2021-11-04Z</date>
+                <time>19:45:10.000Z</time>
+            </run-once>
+        </triggers>
+    </job>
+
+    <job job-id="Bloomreach - CustomerFeed (Full Export)" priority="0">
+        <description/>
+        <parameters/>
+        <flow>
+            <context site-id="RefArch"/>
+            <step step-id="genrateCustomerFeed" type="custom.Exponea.Generate.CustomerFeed" enforce-restart="false">
+                <description/>
+                <parameters>
+                    <parameter name="TargetFolder">src/bloomreach/customerInfoFeed</parameter>
+                    <parameter name="FileNamePrefix">cusotmer-info-feed-FULL</parameter>
+                    <parameter name="MaxNumberOfRows">1000000</parameter>
+                </parameters>
+            </step>
+        </flow>
+        <rules/>
+        <triggers>
+            <run-once enabled="false">
+                <date>2021-11-09Z</date>
+                <time>12:07:56.000Z</time>
+            </run-once>
+        </triggers>
+    </job>
+
+    <job job-id="Bloomreach - CustomerFeed (Delta Export)" priority="0">
+        <description/>
+        <parameters/>
+        <split sequential="false">
+            <contexts template-ref="template_124">
+                <context site-id="RefArch"/>
+                <context site-id="SiteGenesis"/>
+            </contexts>
+            <flow-template template-id="template_124">
+                <step step-id="genrateCustomerFeedDelta" type="custom.Exponea.Generate.CustomerInfoFeedDelta" enforce-restart="false">
+                    <description/>
+                    <parameters>
+                        <parameter name="TargetFolder">src/bloomreach/customerInfoFeed</parameter>
+                        <parameter name="FileNamePrefix">cusotmer-info-feed-delta</parameter>
+                        <parameter name="Query">lastModified &gt; {0}</parameter>
+                        <parameter name="MaxNumberOfRows">1000000</parameter>
+                    </parameters>
+                </step>
+            </flow-template>
+        </split>
+        <rules/>
+        <triggers>
+            <run-once enabled="false">
+                <date>2021-11-29Z</date>
+                <time>06:23:06.000Z</time>
+            </run-once>
+        </triggers>
+    </job>
+
+    <job job-id="Bloomreach-Purchase Product Feed (NewOrders)" priority="0">
+        <description/>
+        <parameters/>
+        <flow>
+            <context site-id="RefArch"/>
+            <step step-id="GenerateProductPurchaseFeed" type="custom.BloomreachGeneratePurchaseProductsCSV" enforce-restart="false">
+                <description/>
+                <parameters>
+                    <parameter name="OPEN">true</parameter>
+                    <parameter name="NEW">true</parameter>
+                    <parameter name="TargetFolder">src/bloomreach/PurchaseProductFeed</parameter>
+                    <parameter name="FileNamePrefix">purchase-product-feed</parameter>
+                    <parameter name="UpdateFromDatePreference">true</parameter>
+                </parameters>
+            </step>
+        </flow>
+        <rules/>
+        <triggers>
+            <run-once enabled="false">
+                <date>2021-11-22Z</date>
+                <time>19:11:52.000Z</time>
+            </run-once>
+        </triggers>
+    </job>
+    <job job-id="Bloomreach-Purchase Feed (NewOrders)" priority="0">
+        <description/>
+        <parameters/>
+        <flow>
+            <context site-id="RefArch"/>
+            <step step-id="GeneratePurchaseCSV" type="custom.BloomreachGeneratePurchaseCSV" enforce-restart="false">
+                <description/>
+                <parameters>
+                    <parameter name="OPEN">true</parameter>
+                    <parameter name="NEW">true</parameter>
+                    <parameter name="TargetFolder">src/bloomreach/PurchaseFeed</parameter>
+                    <parameter name="FileNamePrefix">purchase-feed</parameter>
+                    <parameter name="MaxNumberOfRows">1000000</parameter>
+                    <parameter name="UpdateFromDatePreference">true</parameter>
+                </parameters>
+            </step>
+        </flow>
+        <rules/>
+        <triggers>
+            <run-once enabled="false">
+                <date>2021-11-22Z</date>
+                <time>19:32:12.000Z</time>
+            </run-once>
+        </triggers>
+    </job>
+
+    <job job-id="Bloomreach - MasterProductInventoryFeed" priority="0">
+        <description/>
+        <parameters/>
+        <flow>
+            <context site-id="RefArch"/>
+            <step step-id="generateMasterProductInventoryFeed" type="custom.Exponea.Generate.MasterProductInventoryFeed" enforce-restart="false">
+                <description/>
+                <parameters>
+                    <parameter name="TargetFolder">src/bloomreach/masterProductInventory</parameter>
+                    <parameter name="FileNamePrefix">master-product-Inventory-feed-FULL</parameter>
+                    <parameter name="MaxNumberOfRows">1000000</parameter>
+                </parameters>
+            </step>
+        </flow>
+        <rules/>
+        <triggers>
+            <run-once enabled="false">
+                <date>2021-10-28Z</date>
+                <time>16:00:45.000Z</time>
+            </run-once>
+        </triggers>
+    </job>
+
+    <job job-id="Bloomreach - VariationProductInventoryFeed" priority="0">
+        <description/>
+        <parameters/>
+        <flow>
+            <context site-id="RefArch"/>
+            <step step-id="generateVariationProductInventoryFeed" type="custom.Exponea.Generate.VariationProductInventoryFeed" enforce-restart="false">
+                <description/>
+                <parameters>
+                    <parameter name="TargetFolder">src/bloomreach/variationProductInventory</parameter>
+                    <parameter name="FileNamePrefix">variation-product-inventory-feed-FULL</parameter>
+                    <parameter name="MaxNumberOfRows">1000000</parameter>
+                </parameters>
+            </step>
+        </flow>
+        <rules/>
+        <triggers>
+            <run-once enabled="false">
+                <date>2021-11-04Z</date>
+                <time>19:45:10.000Z</time>
+            </run-once>
+        </triggers>
+    </job>
+</jobs>

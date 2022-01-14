@@ -1,0 +1,29 @@
+'use strict';
+
+var EXPORT_TYPE = {
+    MASTERPRODUCT: 'MASTERPRODUCT',
+    VARIATIONPRODUCT: 'VARIATIONPRODUCT'
+};
+
+var FILE_EXTENSTION = {
+    CSV: 'csv'
+};
+
+var CUSTOMER_GROUP = {
+    EVERYONE: 'Everyone'
+};
+
+var PRODUCT_INVENTORY = {
+    ORDER_HANDLING: {
+        BACK_ORDER: 'backorder',
+        PRE_ORDER: 'preorder',
+        NONE: 'none'
+    }
+};
+
+module.exports = {
+    EXPORT_TYPE: EXPORT_TYPE,
+    FILE_EXTENSTION: FILE_EXTENSTION,
+    CUSTOMER_GROUP: CUSTOMER_GROUP,
+    PRODUCT_INVENTORY: PRODUCT_INVENTORY
+}

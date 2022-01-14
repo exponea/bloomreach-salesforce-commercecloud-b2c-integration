@@ -1,0 +1,615 @@
+{
+    "step-types": {
+        "chunk-script-module-step": [
+        	{
+                "@type-id":"custom.BloomreachGeneratePurchaseCSV",
+                "description":"Export Exponea Master Product Feed",
+                "@supports-site-context":true,
+                "@supports-organization-context":"false",
+                "@supports-parallel-execution":"false",
+                "module": "int_bloomreach_engagement/cartridge/scripts/jobSteps/generatePurchaseCSV.js",
+                "before-step-function":"beforeStep",
+                "total-count-function":"getTotalCount",
+                "read-function":"read",
+                "process-function":"process",
+                "after-chunk-function":"afterChunk",
+                "write-function":"write",
+                "after-step-function":"afterStep",
+                "chunk-size":1000,
+                "parameters": {
+                    "parameters": [{
+                            "@name": "OPEN",
+                            "@type": "boolean",
+                            "@required": "false",
+                            "@trim": "true",
+                            "description": "Export order object having status OPEN"
+                        },
+                        {
+                            "@name": "CANCELLED",
+                            "@type": "boolean",
+                            "@required": "false",
+                            "@trim": "true",
+                            "description": "Export order object having status CANCELLED"
+                        },
+                        {
+                            "@name": "CREATED",
+                            "@type": "boolean",
+                            "@required": "false",
+                            "@trim": "true",
+                            "description": "Export order object having status CREATED"
+                        },
+                        
+                        
+                        {
+                            "@name": "COMPLETED",
+                            "@type": "boolean",
+                            "@required": "false",
+                            "@trim": "true",
+                            "description": "Export order object having status COMPLETED"
+                        },
+                        
+                        {
+                            "@name": "REPLACED",
+                            "@type": "boolean",
+                            "@required": "false",
+                            "@trim": "true",
+                            "description": "Export order object having status REPLACED"
+                        },
+                        
+                        {
+                            "@name": "NEW",
+                            "@type": "boolean",
+                            "@required": "false",
+                            "@trim": "true",
+                            "description": "Export order object having status NEW"
+                        },
+                        
+                        {
+                            "@name": "FAILED",
+                            "@type": "boolean",
+                            "@required": "false",
+                            "@trim": "true",
+                            "description": "Export order object having status FAILED"
+                        },
+                    	{
+                            "@name":"TargetFolder",
+                            "@type":"string",
+                            "@required":"true",
+                            "@trim":"true",
+                            "description":"Target folder path (in IMPEX)",
+                            "default-value":"src/bloomreach/PurchaseFeed"
+                        },
+                        {
+                            "@name":"FileNamePrefix",
+                            "description":"Filename prefix of the generated files that will contain exported data",
+                            "@type":"string",
+                            "@required":"false",
+                            "@trim":"true",
+                            "default-value":"purchase-feed"
+                        },
+                        {
+                            "@name":"MaxNumberOfRows",
+                            "description":"Maximum number of rows in one csv file",
+                            "@type":"long",
+                            "@required":"true",
+                            "default-value":1000000
+                        },
+                        {
+                            "@name": "GeneratePreInitFile",
+                            "@description": "Enable when Generate Pre-Init CSV file",
+                            "@type": "boolean",
+                            "@required": false,
+                            "default-value": false
+                        },
+                        {
+                            "@name":"UpdateFromDatePreference",
+                            "description":"Boolean to describe if date custom preference needs to be updated",
+                            "@type":"boolean",
+                            "@required":"false"
+                        }
+                    ]
+                },
+                "status-codes": {
+                    "status": [{
+                            "@code":"ERROR",
+                            "description":"Used when an error occurred."
+                        },
+                        {
+                            "@code":"OK",
+                            "description":"Used when everything went well."
+                        }
+                    ]
+                }
+            },
+            {
+                "@type-id":"custom.BloomreachGeneratePurchaseProductsCSV",
+                "description":"Export Exponea Master Product Feed",
+                "@supports-site-context":true,
+                "@supports-organization-context":"false",
+                "@supports-parallel-execution":"false",
+                "module": "int_bloomreach_engagement/cartridge/scripts/jobSteps/generatePurchaseProductCSV.js",
+                "before-step-function":"beforeStep",
+                "total-count-function":"getTotalCount",
+                "read-function":"read",
+                "process-function":"process",
+                "after-chunk-function":"afterChunk",
+                "write-function":"write",
+                "after-step-function":"afterStep",
+                "chunk-size":1000,
+                "parameters": {
+                    "parameters": [{
+                            "@name": "OPEN",
+                            "@type": "boolean",
+                            "@required": "false",
+                            "@trim": "true",
+                            "description": "Export order object having status OPEN"
+                        },
+                        {
+                            "@name": "CANCELLED",
+                            "@type": "boolean",
+                            "@required": "false",
+                            "@trim": "true",
+                            "description": "Export order object having status CANCELLED"
+                        },
+                        {
+                            "@name": "CREATED",
+                            "@type": "boolean",
+                            "@required": "false",
+                            "@trim": "true",
+                            "description": "Export order object having status CREATED"
+                        },
+                        
+                        
+                        {
+                            "@name": "COMPLETED",
+                            "@type": "boolean",
+                            "@required": "false",
+                            "@trim": "true",
+                            "description": "Export order object having status COMPLETED"
+                        },
+                        
+                        {
+                            "@name": "REPLACED",
+                            "@type": "boolean",
+                            "@required": "false",
+                            "@trim": "true",
+                            "description": "Export order object having status REPLACED"
+                        },
+                        
+                        {
+                            "@name": "NEW",
+                            "@type": "boolean",
+                            "@required": "false",
+                            "@trim": "true",
+                            "description": "Export order object having status NEW"
+                        },
+                        
+                        {
+                            "@name": "FAILED",
+                            "@type": "boolean",
+                            "@required": "false",
+                            "@trim": "true",
+                            "description": "Export order object having status FAILED"
+                        },
+                    	{
+                            "@name":"TargetFolder",
+                            "@type":"string",
+                            "@required":"true",
+                            "@trim":"true",
+                            "description":"Target folder path (in IMPEX)",
+                            "default-value":"src/bloomreach/PurchaseProductFeed"
+                        },
+                        {
+                            "@name":"FileNamePrefix",
+                            "description":"Filename prefix of the generated files that will contain exported data",
+                            "@type":"string",
+                            "@required":"false",
+                            "@trim":"true",
+                            "default-value":"purchase-product-feed"
+                        },
+                        {
+                            "@name":"UpdateFromDatePreference",
+                            "description":"Boolean to describe if date custom preference needs to be updated",
+                            "@type":"boolean",
+                            "@required":"false"
+                        },
+                        {
+                            "@name": "GeneratePreInitFile",
+                            "@description": "Enable when Generate Pre-Init CSV file",
+                            "@type": "boolean",
+                            "@required": false,
+                            "default-value": false
+                        }
+                    ]
+                },
+                "status-codes": {
+                    "status": [{
+                            "@code":"ERROR",
+                            "description":"Used when an error occurred."
+                        },
+                        {
+                            "@code":"OK",
+                            "description":"Used when everything went well."
+                        }
+                    ]
+                }
+            },
+            {
+                "@type-id":"custom.Exponea.Generate.MasterProductFeed",
+                "description":"Export Exponea Master Product Feed",
+                "@supports-site-context":true,
+                "@supports-organization-context":"false",
+                "@supports-parallel-execution":"false",
+                "module":"int_bloomreach_engagement/cartridge/scripts/jobSteps/exponeaMasterProductFeed.js",
+                "before-step-function":"beforeStep",
+                "total-count-function":"getTotalCount",
+                "read-function":"read",
+                "process-function":"process",
+                "after-chunk-function":"afterChunk",
+                "write-function":"write",
+                "after-step-function":"afterStep",
+                "chunk-size":1000,
+                "parameters": {
+                    "parameters": [{
+                            "@name":"TargetFolder",
+                            "@type":"string",
+                            "@required":"true",
+                            "@trim":"true",
+                            "description":"Target folder path (in IMPEX)",
+                            "default-value":"src/bloomreach/masterProductFeed"
+                        },
+                        {
+                            "@name":"FileNamePrefix",
+                            "description":"Filename prefix of the generated files that will contain exported data",
+                            "@type":"string",
+                            "@required":"false",
+                            "@trim":"true",
+                            "default-value":"master-product-feed"
+                        },
+                        {
+                            "@name":"MaxNumberOfRows",
+                            "description":"Maximum number of rows in one csv file",
+                            "@type":"long",
+                            "@required":"true",
+                            "default-value":1000000
+                        },
+                        {
+                            "@name": "GeneratePreInitFile",
+                            "@description": "Enable when Generate Pre-Init CSV file",
+                            "@type": "boolean",
+                            "@required": false,
+                            "default-value": false
+                        }
+                    ]
+                },
+                "status-codes": {
+                    "status": [{
+                            "@code":"ERROR",
+                            "description":"Used when an error occurred."
+                        },
+                        {
+                            "@code":"OK",
+                            "description":"Used when everything went well."
+                        }
+                    ]
+                }
+            },
+            {
+                "@type-id":"custom.Exponea.Generate.VariationProductFeed",
+                "@supports-site-context":true,
+                "description":"Export Exponea Variation Product Feed",
+                "@supports-organization-context":false,
+                "@supports-parallel-execution":"false",
+                "module":"int_bloomreach_engagement/cartridge/scripts/jobSteps/exponeaVariationProductFeed.js",
+                "before-step-function":"beforeStep",
+                "total-count-function":"getTotalCount",
+                "read-function":"read",
+                "process-function":"process",
+                "write-function":"write",
+                "after-step-function":"afterStep",
+                "after-chunk-function":"afterChunk",
+                "chunk-size":1000,
+                "parameters": {
+                    "parameters": [{
+                            "@name":"TargetFolder",
+                            "@type":"string",
+                            "@required":"true",
+                            "@trim":"true",
+                            "description":"Target folder path (in IMPEX)",
+                            "default-value":"src/bloomreach/variationProductFeed"
+                        },
+                        {
+                            "@name":"FileNamePrefix",
+                            "description":"Filename prefix of the generated files that will contain exported data",
+                            "@type":"string",
+                            "@required":"false",
+                            "@trim":"true",
+                            "default-value":"variation-product-feed"
+                        },
+                        {
+                            "@name":"MaxNumberOfRows",
+                            "description":"Maximum number of rows in one csv file",
+                            "@type":"long",
+                            "@required":"true",
+                            "default-value":1000000
+                        },
+                        {
+                            "@name": "GeneratePreInitFile",
+                            "@description": "Enable when Generate Pre-Init CSV file",
+                            "@type": "boolean",
+                            "@required": false,
+                            "default-value": false
+                        }
+                    ]
+                },
+                "status-codes": {
+                    "status": [{
+                            "@code": "ERROR",
+                            "description": "Used when an error occurred."
+                        },
+                        {
+                            "@code": "OK",
+                            "description": "Used when everything went well."
+                        }
+                    ]
+                }
+            },
+            {
+                "@type-id":"custom.Exponea.Generate.CustomerFeed",
+                "@supports-site-context":true,
+                "description":"Export Exponea Customer Info Feed",
+                "@supports-organization-context":false,
+                "@supports-parallel-execution":"false",
+                "module":"int_bloomreach_engagement/cartridge/scripts/jobSteps/exponeaCustomerInfoFeed.js",
+                "before-step-function":"beforeStep",
+                "total-count-function":"getTotalCount",
+                "read-function":"read",
+                "process-function":"process",
+                "write-function":"write",
+                "after-step-function":"afterStep",
+                "after-chunk-function":"afterChunk",
+                "chunk-size":1000,
+                "parameters": {
+                    "parameters": [{
+                            "@name":"TargetFolder",
+                            "@type":"string",
+                            "@required":"true",
+                            "@trim":"true",
+                            "description":"Target folder path (in IMPEX)",
+                            "default-value":"src/bloomreach/customerInfoFeed"
+                        },
+                        {
+                            "@name":"FileNamePrefix",
+                            "description":"Filename prefix of the generated files that will contain exported data",
+                            "@type":"string",
+                            "@required":"false",
+                            "@trim":"true",
+                            "default-value":"cusotmer-info-feed"
+                        },
+                        {
+                            "@name": "Query",
+                            "description": "Query used to export customers. Leave empty to export all customers of the customer list",
+                            "@type": "string",
+                            "@required": "false",
+                            "@trim": "true"
+                        },
+                        {
+                            "@name":"MaxNumberOfRows",
+                            "description":"Maximum number of rows in one csv file",
+                            "@type":"long",
+                            "@required":"true",
+                            "default-value":1000000
+                        },
+                        {
+                            "@name": "GeneratePreInitFile",
+                            "@description": "Enable when Generate Pre-Init CSV file",
+                            "@type": "boolean",
+                            "@required": false,
+                            "default-value": false
+                        }
+                    ]
+                },
+                "status-codes": {
+                    "status": [{
+                            "@code": "ERROR",
+                            "description": "Used when an error occurred."
+                        },
+                        {
+                            "@code": "OK",
+                            "description": "Used when everything went well."
+                        }
+                    ]
+                }
+            },
+            {
+                "@type-id":"custom.Exponea.Generate.CustomerInfoFeedDelta",
+                "@supports-site-context":true,
+                "description":"Export Exponea Customer Info Feed Delta",
+                "@supports-organization-context":false,
+                "@supports-parallel-execution":"false",
+                "module":"int_bloomreach_engagement/cartridge/scripts/jobSteps/exponeaCustomerInfoFeed.js",
+                "before-step-function":"beforeStepDelta",
+                "total-count-function":"getTotalCount",
+                "read-function":"read",
+                "process-function":"process",
+                "write-function":"write",
+                "after-step-function":"afterStep",
+                "after-chunk-function":"afterChunk",
+                "chunk-size":1000,
+                "parameters": {
+                    "parameters": [{
+                            "@name":"TargetFolder",
+                            "@type":"string",
+                            "@required":"true",
+                            "@trim":"true",
+                            "description":"Target folder path (in IMPEX)",
+                            "default-value":"src/bloomreach/customerInfoFeed"
+                        },
+                        {
+                            "@name":"FileNamePrefix",
+                            "description":"Filename prefix of the generated files that will contain exported data",
+                            "@type":"string",
+                            "@required":"false",
+                            "@trim":"true",
+                            "default-value":"cusotmer-info-feed-delta"
+                        },
+                        {
+                            "@name": "Query",
+                            "description": "Query used to export customers who update the profile",
+                            "@type": "string",
+                            "@required": "false",
+                            "@trim": "true",
+                            "default-value":"lastModified > {0}"
+                        },
+                        {
+                            "@name":"MaxNumberOfRows",
+                            "description":"Maximum number of rows in one csv file",
+                            "@type":"long",
+                            "@required":"true",
+                            "default-value":1000000
+                        },
+                        {
+                            "@name": "GeneratePreInitFile",
+                            "@description": "Enable when Generate Pre-Init CSV file",
+                            "@type": "boolean",
+                            "@required": false,
+                            "default-value": false
+                        }
+                    ]
+                },
+                "status-codes": {
+                    "status": [{
+                            "@code": "ERROR",
+                            "description": "Used when an error occurred."
+                        },
+                        {
+                            "@code": "OK",
+                            "description": "Used when everything went well."
+                        }
+                    ]
+                }
+            },
+            {
+                "@type-id":"custom.Exponea.Generate.MasterProductInventoryFeed",
+                "description":"Export Exponea Master Product Inventory Feed",
+                "@supports-site-context":true,
+                "@supports-organization-context":"false",
+                "@supports-parallel-execution":"false",
+                "module":"int_bloomreach_engagement/cartridge/scripts/jobSteps/exponeaMasterProductInventoryFeed.js",
+                "before-step-function":"beforeStep",
+                "total-count-function":"getTotalCount",
+                "read-function":"read",
+                "process-function":"process",
+                "after-chunk-function":"afterChunk",
+                "write-function":"write",
+                "after-step-function":"afterStep",
+                "chunk-size":1000,
+                "parameters": {
+                    "parameters": [{
+                            "@name":"TargetFolder",
+                            "@type":"string",
+                            "@required":"true",
+                            "@trim":"true",
+                            "description":"Target folder path (in IMPEX)",
+                            "default-value":"src/bloomreach/masterproductInventory"
+                        },
+                        {
+                            "@name":"FileNamePrefix",
+                            "description":"Filename prefix of the generated files that will contain exported data",
+                            "@type":"string",
+                            "@required":"false",
+                            "@trim":"true",
+                            "default-value":"master-product-inventory-feed"
+                        },
+                        {
+                            "@name":"MaxNumberOfRows",
+                            "description":"Maximum number of rows in one csv file",
+                            "@type":"long",
+                            "@required":"true",
+                            "default-value":1000000
+                        },
+                        {
+                            "@name": "GeneratePreInitFile",
+                            "@description": "Enable when Generate Pre-Init CSV file",
+                            "@type": "boolean",
+                            "@required": false,
+                            "default-value": false
+                        }
+                        
+                    ]
+                },
+                "status-codes": {
+                    "status": [{
+                            "@code":"ERROR",
+                            "description":"Used when an error occurred."
+                        },
+                        {
+                            "@code":"OK",
+                            "description":"Used when everything went well."
+                        }
+                    ]
+                }
+            },
+            {
+                "@type-id":"custom.Exponea.Generate.VariationProductInventoryFeed",
+                "@supports-site-context":true,
+                "description":"Export Exponea Variation Product Inventory Feed",
+                "@supports-organization-context":false,
+                "@supports-parallel-execution":"false",
+                "module":"int_bloomreach_engagement/cartridge/scripts/jobSteps/exponeaVariationProductInventoryFeed.js",
+                "before-step-function":"beforeStep",
+                "total-count-function":"getTotalCount",
+                "read-function":"read",
+                "process-function":"process",
+                "write-function":"write",
+                "after-step-function":"afterStep",
+                "after-chunk-function":"afterChunk",
+                "chunk-size":1000,
+                "parameters": {
+                    "parameters": [{
+                            "@name":"TargetFolder",
+                            "@type":"string",
+                            "@required":"true",
+                            "@trim":"true",
+                            "description":"Target folder path (in IMPEX)",
+                            "default-value":"src/bloomreach/variationproductinventory"
+                        },
+                        {
+                            "@name":"FileNamePrefix",
+                            "description":"Filename prefix of the generated files that will contain exported data",
+                            "@type":"string",
+                            "@required":"false",
+                            "@trim":"true",
+                            "default-value":"variation-product-inventory-feed"
+                        },
+                        {
+                            "@name":"MaxNumberOfRows",
+                            "description":"Maximum number of rows in one csv file",
+                            "@type":"long",
+                            "@required":"true",
+                            "default-value":1000000
+                        },
+                        {
+                            "@name": "GeneratePreInitFile",
+                            "@description": "Enable when Generate Pre-Init CSV file",
+                            "@type": "boolean",
+                            "@required": false,
+                            "default-value": false
+                        }
+                    ]
+                },
+                "status-codes": {
+                    "status": [{
+                            "@code": "ERROR",
+                            "description": "Used when an error occurred."
+                        },
+                        {
+                            "@code": "OK",
+                            "description": "Used when everything went well."
+                        }
+                    ]
+                }
+            }
+        ]
+    }
+}

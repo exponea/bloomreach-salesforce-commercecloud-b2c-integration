@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<services xmlns="http://www.demandware.com/xml/impex/services/2014-09-26">
+    <service-credential service-credential-id="bloomreach.engagement.cred">
+        <url>https://cloud-api.exponea.com/data/v2/projects/projectToken/imports/import_id/start</url>
+        <user-id>qyp6xejln2w66c2ebv9ellcrl2gfqn8faqsxgdqad3am0mcxwt1nuxkcv2cdcnyi</user-id>
+        <password encrypted="true" encryption-type="common.export">kpCVfxUpMJcNUKjlEko0JEmAwZmc0HzKbtXGQRI7UXc=</password>
+    </service-credential>
+
+    <service-profile service-profile-id="bloomreach.engagement.profile">
+        <timeout-millis>10000</timeout-millis>
+        <rate-limit-enabled>false</rate-limit-enabled>
+        <rate-limit-calls>0</rate-limit-calls>
+        <rate-limit-millis>0</rate-limit-millis>
+        <cb-enabled>true</cb-enabled>
+        <cb-calls>3</cb-calls>
+        <cb-millis>60000</cb-millis>
+    </service-profile>
+
+    <service service-id="bloomreach.engagement.service">
+        <service-type>HTTP</service-type>
+        <enabled>true</enabled>
+        <log-prefix>bloomreach_engagement</log-prefix>
+        <comm-log-enabled>false</comm-log-enabled>
+        <force-prd-enabled>false</force-prd-enabled>
+        <mock-mode-enabled>false</mock-mode-enabled>
+        <profile-id>bloomreach.engagement.profile</profile-id>
+        <credential-id>bloomreach.engagement.cred</credential-id>
+    </service>
+
+</services>

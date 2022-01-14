@@ -1,0 +1,388 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata xmlns="http://www.demandware.com/xml/impex/metadata/2006-10-31">
+    <type-extension type-id="SitePreferences">
+        <custom-attribute-definitions>
+            <attribute-definition attribute-id="exponeaMasterProductInventoryFeed">
+                <display-name xml:lang="x-default">Bloomreach master Product Inventory Feed</display-name>
+                <type>text</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <default-value>
+                    [
+                        {"XSDField": "item_id", "SFCCProductAttribute": "ID", "isCustomAttribute": false},
+                        {"XSDField": "on_stock", "SFCCProductAttribute": "allocation", "isCustomAttribute": false}
+                    ]
+                </default-value>
+            </attribute-definition>
+            <attribute-definition attribute-id="exponeaVariationProductInventoryFeed">
+                <display-name xml:lang="x-default">Bloomreach Variation Product Inventory Feed</display-name>
+                <type>text</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <default-value>
+                    [
+                        {"XSDField": "item_id", "SFCCProductAttribute": "ID", "isCustomAttribute": false},
+                        {"XSDField": "stock_level", "SFCCProductAttribute": "stockLevel", "isCustomAttribute": false},
+                        {"XSDField": "preorder-backorder-allocation", "SFCCProductAttribute": "preorderbackorderallocation", "isCustomAttribute": false},
+                        {"XSDField": "preorder-backorder-handling", "SFCCProductAttribute": "preorderbackorderhandling", "isCustomAttribute": false}
+                    ]
+                </default-value>
+            </attribute-definition>
+            <attribute-definition attribute-id="exponeaMasterProductFeed">
+                <display-name xml:lang="x-default">Bloomreach Mater Product Feed</display-name>
+                <type>text</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <default-value>
+                    [
+                        {"XSDField": "product_id", "SFCCProductAttribute": "ID", "isCustomAttribute": false},
+                        {"XSDField": "title", "SFCCProductAttribute": "name", "isCustomAttribute": false},
+                        {"XSDField": "active", "SFCCProductAttribute": "active", "isCustomAttribute": false},
+                        {"XSDField": "description", "SFCCProductAttribute": "shortDescription", "isCustomAttribute": false},
+                        {"XSDField": "description_long", "SFCCProductAttribute": "longDescription", "isCustomAttribute": false},
+                        {"XSDField": "brand", "SFCCProductAttribute": "brand", "isCustomAttribute": false},
+                        {"XSDField": "supplier", "SFCCProductAttribute": "supplier", "isCustomAttribute": true},
+                        {"XSDField": "gender", "SFCCProductAttribute": "gender", "isCustomAttribute": true},
+                        {"XSDField": "tags", "SFCCProductAttribute": "tags", "isCustomAttribute": true},
+                        {"XSDField": "rating", "SFCCProductAttribute": "rating", "isCustomAttribute": true},
+                        {"XSDField": "ratings_count", "SFCCProductAttribute": "ratingCount", "isCustomAttribute": true},
+                        {"XSDField": "url", "SFCCProductAttribute": "url", "isCustomAttribute": false},
+                        {"XSDField": "category_level_1", "SFCCProductAttribute": "primaryCategory", "isCustomAttribute": false},
+                        {"XSDField": "category_level_2", "SFCCProductAttribute": "categoryLevelTwo", "isCustomAttribute": false},
+                        {"XSDField": "category_level_3", "SFCCProductAttribute": "categoryLevelThree", "isCustomAttribute": false},
+                        {"XSDField": "category_1_url", "SFCCProductAttribute": "primaryCategoryURL", "isCustomAttribute": false},
+                        {"XSDField": "category_2_url", "SFCCProductAttribute": "categoryLevelTwoURL", "isCustomAttribute": false},
+                        {"XSDField": "category_3_url", "SFCCProductAttribute": "categoryLevelThreeURL", "isCustomAttribute": false},
+                        {"XSDField": "date_added", "SFCCProductAttribute": "onlineFrom", "isCustomAttribute": false},
+                        {"XSDField": "image", "SFCCProductAttribute": "image", "isCustomAttribute": false},
+                        {"XSDField": "categories_path", "SFCCProductAttribute": "categoryPath", "isCustomAttribute": false},
+                        {"XSDField": "categories_ids", "SFCCProductAttribute": "categoriesIDs", "isCustomAttribute": false},
+                        {"XSDField": "price", "SFCCProductAttribute": "price", "isCustomAttribute": false},
+                        {"XSDField": "price_local_currency", "SFCCProductAttribute": "priceLocalCurrency", "isCustomAttribute": false},
+                        {"XSDField": "sale_type", "SFCCProductAttribute": "saleType", "isCustomAttribute": true},
+                        {"XSDField": "sale_description", "SFCCProductAttribute": "saleDescription", "isCustomAttribute": true},
+                        {"XSDField": "exported_timestamp", "SFCCProductAttribute": "exported_timestamp", "isCustomAttribute": false},
+                        {"XSDField": "badge_specific_attribute", "SFCCProductAttribute": "badgeSpecificAttribute", "isCustomAttribute": true}
+                    ]
+                </default-value>
+            </attribute-definition>
+            <attribute-definition attribute-id="exponeaVariationProductFeed">
+                <display-name xml:lang="x-default">Bloomreach Variation Product Feed</display-name>
+                <type>text</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <default-value>
+                    [
+                        {"XSDField": "variant_id", "SFCCProductAttribute": "ID", "isCustomAttribute": false},
+                        {"XSDField": "master_id", "SFCCProductAttribute": "masterProduct", "isCustomAttribute": false},
+                        {"XSDField": "title", "SFCCProductAttribute": "name", "isCustomAttribute": false},
+                        {"XSDField": "active", "SFCCProductAttribute": "active", "isCustomAttribute": false},
+                        {"XSDField": "description", "SFCCProductAttribute": "shortDescription", "isCustomAttribute": false},
+                        {"XSDField": "description_long", "SFCCProductAttribute": "longDescription", "isCustomAttribute": false},
+                        {"XSDField": "brand", "SFCCProductAttribute": "brand", "isCustomAttribute": false},
+                        {"XSDField": "supplier", "SFCCProductAttribute": "supplier", "isCustomAttribute": true},
+                        {"XSDField": "gender", "SFCCProductAttribute": "gender", "isCustomAttribute": true},
+                        {"XSDField": "tags", "SFCCProductAttribute": "tags", "isCustomAttribute": true},
+                        {"XSDField": "rating", "SFCCProductAttribute": "rating", "isCustomAttribute": true},
+                        {"XSDField": "ratings_count", "SFCCProductAttribute": "ratingCount", "isCustomAttribute": true},
+                        {"XSDField": "url", "SFCCProductAttribute": "url", "isCustomAttribute": false},
+                        {"XSDField": "category_level_1", "SFCCProductAttribute": "primaryCategory", "isCustomAttribute": false},
+                        {"XSDField": "category_level_2", "SFCCProductAttribute": "categoryLevelTwo", "isCustomAttribute": false},
+                        {"XSDField": "category_level_3", "SFCCProductAttribute": "categoryLevelThree", "isCustomAttribute": false},
+                        {"XSDField": "category_1_url", "SFCCProductAttribute": "primaryCategoryURL", "isCustomAttribute": false},
+                        {"XSDField": "category_2_url", "SFCCProductAttribute": "categoryLevelTwoURL", "isCustomAttribute": false},
+                        {"XSDField": "category_3_url", "SFCCProductAttribute": "categoryLevelThreeURL", "isCustomAttribute": false},
+                        {"XSDField": "date_added", "SFCCProductAttribute": "onlineFrom", "isCustomAttribute": false},
+                        {"XSDField": "image", "SFCCProductAttribute": "image", "isCustomAttribute": false},
+                        {"XSDField": "categories_path", "SFCCProductAttribute": "categoryPath", "isCustomAttribute": false},
+                        {"XSDField": "categories_ids", "SFCCProductAttribute": "categoriesIDs", "isCustomAttribute": false},
+                        {"XSDField": "price", "SFCCProductAttribute": "price", "isCustomAttribute": false},
+                        {"XSDField": "price_local_currency", "SFCCProductAttribute": "priceLocalCurrency", "isCustomAttribute": false},
+                        {"XSDField": "sale_type", "SFCCProductAttribute": "saleType", "isCustomAttribute": true},
+                        {"XSDField": "exported_timestamp", "SFCCProductAttribute": "exported_timestamp", "isCustomAttribute": false},
+                        {"XSDField": "sale_description", "SFCCProductAttribute": "saleDescription", "isCustomAttribute": true},
+                        {"XSDField": "badge_specific_attribute", "SFCCProductAttribute": "badgeSpecificAttribute", "isCustomAttribute": true},
+                        {"XSDField": "color", "SFCCProductAttribute": "color", "isCustomAttribute": false},
+                        {"XSDField": "size", "SFCCProductAttribute": "size", "isCustomAttribute": false}
+                    ]
+                </default-value>
+            </attribute-definition>
+            <attribute-definition attribute-id="exponeaCustomerFeed">
+                <display-name xml:lang="x-default">Bloomreach Customer Info Feed</display-name>
+                <type>text</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <default-value>
+                    [
+                        {"XSDField": "customer_id", "SFCCProductAttribute": "customerNo", "isCustomAttribute": false},
+                        {"XSDField": "first_name", "SFCCProductAttribute": "firstName", "isCustomAttribute": false},
+                        {"XSDField": "last_name", "SFCCProductAttribute": "lastName", "isCustomAttribute": false},
+                        {"XSDField": "company", "SFCCProductAttribute": "companyName", "isCustomAttribute": false},
+                        {"XSDField": "gender", "SFCCProductAttribute": "gender", "isCustomAttribute": false},
+                        {"XSDField": "title", "SFCCProductAttribute": "title", "isCustomAttribute": false},
+                        {"XSDField": "city", "SFCCProductAttribute": "city", "isCustomAttribute": false},
+                        {"XSDField": "state", "SFCCProductAttribute": "stateCode", "isCustomAttribute": false},
+                        {"XSDField": "country", "SFCCProductAttribute": "countryCode", "isCustomAttribute": false},
+                        {"XSDField": "language", "SFCCProductAttribute": "preferredLocale", "isCustomAttribute": false},
+                        {"XSDField": "email", "SFCCProductAttribute": "email", "isCustomAttribute": false},
+                        {"XSDField": "phone", "SFCCProductAttribute": "phoneHome", "isCustomAttribute": false},
+                        {"XSDField": "birth_date", "SFCCProductAttribute": "birthday", "isCustomAttribute": false},
+                        {"XSDField": "created_timestamp", "SFCCProductAttribute": "creationDate", "isCustomAttribute": false},
+                        {"XSDField": "updated_timestamp", "SFCCProductAttribute": "lastModified", "isCustomAttribute": false}
+                    ]
+                </default-value>
+            </attribute-definition>
+            <attribute-definition attribute-id="bloomreachCustomOrderProductPropertiesForExport">
+                <display-name xml:lang="x-default">Bloomreach Custom Order Product Properties For Export</display-name>
+                <type>text</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <default-value>[
+                        {"XSDField": "customer_id", "SFCCProductAttribute": "customerNo", "isCustomAttribute": false},
+						{"XSDField": "email", "SFCCProductAttribute": "customerEmail", "isCustomAttribute": false},
+                        {"XSDField": "purchase_id", "SFCCProductAttribute": "orderNo", "isCustomAttribute": false},
+                        {"XSDField": "purchase_status", "SFCCProductAttribute": "purchase_status", "isCustomAttribute": false},
+                        {"XSDField": "purchase_source_type", "SFCCProductAttribute": "createdBy", "isCustomAttribute": false},
+						{"XSDField": "product_id", "SFCCProductAttribute": "ID", "isCustomAttribute": false},
+						{"XSDField": "variant_id", "SFCCProductAttribute": "ID", "isCustomAttribute": false},
+						{"XSDField": "title", "SFCCProductAttribute": "name", "isCustomAttribute": false},
+						{"XSDField": "brand", "SFCCProductAttribute": "brand", "isCustomAttribute": false},
+						{"XSDField": "price", "SFCCProductAttribute": "price", "isCustomAttribute": false},
+                        {"XSDField": "discount_percentage", "SFCCProductAttribute": "discount_percentage", "isCustomAttribute": false},
+                        {"XSDField": "discount_value", "SFCCProductAttribute": "discount_value", "isCustomAttribute": false},
+						{"XSDField": "original_price", "SFCCProductAttribute": "price", "isCustomAttribute": false},
+						{"XSDField": "quantity", "SFCCProductAttribute": "quantityValue", "isCustomAttribute": false},                        
+                        {"XSDField": "total_price", "SFCCProductAttribute": "adjustedGrossPrice", "isCustomAttribute": false},
+                        {"XSDField": "total_price_without_tax", "SFCCProductAttribute": "adjustedNetPrice", "isCustomAttribute": false},
+                        {"XSDField": "timestamp", "SFCCProductAttribute": "creationDate", "isCustomAttribute": false},                        
+                        {"XSDField": "shipping_company", "SFCCProductAttribute": "shippipng-method", "isCustomAttribute": false},
+                        {"XSDField": "product_ids", "SFCCProductAttribute": "product_ids", "isCustomAttribute": false},
+                        {"XSDField": "product_list", "SFCCProductAttribute": "product_list", "isCustomAttribute": false},
+                        {"XSDField": "domain", "SFCCProductAttribute": "domain", "isCustomAttribute": false},
+                        {"XSDField": "purchase_source_name", "SFCCProductAttribute": "purchase_source_name", "isCustomAttribute": false},
+                        {"XSDField": "category_level_1", "SFCCProductAttribute": "classificationCategory", "isCustomAttribute": false},
+                        {"XSDField": "category_level_2", "SFCCProductAttribute": "classificationCategory", "isCustomAttribute": false},
+                        {"XSDField": "category_level_3", "SFCCProductAttribute": "classificationCategory", "isCustomAttribute": false},
+                        {"XSDField": "category_path", "SFCCProductAttribute": "classificationCategory", "isCustomAttribute": false}
+                    ]</default-value>
+            </attribute-definition>
+            <attribute-definition attribute-id="bloomreachCustomOrderPropertiesForExport">
+                <display-name xml:lang="x-default">Bloomreach Custom Order Properties For Export</display-name>
+                <description xml:lang="x-default">This preference will hold the properties of the export which needs to b e exported in CSV</description>
+                <type>text</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <default-value>[
+                        {"XSDField": "customer_id", "SFCCProductAttribute": "customerNo", "isCustomAttribute": false},
+						{"XSDField": "email", "SFCCProductAttribute": "customerEmail", "isCustomAttribute": false},
+                        {"XSDField": "purchase_id", "SFCCProductAttribute": "orderNo", "isCustomAttribute": false},
+                        {"XSDField": "purchase_status", "SFCCProductAttribute": "purchase_status", "isCustomAttribute": false},
+                        {"XSDField": "purchase_source_type", "SFCCProductAttribute": "createdBy", "isCustomAttribute": false},
+                        {"XSDField": "discount_percentage", "SFCCProductAttribute": "discount_percentage", "isCustomAttribute": false},
+                        {"XSDField": "discount_value", "SFCCProductAttribute": "discount_value", "isCustomAttribute": false},
+                        {"XSDField": "total_quantity", "SFCCProductAttribute": "quantity", "isCustomAttribute": false},
+                        {"XSDField": "total_price", "SFCCProductAttribute": "totalGrossPrice", "isCustomAttribute": false},
+                        {"XSDField": "total_price_without_tax", "SFCCProductAttribute": "adjustedMerchandizeTotalNetPrice", "isCustomAttribute": false},
+                        {"XSDField": "timestamp", "SFCCProductAttribute": "creationDate", "isCustomAttribute": false},                        
+                        {"XSDField": "shipping_company", "SFCCProductAttribute": "shippipng-method", "isCustomAttribute": false},
+                        {"XSDField": "product_ids", "SFCCProductAttribute": "product_ids", "isCustomAttribute": false},
+                        {"XSDField": "product_list", "SFCCProductAttribute": "product_list", "isCustomAttribute": false},
+                        {"XSDField": "domain", "SFCCProductAttribute": "domain", "isCustomAttribute": false},
+                        {"XSDField": "purchase_source_name", "SFCCProductAttribute": "purchase_source_name", "isCustomAttribute": false},
+                        {"XSDField": "category_level_1", "SFCCProductAttribute": "classificationCategory", "isCustomAttribute": false},
+                        {"XSDField": "category_level_2", "SFCCProductAttribute": "classificationCategory", "isCustomAttribute": false},
+                        {"XSDField": "category_level_3", "SFCCProductAttribute": "classificationCategory", "isCustomAttribute": false},
+                        {"XSDField": "category_path", "SFCCProductAttribute": "classificationCategory", "isCustomAttribute": false}
+                    ]</default-value>
+            </attribute-definition>
+            <attribute-definition attribute-id="bloomreachPurchaseProductFeedFullExportFromDate">
+                <display-name xml:lang="x-default">Bloomreach Date Of Order Export - Purchase Product Feed(FullExport)</display-name>
+                <description xml:lang="x-default">The orders placed after the configured date will be exported in the purchase product feed</description>
+                <type>date</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+            </attribute-definition>
+            <attribute-definition attribute-id="bloomreachPurchaseFeedFullExportFromDate">
+                <display-name xml:lang="x-default">Bloomreach Date Of Order Export - Purchase Feed(FullExport)</display-name>
+                <description xml:lang="x-default">The orders placed after the configured date will be exported in the purchase feed</description>
+                <type>date</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+            </attribute-definition>
+             <attribute-definition attribute-id="bloomreachPurchaseProductFeedNewOrdersFromDate">
+                <display-name xml:lang="x-default">Bloomreach Date Of Order Export - Purchase Product Feed(NewOrders)</display-name>
+                <description xml:lang="x-default">The orders placed after the configured date will be exported in the purchase product feed</description>
+                <type>date</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+            </attribute-definition>  
+             <attribute-definition attribute-id="bloomreachPurchaseFeedNewOrdersFromDate">
+                <display-name xml:lang="x-default">Bloomreach Date Of Order Export - Purchase Feed(NewOrders)</display-name>
+                <description xml:lang="x-default">The orders placed after the configured date will be exported in the purchase feed</description>
+                <type>date</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+            </attribute-definition>
+             <attribute-definition attribute-id="lastCustomerExportTimestamp">
+                <display-name xml:lang="x-default">Last Customer Export Timestamp</display-name>
+                <type>datetime</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <min-length>0</min-length>
+            </attribute-definition>
+            <attribute-definition attribute-id="BRMasterExportLastRun">
+                <display-name xml:lang="x-default">Master Export Last Run</display-name>
+                <type>datetime</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+            </attribute-definition>
+            <attribute-definition attribute-id="BRVariationExportLastRun">
+                <display-name xml:lang="x-default">Variation Export Last Run</display-name>
+                <type>datetime</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+            </attribute-definition>
+            <attribute-definition attribute-id="bloomreachCustomerFeed-Import_id">
+                <display-name xml:lang="x-default">Bloomreach Customer Feed Import Id</display-name>
+                <type>string</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <min-length>0</min-length>
+            </attribute-definition>
+            <attribute-definition attribute-id="bloomreachMasterProductFeed-Import_id">
+                <display-name xml:lang="x-default">Bloomreach Master Product Feed Import Id</display-name>
+                <type>string</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <min-length>0</min-length>
+            </attribute-definition>
+            <attribute-definition attribute-id="bloomreachPurchaseFeed-Import_id">
+                <display-name xml:lang="x-default">Bloomreach Purchase Feed Import Id</display-name>
+                <type>string</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <min-length>0</min-length>
+            </attribute-definition>
+            <attribute-definition attribute-id="bloomreachPurchaseProductFeed-Import_id">
+                <display-name xml:lang="x-default">Bloomreach Purchase Product Feed Import Id</display-name>
+                <type>string</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <min-length>0</min-length>
+            </attribute-definition>
+            <attribute-definition attribute-id="bloomreachVariationProductFeed-Import_id">
+                <display-name xml:lang="x-default">Bloomreach Variations Product Feed Import Id</display-name>
+                <type>string</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <min-length>0</min-length>
+            </attribute-definition>
+            <attribute-definition attribute-id="bloomreach_api_key_id">
+                <display-name xml:lang="x-default">bloomreach API key ID</display-name>
+                <type>string</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <min-length>0</min-length>
+                <default-value>qyp6xejln2w66c2ebv9ellcrl2gfqn8faqsxgdqad3am0mcxwt1nuxkcv2cdcnyi</default-value>
+            </attribute-definition>
+            <attribute-definition attribute-id="bloomreach_api_key_secret">
+                <display-name xml:lang="x-default">Bloomreach API Key Secret</display-name>
+                <type>string</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <min-length>0</min-length>
+                <default-value>zdjx9av9tqofsnmd5l0c3xhto29k4c5la7uj561znxwtw9twduo1lhksrgi3ebcc</default-value>
+            </attribute-definition>
+            <attribute-definition attribute-id="bloomreach_project_token">
+                <display-name xml:lang="x-default">Bloomreach Project Token</display-name>
+                <type>string</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <min-length>0</min-length>
+                <default-value>0e97527a-2a70-11ec-b8ef-86d65a8d2664</default-value>
+            </attribute-definition>
+            <attribute-definition attribute-id="BRMasterExportInventoryLastRun">
+                <display-name xml:lang="x-default">Master Export Inventory Last Run</display-name>
+                <type>datetime</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+            </attribute-definition>
+            <attribute-definition attribute-id="BRVariationExportInventoryLastRun">
+                <display-name xml:lang="x-default">Variation Export Inventory Last Run</display-name>
+                <type>datetime</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+            </attribute-definition>
+            <attribute-definition attribute-id="bloomreachMasterProductIventoryFeed-Import_id">
+                <display-name xml:lang="x-default">Bloomreach Master Product Iventory Feed Import Id</display-name>
+                <type>string</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <min-length>0</min-length>
+            </attribute-definition>
+            <attribute-definition attribute-id="bloomreachVariationProductInventoryFeed-Import_id">
+                <display-name xml:lang="x-default">Bloomreach Variation Product Iventory Feed Import Id</display-name>
+                <type>string</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <min-length>0</min-length>
+            </attribute-definition>
+        </custom-attribute-definitions>
+        <group-definitions>
+            <attribute-group group-id="Bloomreach">
+                <display-name xml:lang="x-default">Bloomreach</display-name>
+                <attribute attribute-id="exponeaVariationProductFeed"/>
+                <attribute attribute-id="exponeaMasterProductFeed"/>
+                <attribute attribute-id="exponeaCustomerFeed"/>
+                <attribute attribute-id="bloomreachPurchaseFeedFullExportFromDate"/>
+                <attribute attribute-id="bloomreachPurchaseProductFeedFullExportFromDate"/>
+                <attribute attribute-id="bloomreachPurchaseProductFeedNewOrdersFromDate"/>
+                <attribute attribute-id="bloomreachPurchaseFeedNewOrdersFromDate"/>
+                <attribute attribute-id="bloomreachCustomOrderProductPropertiesForExport"/>
+                <attribute attribute-id="bloomreachCustomOrderPropertiesForExport"/>
+                <attribute attribute-id="lastCustomerExportTimestamp"/>
+                <attribute attribute-id="BRMasterExportLastRun"/>
+                <attribute attribute-id="BRVariationExportLastRun"/>
+                <attribute attribute-id="exponeaMasterProductInventoryFeed"/>
+                <attribute attribute-id="exponeaVariationProductInventoryFeed"/>
+                <attribute attribute-id="BRMasterExportInventoryLastRun"/>
+                <attribute attribute-id="BRVariationExportInventoryLastRun"/>
+            </attribute-group>
+            <attribute-group group-id="BloomreachEngagementApi">
+                <display-name xml:lang="x-default">Bloomreach Engagement API</display-name>
+				<attribute attribute-id="bloomreach_project_token"/>
+				<attribute attribute-id="bloomreach_api_key_id"/>
+				<attribute attribute-id="bloomreach_api_key_secret"/>
+				<attribute attribute-id="bloomreachCustomerFeed-Import_id"/>
+                <attribute attribute-id="bloomreachMasterProductFeed-Import_id"/>
+                <attribute attribute-id="bloomreachVariationProductFeed-Import_id"/>
+                <attribute attribute-id="bloomreachPurchaseFeed-Import_id"/>
+                <attribute attribute-id="bloomreachPurchaseProductFeed-Import_id"/>
+                <attribute attribute-id="bloomreachMasterProductIventoryFeed-Import_id"/>
+                <attribute attribute-id="bloomreachVariationProductInventoryFeed-Import_id"/>
+            </attribute-group>
+        </group-definitions>
+    </type-extension>
+
+	<type-extension type-id="Product">            
+        <custom-attribute-definitions>
+            <attribute-definition attribute-id="bloomreachTags">
+                <display-name xml:lang="x-default">Bloomreach Tags</display-name>
+                <description xml:lang="x-default">This attribute is used for adding special tags like new, back in stock to the product</description>
+                <type>string</type>
+                <localizable-flag>true</localizable-flag>
+                <site-specific-flag>false</site-specific-flag>
+                <mandatory-flag>false</mandatory-flag>
+                <visible-flag>false</visible-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <min-length>0</min-length>
+            </attribute-definition>
+        </custom-attribute-definitions>
+        <group-definitions>
+            <attribute-group group-id="bloomreachProductAttributes">
+                <display-name xml:lang="x-default">Bloomreach Product Attributes</display-name>             
+				<attribute attribute-id="bloomreachTags"/>
+            </attribute-group>
+        </group-definitions>
+    </type-extension>
+</metadata>
