@@ -10,6 +10,8 @@ var ExponeaProductInventoryFeedHelpers = require('~/cartridge/scripts/helpers/Ex
 var ExponeaConstants = require('~/cartridge/scripts/util/ExponeaProductFeedConstants');
 var FileUtils = require('~/cartridge/scripts/util/fileUtils');
 var BREngagementAPIHelper = require('~/cartridge/scripts/helpers/BloomReachEngagementHelper.js');
+var currentSite = require('dw/system/Site').getCurrent();
+var CustomObjectMgr = require('dw/object/CustomObjectMgr');
 
 var productsIter;
 var fileWriter;
@@ -23,8 +25,8 @@ var targetFolder;
 var fileNamePrefix;
 var maxNoOfRows;
 var dateNow = Date.now();
-var timeStamp = dateNow + '\t';
 var generatePreInitFile = false;
+var webDavFilePath;
 
 /**
  * Adds the column value to the CSV line Array of Product Inventory Feed export CSV file
@@ -76,6 +78,7 @@ exports.beforeStep = function () {
         throw new Error('Cannot create IMPEX folders.');
     }
     var csvFile = new File(folderFile.fullPath + File.SEPARATOR + fileName);
+    webDavFilePath = 'https://' + dw.system.System.getInstanceHostname().toString() + '/on/demandware.servlet/webdav/Sites' + csvFile.fullPath.toString();
     fileWriter = new FileWriter(csvFile);
     csvWriter = new CSVStreamWriter(fileWriter);
     // Push Header
@@ -132,8 +135,9 @@ exports.beforeStep = function () {
  */
  exports.process = function (product) { // eslint-disable-line consistent-return
     var currentSite = require('dw/system/Site').getCurrent();
-    var VariationInventoryLastRun = currentSite.getCustomPreferenceValue('BRVariationExportInventoryLastRun'),
-        currentColumn;
+    var lastVariationInventoryExportCO = CustomObjectMgr.getCustomObject('BloomreachEngagementJobLastExecution', 'lastVariationInventoryExport');
+    var VariationInventoryLastRun = lastVariationInventoryExportCO ? lastVariationInventoryExportCO.custom.lastExecution : null;
+    var currentColumn;
 
     try {
         if (!product.isMaster() && ExponeaProductInventoryFeedHelpers.IsProductInventoryExportValid(product, VariationInventoryLastRun)) {
@@ -175,7 +179,17 @@ exports.write = function (lines) {
     rowsCount = rowsCount + lines.size();
 };
 
+function triggerFileImport() {
+    var variationProductFeedImportId = currentSite.getCustomPreferenceValue("bloomreachVariantsInventoryFeed-Import_id");
+    try {
+        var result = BREngagementAPIHelper.bloomReachEngagementAPIService(variationProductFeedImportId, webDavFilePath);
+    } catch (e) {
+        Logger.error('Error while triggering bloomreach import start {0}', e.message);
+    }
+}
+
 function splitFile() {
+    triggerFileImport();
     fileWriter.flush();
     csvWriter.close();
     fileWriter.close();
@@ -194,6 +208,7 @@ function splitFile() {
         throw new Error('Cannot create IMPEX folders.');
     }
     var csvFile = new File(folderFile.fullPath + File.SEPARATOR + fileName);
+    webDavFilePath = 'https://' + dw.system.System.getInstanceHostname().toString() + '/on/demandware.servlet/webdav/Sites' + csvFile.fullPath.toString();
     fileWriter = new FileWriter(csvFile);
     csvWriter = new CSVStreamWriter(fileWriter);
     // Push Header
@@ -220,19 +235,21 @@ function splitFile() {
 
         if (currentSite) {
             var siteCurrentTime =  currentSite.getCalendar().getTime();
-
-            Transaction.wrap(function() {
-                currentSite.setCustomPreferenceValue("BRVariationExportInventoryLastRun", siteCurrentTime);
-            });
+            var lastVariationInventoryExportCO = CustomObjectMgr.getCustomObject('BloomreachEngagementJobLastExecution', 'lastVariationInventoryExport');
+	    	if (lastVariationInventoryExportCO) {
+		        Transaction.wrap(function() {
+		            lastVariationInventoryExportCO.custom.lastExecution = siteCurrentTime;
+		        });
+	        } else {
+	        	Transaction.wrap(function() {
+	        		var newlastVariationInventoryExportCO = CustomObjectMgr.createCustomObject('BloomreachEngagementJobLastExecution', 'lastVariationInventoryExport');
+	        		newlastVariationInventoryExportCO.custom.lastExecution = siteCurrentTime;
+		        });
+	        }
         }
 
         Logger.info('Export Product Inventory Feed Successful');
-        var variationProductFeedImportId = currentSite.getCustomPreferenceValue("bloomreachVariationProductInventoryFeed-Import_id");
-        try {
-            var result = BREngagementAPIHelper.bloomReachEngagementAPIService(variationProductFeedImportId);
-        } catch (e) {
-            Logger.error('Error while triggering bloomreach import start {0}', e.message);
-        }
+        triggerFileImport();
         return new Status(Status.OK, 'OK', 'Export Product Feed Successful');
     }
 

@@ -11,6 +11,7 @@ var FileUtils = require('~/cartridge/scripts/util/fileUtils');
 var CustomerMgr = require('dw/customer/CustomerMgr');
 var Transaction = require('dw/system/Transaction');
 var sitePrefs = dw.system.Site.getCurrent().getPreferences();
+var CustomObjectMgr = require('dw/object/CustomObjectMgr');
 
 var customerProfilesItr;
 var fileWriter;
@@ -25,11 +26,12 @@ var fileNamePrefix;
 var maxNoOfRows;
 var query;
 var generatePreInitFile = false;
+var webDavFilePath;
 
 
 /**
  * Adds the column value to the CSV line Array of Customer Feed export CSV file
- * @param cusotmer - SFCC customer
+ * @param customer - SFCC customer
  * @param {Array} csvCustomerArray - CSV  Array
  * @param {Object} columnValue - Customer Feed Column
  */
@@ -51,17 +53,14 @@ var generatePreInitFile = false;
         } else if (columnValue === 'gender') {
             csvCustomerArray.push(columnValue in customer && customer[columnValue].value ? customer[columnValue].displayValue : '');
         } else if (columnValue === 'creationDate') {
-            var creationDate = customer[columnValue];
-            var timeStamp = ExponeaCustomerInfoFeedHelpers.getTimeStamp(creationDate);
-            csvCustomerArray.push(timeStamp);
+            var creationDate = ExponeaCustomerInfoFeedHelpers.getTimeStamp(customer[columnValue]);
+            csvCustomerArray.push(creationDate);
         } else if (columnValue === 'lastModified') {
-            var lastModified = customer[columnValue];
-            var timeStamp = ExponeaCustomerInfoFeedHelpers.getTimeStamp(lastModified);
-            csvCustomerArray.push(timeStamp);
+            var lastModified = ExponeaCustomerInfoFeedHelpers.getTimeStamp(customer[columnValue]);
+            csvCustomerArray.push(lastModified);
         } else if (columnValue == 'birthday') {
-            var birthday = customer[columnValue];
-            var timeStamp = ExponeaCustomerInfoFeedHelpers.getTimeStamp(birthday);
-            csvCustomerArray.push(timeStamp);
+            var birthday = ExponeaCustomerInfoFeedHelpers.getTimeStamp(customer[columnValue]);
+            csvCustomerArray.push(birthday);
         } else {
             csvCustomerArray.push(columnValue in customer ? customer[columnValue] : '');
         }
@@ -85,7 +84,6 @@ var generatePreInitFile = false;
     if (!targetFolder) {
         throw new Error('One or more mandatory parameters are missing.');
     }
-
     var FileWriter = require('dw/io/FileWriter');
     var CSVStreamWriter = require('dw/io/CSVStreamWriter');
     var fileName = FileUtils.createFileName(fileNamePrefix, ExponeaConstants.FILE_EXTENSTION.CSV);
@@ -95,6 +93,7 @@ var generatePreInitFile = false;
         throw new Error('Cannot create IMPEX folders.');
     }
     var csvFile = new File(folderFile.fullPath + File.SEPARATOR + fileName);
+    webDavFilePath = 'https://' + dw.system.System.getInstanceHostname().toString() + '/on/demandware.servlet/webdav/Sites' + csvFile.fullPath.toString();
     fileWriter = new FileWriter(csvFile);
     csvWriter = new CSVStreamWriter(fileWriter);
     // Push Header
@@ -126,7 +125,9 @@ var generatePreInitFile = false;
     fileNamePrefix = args.FileNamePrefix
     maxNoOfRows = args.MaxNumberOfRows - 1000;
     query = args.Query || 'lastModified > {0}';
-    var lastCustomerExportTimestamp = sitePrefs.getCustom()["lastCustomerExportTimestamp"];
+    
+    var lastCustomerExportCO = CustomObjectMgr.getCustomObject('BloomreachEngagementJobLastExecution', 'lastCustomerExport');
+    var lastCustomerExport = lastCustomerExportCO ? lastCustomerExportCO.custom.lastExecution : null;
 
     if (!targetFolder) {
         throw new Error('One or more mandatory parameters are missing.');
@@ -141,6 +142,7 @@ var generatePreInitFile = false;
         throw new Error('Cannot create IMPEX folders.');
     }
     var csvFile = new File(folderFile.fullPath + File.SEPARATOR + fileName);
+    webDavFilePath = 'https://' + dw.system.System.getInstanceHostname().toString() + '/on/demandware.servlet/webdav/Sites' + csvFile.fullPath.toString();
     fileWriter = new FileWriter(csvFile);
     csvWriter = new CSVStreamWriter(fileWriter);
     // Push Header
@@ -149,8 +151,8 @@ var generatePreInitFile = false;
     SFCCAttributesValue = results.SFCCAttributesValue;
     csvWriter.writeNext(headerColumn);
     // Push Customer
-    if (lastCustomerExportTimestamp) {
-        customerProfilesItr = CustomerMgr.searchProfiles(query, 'customerNo DESC', new Date(lastCustomerExportTimestamp));
+    if (lastCustomerExport) {
+        customerProfilesItr = CustomerMgr.searchProfiles(query, 'customerNo DESC', new Date(lastCustomerExport));
     } else {
         customerProfilesItr = CustomerMgr.searchProfiles('', 'customerNo DESC');
     }
@@ -221,7 +223,17 @@ var generatePreInitFile = false;
     rowsCount = rowsCount + lines.size();
 };
 
+function triggerFileImport() {
+    var customerFeedImportId = sitePrefs.getCustom()["bloomreachCustomerFeed-Import_id"];
+    try {
+        var result = BREngagementAPIHelper.bloomReachEngagementAPIService(customerFeedImportId, webDavFilePath);
+    } catch (e) {
+        Logger.error('Error while triggering bloomreach import start {0}', e.message);
+    }
+}
+
 function splitFile() {
+    triggerFileImport();
     fileWriter.flush();
     csvWriter.close();
     fileWriter.close();
@@ -240,6 +252,7 @@ function splitFile() {
         throw new Error('Cannot create IMPEX folders.');
     }
     var csvFile = new File(folderFile.fullPath + File.SEPARATOR + fileName);
+    webDavFilePath = 'https://' + dw.system.System.getInstanceHostname().toString() + '/on/demandware.servlet/webdav/Sites' + csvFile.fullPath.toString();
     fileWriter = new FileWriter(csvFile);
     csvWriter = new CSVStreamWriter(fileWriter);
     // Push Header
@@ -261,16 +274,20 @@ function splitFile() {
     csvWriter.close();
     fileWriter.close();
     if (processedAll) {
-        Transaction.wrap(function() {
-            sitePrefs.getCustom()["lastCustomerExportTimestamp"] = new Date();
-        });
-        Logger.info('Export Customer Feed Successful');
-        var customerFeedImportId = sitePrefs.getCustom()["bloomreachCustomerFeed-Import_id"];
-        try {
-            var result = BREngagementAPIHelper.bloomReachEngagementAPIService(customerFeedImportId);
-        } catch (e) {
-            Logger.error('Error while triggering bloomreach import start {0}', e.message);
+    	var lastCustomerExportCO = CustomObjectMgr.getCustomObject('BloomreachEngagementJobLastExecution', 'lastCustomerExport');
+    	if (lastCustomerExportCO) {
+	        Transaction.wrap(function() {
+	            lastCustomerExportCO.custom.lastExecution = new Date();
+	        });
+        } else {
+        	Transaction.wrap(function() {
+        		var newlastCustomerExportCO = CustomObjectMgr.createCustomObject('BloomreachEngagementJobLastExecution', 'lastCustomerExport');
+        		newlastCustomerExportCO.custom.lastExecution = new Date();
+	        });
         }
+        
+        Logger.info('Export Customer Feed Successful');
+        triggerFileImport();
         return new Status(Status.OK, 'OK', 'Export Customer Feed Successful');
     }
     throw new Error('Could not process all the customers');

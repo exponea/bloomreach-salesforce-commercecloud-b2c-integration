@@ -13,7 +13,7 @@ function createFileName(fileNamePrefix, fileExtension) {
     }
     var dateNow = Date.now();
     var timeStamp = dateNow.toString();
-    return fileNamePrefix + '_' + timeStamp + '.' + fileExtension;
+    return fileNamePrefix + timeStamp + '.' + fileExtension;
 }
 
 module.exports = {

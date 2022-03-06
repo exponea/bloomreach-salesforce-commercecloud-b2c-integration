@@ -15,7 +15,7 @@ function generateCSVHeader(exportType) {
     var results = {};
 
     if (exportType === ExponeaConstants.EXPORT_TYPE.MASTERPRODUCT) {
-        var masterProductFeedJSON = sitePrefs.getCustom()["exponeaMasterProductInventoryFeed"];
+        var masterProductFeedJSON = sitePrefs.getCustom()["bloomreachProductInventoryFeed"];
         var masterProductFeed = JSON.parse(masterProductFeedJSON);
 
         for (var i = 0; i < masterProductFeed.length; i++) {
@@ -25,7 +25,7 @@ function generateCSVHeader(exportType) {
             }
         }
     } else if (exportType === ExponeaConstants.EXPORT_TYPE.VARIATIONPRODUCT) {
-        var variationProductFeedJSON = sitePrefs.getCustom()["exponeaVariationProductInventoryFeed"];
+        var variationProductFeedJSON = sitePrefs.getCustom()["bloomreachVariantsInventoryFeed"];
         var variationProductFeed = JSON.parse(variationProductFeedJSON);
 
         for (let j = 0; j < variationProductFeed.length; j++) {

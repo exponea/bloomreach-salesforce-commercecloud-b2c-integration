@@ -21,7 +21,7 @@ function createPurchaseFeedFile(filename,targetFolder,fileNum) {
         workingFolder.mkdirs();
     }
     //var currentDate = new Calendar(Date.now());
-    var fileName = [filename, '_',Date.now(),fileNum, '.csv'].join('');
+    var fileName = [filename,Date.now(),fileNum, '.csv'].join('');
     var purchaseFeedFile = new File(workingFolder, fileName);
     
     return purchaseFeedFile;

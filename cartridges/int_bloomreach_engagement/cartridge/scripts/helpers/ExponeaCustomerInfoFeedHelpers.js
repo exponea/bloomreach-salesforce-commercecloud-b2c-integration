@@ -7,7 +7,7 @@
  */
 function generateCSVHeader() {
     var sitePrefs : SitePreferences = dw.system.Site.getCurrent().getPreferences();
-    var customerInfoFeedJSON = sitePrefs.getCustom()["exponeaCustomerFeed"];
+    var customerInfoFeedJSON = sitePrefs.getCustom()["bloomreachCustomerFeed"];
     var customerInfoFeed = JSON.parse(customerInfoFeedJSON);
 
     var csvHeaderArray = [];
@@ -32,8 +32,8 @@ function getTimeStamp(date) {
     var timeStamp;
     if (date) {
         var date = new Date(date);
-        timeStamp = date.getTime();
-        return timeStamp + '\t';
+        timeStamp = Math.floor(date.getTime()/1000);
+        return timeStamp.toString();
     } else {
         return "";
     }

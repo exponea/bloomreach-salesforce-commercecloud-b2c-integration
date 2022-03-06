@@ -85,7 +85,7 @@
                             "@type":"string",
                             "@required":"false",
                             "@trim":"true",
-                            "default-value":"purchase-feed"
+                            "default-value":"purchase"
                         },
                         {
                             "@name":"MaxNumberOfRows",
@@ -384,7 +384,7 @@
                             "@type":"string",
                             "@required":"false",
                             "@trim":"true",
-                            "default-value":"cusotmer-info-feed"
+                            "default-value":"customer-info-feed"
                         },
                         {
                             "@name": "Query",
@@ -451,7 +451,7 @@
                             "@type":"string",
                             "@required":"false",
                             "@trim":"true",
-                            "default-value":"cusotmer-info-feed-delta"
+                            "default-value":"customer-info-feed-delta"
                         },
                         {
                             "@name": "Query",

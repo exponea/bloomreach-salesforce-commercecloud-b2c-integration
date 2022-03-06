@@ -1,13 +1,27 @@
 var bloomReachEngagementAPIServices = require('~/cartridge/scripts/services/BloomReachEngagementAPIService.js');
 var Logger = dw.system.Logger.getLogger('BloomreachEngagementAPI');
+var Site = require('dw/system/Site');
 
+const bloomReachEngagementAPIService = function(import_Id, webDavFilePath) {
+	var currentSite = Site.getCurrent();
+	var bloomreachServiceURL = currentSite.getCustomPreferenceValue('bloomreach_api_base_url');
+    var bloomreachProjectToken = currentSite.getCustomPreferenceValue('bloomreach_project_token');
 
-const bloomReachEngagementAPIService = function(import_Id) {
     var BREngagementAPISerivce = bloomReachEngagementAPIServices.getBloomReachEngagementAPIService(import_Id);
     var result = {};
     try {
         // Result Object
-        result = BREngagementAPISerivce.call();
+        var requestObject = {
+        	webDavFilePath: webDavFilePath
+       	};
+        result = BREngagementAPISerivce.call(requestObject);
+
+        var serviceURL = bloomreachServiceURL.replace('projectToken', bloomreachProjectToken).replace('import_id', import_Id);
+        
+        Logger.info('bloomreach.engagement.service call URL: ' + serviceURL);
+        Logger.info('Request Data: ' + BREngagementAPISerivce.getRequestData());
+        Logger.info('Response Data: ' + result);
+        
     } catch (e) {
         Logger.error('Error while triggering bloomreach engagement api {0}', e.message);
     }

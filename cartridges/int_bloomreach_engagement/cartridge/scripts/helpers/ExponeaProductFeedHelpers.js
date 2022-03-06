@@ -16,7 +16,7 @@ function generateCSVHeader(exportType) {
     var results = {};
 
     if (exportType === ExponeaConstants.EXPORT_TYPE.MASTERPRODUCT) {
-        var masterProductFeedJSON = sitePrefs.getCustom()["exponeaMasterProductFeed"];
+        var masterProductFeedJSON = sitePrefs.getCustom()["bloomreachProductFeed"];
         var masterProductFeed = JSON.parse(masterProductFeedJSON);
 
         for (var i = 0; i < masterProductFeed.length; i++) {
@@ -26,7 +26,7 @@ function generateCSVHeader(exportType) {
             }
         }
     } else if (exportType === ExponeaConstants.EXPORT_TYPE.VARIATIONPRODUCT) {
-        var variationProductFeedJSON = sitePrefs.getCustom()["exponeaVariationProductFeed"];
+        var variationProductFeedJSON = sitePrefs.getCustom()["bloomreachVariantsFeed"];
         var variationProductFeed = JSON.parse(variationProductFeedJSON);
 
         for (let j = 0; j < variationProductFeed.length; j++) {
@@ -201,7 +201,7 @@ function getTimeStamp(date) {
     if (date) {
         var date = new Date(date);
         timeStamp = date.getTime();
-        return timeStamp + '\t';
+        return timeStamp.toString();
     } else {
         return "";
     }

@@ -2,8 +2,8 @@
 <services xmlns="http://www.demandware.com/xml/impex/services/2014-09-26">
     <service-credential service-credential-id="bloomreach.engagement.cred">
         <url>https://cloud-api.exponea.com/data/v2/projects/projectToken/imports/import_id/start</url>
-        <user-id>qyp6xejln2w66c2ebv9ellcrl2gfqn8faqsxgdqad3am0mcxwt1nuxkcv2cdcnyi</user-id>
-        <password encrypted="true" encryption-type="common.export">kpCVfxUpMJcNUKjlEko0JEmAwZmc0HzKbtXGQRI7UXc=</password>
+        <user-id></user-id>
+        <password encrypted="true" encryption-type="common.export">=</password>
     </service-credential>
 
     <service-profile service-profile-id="bloomreach.engagement.profile">

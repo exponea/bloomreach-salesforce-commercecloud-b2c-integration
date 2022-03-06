@@ -30,6 +30,7 @@ var updateCustomDateExportPreference = false;
 var feedFileGenerationDate;
 var csvGeneratorHelper = require('~/cartridge/scripts/helpers/generateCSVHelper');
 var generatePreInitFile = false;
+var webDavFilePath;
 
 /**
  * Executed Before Processing of Chunk and Validates all required fields
@@ -67,6 +68,7 @@ var generatePreInitFile = false;
     try {	
     	feedFileGenerationDate = new Date();
     	var feedFile = csvGeneratorHelper.createPurchaseFeedFile(FileNamePrefix,targetFolder,fileNum);
+        webDavFilePath = 'https://' + dw.system.System.getInstanceHostname().toString() + '/on/demandware.servlet/webdav/Sites' + feedFile.fullPath.toString();
     	fw = new FileWriter(feedFile);
     	csw = new CSVStreamWriter(fw);
     	var getAttrSitePref = csvGeneratorHelper.getPurchaseProductFeedFileHeaders();
@@ -152,7 +154,18 @@ var generatePreInitFile = false;
      
     rowsCount = rowsCount + lines.size();
 };
+
+function triggerFileImport() {
+    var purchaseProductFeedImportId = currentSite.getCustomPreferenceValue("bloomreachPurchaseItemFeed-Import_id");
+    try {
+        var result = BREngagementAPIHelper.bloomReachEngagementAPIService(purchaseProductFeedImportId, webDavFilePath);
+    } catch (e) {
+        Logger.error('Error while triggering bloomreach import start {0}', e.message);
+    }
+}
+
 function splitFile() {
+    triggerFileImport();
     fw.flush();
     csw.close();
     fw.close();
@@ -163,6 +176,7 @@ function splitFile() {
         throw new Error('One or more mandatory parameters are missing.');
     }
 	var feedFile = csvGeneratorHelper.createPurchaseFeedFile(FileNamePrefix,targetFolder,fileNum);
+    webDavFilePath = 'https://' + dw.system.System.getInstanceHostname().toString() + '/on/demandware.servlet/webdav/Sites' + feedFile.fullPath.toString();
     fw = new FileWriter(feedFile);
     csw = new CSVStreamWriter(fw);
     headers = JSON.parse(csvGeneratorHelper.getPurchaseFeedFileHeaders());
@@ -185,12 +199,7 @@ function splitFile() {
     		csvGeneratorHelper.updateOrderExportDate(jobID,feedFileGenerationDate);
     	}
         Logger.info('Export Order Product Feed Successful');
-        var purchaseProductFeedImportId = currentSite.getCustomPreferenceValue("bloomreachPurchaseProductFeed-Import_id");
-        try {
-            var result = BREngagementAPIHelper.bloomReachEngagementAPIService(purchaseProductFeedImportId);
-        } catch (e) {
-            Logger.error('Error while triggering bloomreach import start {0}', e.message);
-        }
+        triggerFileImport();
         return new Status(Status.OK, 'OK', 'Export Order product Feed Successful');
     }
     throw new Error('Could not process all the orders');
