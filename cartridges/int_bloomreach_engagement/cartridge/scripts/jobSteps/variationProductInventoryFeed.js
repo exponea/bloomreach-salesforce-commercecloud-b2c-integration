@@ -1,15 +1,15 @@
-/* Exponea Variations Product Inventory Export Job */
+/* BloomreachEngagement Variations Product Inventory Export Job */
 'use strict';
 
-var Logger = require('dw/system/Logger').getLogger('ExponeaVariationsInventoryFeedExport');;
+var Logger = require('dw/system/Logger').getLogger('BloomreachEngagementVariationsInventoryFeedExport');;
 var Status = require('dw/system/Status');
 var File = require('dw/io/File');
 var Transaction = require('dw/system/Transaction');
 var site = dw.system.Site.getCurrent();
-var ExponeaProductInventoryFeedHelpers = require('~/cartridge/scripts/helpers/ExponeaProductInventoryFeedHelpers');
-var ExponeaConstants = require('~/cartridge/scripts/util/ExponeaProductFeedConstants');
+var BloomreachEngagementProductInventoryFeedHelpers = require('~/cartridge/scripts/helpers/BloomreachEngagementProductInventoryFeedHelpers');
+var BloomreachEngagementConstants = require('~/cartridge/scripts/util/productFeedConstants');
 var FileUtils = require('~/cartridge/scripts/util/fileUtils');
-var BREngagementAPIHelper = require('~/cartridge/scripts/helpers/BloomReachEngagementHelper.js');
+var BREngagementAPIHelper = require('~/cartridge/scripts/helpers/BloomreachEngagementHelper.js');
 var currentSite = require('dw/system/Site').getCurrent();
 var CustomObjectMgr = require('dw/object/CustomObjectMgr');
 
@@ -41,11 +41,11 @@ var webDavFilePath;
 
     if (isCustomAttribute == 'false' || !isCustomAttribute) {
         if (columnValue == 'preorderbackorderallocation') {
-            csvProductArray.push(ExponeaProductInventoryFeedHelpers.getPreorderBackorderAllocation(product) || 0);
+            csvProductArray.push(BloomreachEngagementProductInventoryFeedHelpers.getPreorderBackorderAllocation(product) || 0);
         } else if(columnValue == 'preorderbackorderhandling') {
-            csvProductArray.push(ExponeaProductInventoryFeedHelpers.getPreorderBackorderHandling(product) || 0);
+            csvProductArray.push(BloomreachEngagementProductInventoryFeedHelpers.getPreorderBackorderHandling(product) || 0);
         } else if(columnValue == 'stockLevel') {
-            csvProductArray.push(ExponeaProductInventoryFeedHelpers.getStockLevel(product) || 0);
+            csvProductArray.push(BloomreachEngagementProductInventoryFeedHelpers.getStockLevel(product) || 0);
         } else {
             csvProductArray.push(columnValue in product ? product[columnValue] : '');
         }
@@ -82,7 +82,7 @@ exports.beforeStep = function () {
     fileWriter = new FileWriter(csvFile);
     csvWriter = new CSVStreamWriter(fileWriter);
     // Push Header
-    var results = ExponeaProductInventoryFeedHelpers.generateCSVHeader(ExponeaConstants.EXPORT_TYPE.VARIATIONPRODUCT);
+    var results = BloomreachEngagementProductInventoryFeedHelpers.generateCSVHeader(BloomreachEngagementConstants.EXPORT_TYPE.VARIATIONPRODUCT);
     headerColumn = results.csvHeaderArray;
     SFCCAttributesValue = results.SFCCAttributesValue;
     csvWriter.writeNext(headerColumn);
@@ -140,7 +140,7 @@ exports.beforeStep = function () {
     var currentColumn;
 
     try {
-        if (!product.isMaster() && ExponeaProductInventoryFeedHelpers.IsProductInventoryExportValid(product, VariationInventoryLastRun)) {
+        if (!product.isMaster() && BloomreachEngagementProductInventoryFeedHelpers.IsProductInventoryExportValid(product, VariationInventoryLastRun)) {
             var csvProductArray = [];
 
             SFCCAttributesValue.forEach(function (columnValue, index) { // eslint-disable-line
@@ -212,7 +212,7 @@ function splitFile() {
     fileWriter = new FileWriter(csvFile);
     csvWriter = new CSVStreamWriter(fileWriter);
     // Push Header
-    var results = ExponeaProductInventoryFeedHelpers.generateCSVHeader(ExponeaConstants.EXPORT_TYPE.VARIATIONPRODUCT);
+    var results = BloomreachEngagementProductInventoryFeedHelpers.generateCSVHeader(BloomreachEngagementConstants.EXPORT_TYPE.VARIATIONPRODUCT);
     headerColumn = results.csvHeaderArray;
     SFCCAttributesValue = results.SFCCAttributesValue;
     csvWriter.writeNext(headerColumn);

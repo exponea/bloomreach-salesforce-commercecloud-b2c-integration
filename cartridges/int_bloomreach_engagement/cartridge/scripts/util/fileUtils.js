@@ -1,5 +1,5 @@
 var File = require('dw/io/File');
-var EConstants = require('~/cartridge/scripts/util/ExponeaProductFeedConstants');
+var EConstants = require('~/cartridge/scripts/util/productFeedConstants');
 
 /**
  * This Function creates file name with file name prefix.

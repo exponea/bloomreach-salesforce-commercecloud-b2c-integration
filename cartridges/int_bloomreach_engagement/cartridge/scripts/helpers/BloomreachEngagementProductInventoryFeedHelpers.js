@@ -1,6 +1,6 @@
 'use strict';
 
-var ExponeaConstants = require('~/cartridge/scripts/util/ExponeaProductFeedConstants');
+var BloomreachEngagementConstants = require('~/cartridge/scripts/util/productFeedConstants');
 
 /**
  * This Function generates header for csv file
@@ -14,7 +14,7 @@ function generateCSVHeader(exportType) {
     var SFCCAttributesValue = [];
     var results = {};
 
-    if (exportType === ExponeaConstants.EXPORT_TYPE.MASTERPRODUCT) {
+    if (exportType === BloomreachEngagementConstants.EXPORT_TYPE.MASTERPRODUCT) {
         var masterProductFeedJSON = sitePrefs.getCustom()["bloomreachProductInventoryFeed"];
         var masterProductFeed = JSON.parse(masterProductFeedJSON);
 
@@ -24,7 +24,7 @@ function generateCSVHeader(exportType) {
                 SFCCAttributesValue.push({'SFCCProductAttribute': masterProductFeed[i].SFCCProductAttribute, 'isCustom': masterProductFeed[i].isCustomAttribute});
             }
         }
-    } else if (exportType === ExponeaConstants.EXPORT_TYPE.VARIATIONPRODUCT) {
+    } else if (exportType === BloomreachEngagementConstants.EXPORT_TYPE.VARIATIONPRODUCT) {
         var variationProductFeedJSON = sitePrefs.getCustom()["bloomreachVariantsInventoryFeed"];
         var variationProductFeed = JSON.parse(variationProductFeedJSON);
 
@@ -122,11 +122,11 @@ function getPreorderBackorderHandling(product) {
     }
 
     if (inventoryRecord.backorderable) {
-        handling = ExponeaConstants.PRODUCT_INVENTORY.ORDER_HANDLING.BACK_ORDER;
+        handling = BloomreachEngagementConstants.PRODUCT_INVENTORY.ORDER_HANDLING.BACK_ORDER;
     } else if (inventoryRecord.preorderable) {
-        handling = ExponeaConstants.PRODUCT_INVENTORY.ORDER_HANDLING.PRE_ORDER;
+        handling = BloomreachEngagementConstants.PRODUCT_INVENTORY.ORDER_HANDLING.PRE_ORDER;
     } else {
-        handling = ExponeaConstants.PRODUCT_INVENTORY.ORDER_HANDLING.NONE;
+        handling = BloomreachEngagementConstants.PRODUCT_INVENTORY.ORDER_HANDLING.NONE;
     }
 
     return handling || '';

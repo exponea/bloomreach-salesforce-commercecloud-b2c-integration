@@ -1,15 +1,15 @@
 /* Feedonomics Product Export Job */
 'use strict';
 
-var Logger = require('dw/system/Logger').getLogger('ExponeaVariationProductFeedExport');;
+var Logger = require('dw/system/Logger').getLogger('BloomreachEngagementVariationProductFeedExport');;
 var Status = require('dw/system/Status');
 var File = require('dw/io/File');
 var Transaction = require('dw/system/Transaction');
 var site = dw.system.Site.getCurrent();
-var ExponeaProductFeedHelpers = require('~/cartridge/scripts/helpers/ExponeaProductFeedHelpers');
-var ExponeaConstants = require('~/cartridge/scripts/util/ExponeaProductFeedConstants');
+var BloomreachEngagementProductFeedHelpers = require('~/cartridge/scripts/helpers/BloomreachEngagementProductFeedHelpers');
+var BloomreachEngagementConstants = require('~/cartridge/scripts/util/productFeedConstants');
 var FileUtils = require('~/cartridge/scripts/util/fileUtils');
-var BREngagementAPIHelper = require('~/cartridge/scripts/helpers/BloomReachEngagementHelper.js');
+var BREngagementAPIHelper = require('~/cartridge/scripts/helpers/BloomreachEngagementHelper.js');
 var currentSite = require('dw/system/Site').getCurrent();
 var CustomObjectMgr = require('dw/object/CustomObjectMgr');
 
@@ -46,26 +46,26 @@ var webDavFilePath;
         } else if (columnValue == 'exported_timestamp') {
             csvProductArray.push(timeStamp || '');
         } else if (columnValue == 'onlineFrom') {
-            csvProductArray.push(ExponeaProductFeedHelpers.getTimeStamp(product.onlineFrom) || '');
+            csvProductArray.push(BloomreachEngagementProductFeedHelpers.getTimeStamp(product.onlineFrom) || '');
         } else if (columnValue == 'url') {
             csvProductArray.push(URLUtils.abs('Product-Show', 'pid', product.ID).toString());
         } else if(columnValue == 'primaryCategory') {
-            var primaryCategory = ExponeaProductFeedHelpers.getPrimaryCategory(product);
+            var primaryCategory = BloomreachEngagementProductFeedHelpers.getPrimaryCategory(product);
             var primaryCategoryName = primaryCategory ? primaryCategory.displayName : '';
 
             csvProductArray.push(primaryCategoryName || '');
         } else if(columnValue == 'categoryLevelTwo') {
-            var categoryLevelTwo = ExponeaProductFeedHelpers.getCategoryLevel(product, 2);
+            var categoryLevelTwo = BloomreachEngagementProductFeedHelpers.getCategoryLevel(product, 2);
             var categoryLevelTwoName = categoryLevelTwo ? categoryLevelTwo.displayName : '';
 
             csvProductArray.push(categoryLevelTwoName || '');
         } else if(columnValue == 'categoryLevelThree') {
-            var categoryLevelThree = ExponeaProductFeedHelpers.getCategoryLevel(product, 3);
+            var categoryLevelThree = BloomreachEngagementProductFeedHelpers.getCategoryLevel(product, 3);
             var categoryLevelThreeName = categoryLevelThree ? categoryLevelThree.displayName : '';
 
             csvProductArray.push(categoryLevelThreeName || '');
         } else if(columnValue == 'primaryCategoryURL') {
-            var category = ExponeaProductFeedHelpers.getPrimaryCategory(product);
+            var category = BloomreachEngagementProductFeedHelpers.getPrimaryCategory(product);
             var categoryURL;
 
             if (category) {
@@ -74,7 +74,7 @@ var webDavFilePath;
 
             csvProductArray.push(categoryURL || '');
         } else if(columnValue == 'categoryLevelTwoURL') {
-            var category = ExponeaProductFeedHelpers.getCategoryLevel(product, 2);
+            var category = BloomreachEngagementProductFeedHelpers.getCategoryLevel(product, 2);
             var categoryURL;
 
             if (category) {
@@ -83,7 +83,7 @@ var webDavFilePath;
 
             csvProductArray.push(categoryURL || '');
         } else if(columnValue == 'categoryLevelThreeURL') {
-            var category = ExponeaProductFeedHelpers.getCategoryLevel(product, 3);
+            var category = BloomreachEngagementProductFeedHelpers.getCategoryLevel(product, 3);
             var categoryURL;
 
             if (category) {
@@ -92,31 +92,31 @@ var webDavFilePath;
 
             csvProductArray.push(categoryURL || '');
         } else if(columnValue == 'categoryPath') {
-            var primaryCategory = ExponeaProductFeedHelpers.getPrimaryCategory(product);
+            var primaryCategory = BloomreachEngagementProductFeedHelpers.getPrimaryCategory(product);
             var primaryCategoryName = primaryCategory ? primaryCategory.displayName : '';
-            var categoryLevelTwo = ExponeaProductFeedHelpers.getCategoryLevel(product, 2);
+            var categoryLevelTwo = BloomreachEngagementProductFeedHelpers.getCategoryLevel(product, 2);
             var categoryLevelTwoName = categoryLevelTwo ? categoryLevelTwo.displayName : '';
-            var categoryLevelThree = ExponeaProductFeedHelpers.getCategoryLevel(product, 3);
+            var categoryLevelThree = BloomreachEngagementProductFeedHelpers.getCategoryLevel(product, 3);
             var categoryLevelThreeName = categoryLevelThree ? categoryLevelThree.displayName : '';
             var categoryPath = (primaryCategoryName ? primaryCategoryName + '|' : '') + (categoryLevelTwoName ? categoryLevelTwoName + '|' : '') + (categoryLevelThreeName ? categoryLevelThreeName : '');
             csvProductArray.push(categoryPath);
         } else if(columnValue == 'categoriesIDs') {
-            csvProductArray.push(ExponeaProductFeedHelpers.getCategoryIdlist(product));
+            csvProductArray.push(BloomreachEngagementProductFeedHelpers.getCategoryIdlist(product));
         } else if(columnValue == 'price') {
-            csvProductArray.push(ExponeaProductFeedHelpers.calculateSalePrice(product));
+            csvProductArray.push(BloomreachEngagementProductFeedHelpers.calculateSalePrice(product));
         } else if(columnValue == 'priceLocalCurrency') {
             var currentSite = Site.getCurrent();
             csvProductArray.push(currentSite.currencyCode);
         } else if(columnValue == 'color') {
-            var variationValue = JSON.parse(ExponeaProductFeedHelpers.getAllVariationAttrs(product));
+            var variationValue = JSON.parse(BloomreachEngagementProductFeedHelpers.getAllVariationAttrs(product));
             csvProductArray.push(variationValue && 'color' in variationValue ? variationValue.color : '');
         } else if(columnValue == 'size') {
-            var variationValue = JSON.parse(ExponeaProductFeedHelpers.getAllVariationAttrs(product));
+            var variationValue = JSON.parse(BloomreachEngagementProductFeedHelpers.getAllVariationAttrs(product));
             csvProductArray.push(variationValue && 'size' in variationValue ? variationValue.size : '');
         } else if(columnValue == 'image') {
-            csvProductArray.push(ExponeaProductFeedHelpers.getProductImage(product));
+            csvProductArray.push(BloomreachEngagementProductFeedHelpers.getProductImage(product));
         } else if(columnValue == 'active') {
-            csvProductArray.push(ExponeaProductFeedHelpers.getActiveStatus(product));
+            csvProductArray.push(BloomreachEngagementProductFeedHelpers.getActiveStatus(product));
         } else {
             csvProductArray.push(columnValue in product ? product[columnValue] : '');
         }
@@ -153,7 +153,7 @@ exports.beforeStep = function () {
     fileWriter = new FileWriter(csvFile);
     csvWriter = new CSVStreamWriter(fileWriter);
     // Push Header
-    var results = ExponeaProductFeedHelpers.generateCSVHeader(ExponeaConstants.EXPORT_TYPE.VARIATIONPRODUCT);
+    var results = BloomreachEngagementProductFeedHelpers.generateCSVHeader(BloomreachEngagementConstants.EXPORT_TYPE.VARIATIONPRODUCT);
     headerColumn = results.csvHeaderArray;
     SFCCAttributesValue = results.SFCCAttributesValue;
     csvWriter.writeNext(headerColumn);
@@ -276,7 +276,7 @@ function splitFile() {
     fileWriter = new FileWriter(csvFile);
     csvWriter = new CSVStreamWriter(fileWriter);
     // Push Header
-    var results = ExponeaProductFeedHelpers.generateCSVHeader(ExponeaConstants.EXPORT_TYPE.VARIATIONPRODUCT);
+    var results = BloomreachEngagementProductFeedHelpers.generateCSVHeader(BloomreachEngagementConstants.EXPORT_TYPE.VARIATIONPRODUCT);
     headerColumn = results.csvHeaderArray;
     SFCCAttributesValue = results.SFCCAttributesValue;
     csvWriter.writeNext(headerColumn);

@@ -8,7 +8,7 @@ var Service = require('dw/svc/Service');
 
 var Logger = dw.system.Logger.getLogger('BloomreachEngagementAPI');
 
-function getBloomReachEngagementAPIService(import_Id) {
+function getBloomreachEngagementAPIService(import_Id) {
     var currentSite = Site.getCurrent();
     var bloomreachServiceURL = currentSite.getCustomPreferenceValue('bloomreach_api_base_url');
     var bloomreachAPIKeyId = currentSite.getCustomPreferenceValue('bloomreach_api_key_id');
@@ -52,5 +52,5 @@ function getBloomReachEngagementAPIService(import_Id) {
 }
 
 module.exports = {
-    getBloomReachEngagementAPIService: getBloomReachEngagementAPIService
+    getBloomreachEngagementAPIService: getBloomreachEngagementAPIService
 };

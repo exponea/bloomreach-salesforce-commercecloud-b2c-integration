@@ -1,4 +1,4 @@
-var bloomReachEngagementAPIServices = require('~/cartridge/scripts/services/BloomReachEngagementAPIService.js');
+var bloomReachEngagementAPIServices = require('~/cartridge/scripts/services/BloomreachEngagementAPIService.js');
 var Logger = dw.system.Logger.getLogger('BloomreachEngagementAPI');
 var Site = require('dw/system/Site');
 
@@ -7,7 +7,7 @@ const bloomReachEngagementAPIService = function(import_Id, webDavFilePath) {
 	var bloomreachServiceURL = currentSite.getCustomPreferenceValue('bloomreach_api_base_url');
     var bloomreachProjectToken = currentSite.getCustomPreferenceValue('bloomreach_project_token');
 
-    var BREngagementAPISerivce = bloomReachEngagementAPIServices.getBloomReachEngagementAPIService(import_Id);
+    var BREngagementAPISerivce = bloomReachEngagementAPIServices.getBloomreachEngagementAPIService(import_Id);
     var result = {};
     try {
         // Result Object

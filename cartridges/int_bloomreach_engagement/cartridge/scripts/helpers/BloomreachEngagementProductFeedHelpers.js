@@ -1,6 +1,6 @@
 'use strict';
 
-var ExponeaConstants = require('~/cartridge/scripts/util/ExponeaProductFeedConstants');
+var BloomreachEngagementConstants = require('~/cartridge/scripts/util/productFeedConstants');
 
 var newArrivals = null;
 /**
@@ -15,7 +15,7 @@ function generateCSVHeader(exportType) {
     var SFCCAttributesValue = [];
     var results = {};
 
-    if (exportType === ExponeaConstants.EXPORT_TYPE.MASTERPRODUCT) {
+    if (exportType === BloomreachEngagementConstants.EXPORT_TYPE.MASTERPRODUCT) {
         var masterProductFeedJSON = sitePrefs.getCustom()["bloomreachProductFeed"];
         var masterProductFeed = JSON.parse(masterProductFeedJSON);
 
@@ -25,7 +25,7 @@ function generateCSVHeader(exportType) {
                 SFCCAttributesValue.push({'SFCCProductAttribute': masterProductFeed[i].SFCCProductAttribute, 'isCustom': masterProductFeed[i].isCustomAttribute});
             }
         }
-    } else if (exportType === ExponeaConstants.EXPORT_TYPE.VARIATIONPRODUCT) {
+    } else if (exportType === BloomreachEngagementConstants.EXPORT_TYPE.VARIATIONPRODUCT) {
         var variationProductFeedJSON = sitePrefs.getCustom()["bloomreachVariantsFeed"];
         var variationProductFeed = JSON.parse(variationProductFeedJSON);
 
@@ -99,7 +99,7 @@ function generateCSVHeader(exportType) {
                 (promo.isBasedOnCustomerGroups() && !promo.basedOnCoupons && !promo.basedOnSourceCodes)) {
                     var customerGroups = promo.getCustomerGroups().toArray();
                     customerGroups.forEach(function(customerGroup) {
-                        if (customerGroup.ID == ExponeaConstants.CUSTOMER_GROUP.EVERYONE) {
+                        if (customerGroup.ID == BloomreachEngagementConstants.CUSTOMER_GROUP.EVERYONE) {
                             var tempPrice = 0;
                             if (product.optionProduct) {
                                 tempPrice = promo.getPromotionalPrice(product, product.getOptionModel());

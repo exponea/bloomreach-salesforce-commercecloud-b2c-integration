@@ -27,7 +27,7 @@
                     <parameter name="GeneratePreInitFile">true</parameter>
                 </parameters>
             </step>
-            <step step-id="generateProductFeedPreInit" type="custom.Exponea.Generate.MasterProductFeed" enforce-restart="false">
+            <step step-id="generateProductFeedPreInit" type="custom.BloomreachEngagement.Generate.MasterProductFeed" enforce-restart="false">
                 <description/>
                 <parameters>
                     <parameter name="TargetFolder">src/bloomreach/PreInit</parameter>
@@ -36,7 +36,7 @@
                     <parameter name="GeneratePreInitFile">true</parameter>
                 </parameters>
             </step>
-            <step step-id="generateVariantsFeedPreInit" type="custom.Exponea.Generate.VariationProductFeed" enforce-restart="false">
+            <step step-id="generateVariantsFeedPreInit" type="custom.BloomreachEngagement.Generate.VariationProductFeed" enforce-restart="false">
                 <description/>
                 <parameters>
                     <parameter name="TargetFolder">src/bloomreach/PreInit</parameter>
@@ -45,7 +45,7 @@
                     <parameter name="GeneratePreInitFile">true</parameter>
                 </parameters>
             </step>
-            <step step-id="generateCustomerFeedPreInit" type="custom.Exponea.Generate.CustomerFeed" enforce-restart="false">
+            <step step-id="generateCustomerFeedPreInit" type="custom.BloomreachEngagement.Generate.CustomerFeed" enforce-restart="false">
                 <description/>
                 <parameters>
                     <parameter name="TargetFolder">src/bloomreach/PreInit</parameter>
@@ -54,7 +54,7 @@
                     <parameter name="GeneratePreInitFile">true</parameter>
                 </parameters>
             </step>
-            <step step-id="generateProductInventoryFeedPreInit" type="custom.Exponea.Generate.MasterProductInventoryFeed" enforce-restart="false">
+            <step step-id="generateProductInventoryFeedPreInit" type="custom.BloomreachEngagement.Generate.MasterProductInventoryFeed" enforce-restart="false">
                 <description/>
                 <parameters>
                     <parameter name="TargetFolder">src/bloomreach/PreInit</parameter>
@@ -63,7 +63,7 @@
                     <parameter name="GeneratePreInitFile">true</parameter>
                 </parameters>
             </step>
-            <step step-id="generateVariantsInventoryFeedPreInit" type="custom.Exponea.Generate.VariationProductInventoryFeed" enforce-restart="false">
+            <step step-id="generateVariantsInventoryFeedPreInit" type="custom.BloomreachEngagement.Generate.VariationProductInventoryFeed" enforce-restart="false">
                 <description/>
                 <parameters>
                     <parameter name="TargetFolder">src/bloomreach/PreInit</parameter>
@@ -136,7 +136,7 @@
         <parameters/>
         <flow>
             <context site-id="RefArch"/>
-            <step step-id="generateMasterProductFeed" type="custom.Exponea.Generate.MasterProductFeed" enforce-restart="false">
+            <step step-id="generateMasterProductFeed" type="custom.BloomreachEngagement.Generate.MasterProductFeed" enforce-restart="false">
                 <description/>
                 <parameters>
                     <parameter name="TargetFolder">src/bloomreach/ProductFeed</parameter>
@@ -159,7 +159,7 @@
         <parameters/>
         <flow>
             <context site-id="RefArch"/>
-            <step step-id="generateVariationProductFeed" type="custom.Exponea.Generate.VariationProductFeed" enforce-restart="false">
+            <step step-id="generateVariationProductFeed" type="custom.BloomreachEngagement.Generate.VariationProductFeed" enforce-restart="false">
                 <description/>
                 <parameters>
                     <parameter name="TargetFolder">src/bloomreach/VariantsFeed</parameter>
@@ -182,7 +182,7 @@
         <parameters/>
         <flow>
             <context site-id="RefArch"/>
-            <step step-id="generateCustomerFeed" type="custom.Exponea.Generate.CustomerFeed" enforce-restart="false">
+            <step step-id="generateCustomerFeed" type="custom.BloomreachEngagement.Generate.CustomerFeed" enforce-restart="false">
                 <description/>
                 <parameters>
                     <parameter name="TargetFolder">src/bloomreach/CustomerFeed/</parameter>
@@ -208,7 +208,7 @@
                 <context site-id="RefArch"/>
             </contexts>
             <flow-template template-id="template_124">
-                <step step-id="generateCustomerFeedDelta" type="custom.Exponea.Generate.CustomerInfoFeedDelta" enforce-restart="false">
+                <step step-id="generateCustomerFeedDelta" type="custom.BloomreachEngagement.Generate.CustomerInfoFeedDelta" enforce-restart="false">
                     <description/>
                     <parameters>
                         <parameter name="TargetFolder">src/bloomreach/CustomerFeed</parameter>
@@ -283,7 +283,7 @@
         <parameters/>
         <flow>
             <context site-id="RefArch"/>
-            <step step-id="generateMasterProductInventoryFeed" type="custom.Exponea.Generate.MasterProductInventoryFeed" enforce-restart="false">
+            <step step-id="generateMasterProductInventoryFeed" type="custom.BloomreachEngagement.Generate.MasterProductInventoryFeed" enforce-restart="false">
                 <description/>
                 <parameters>
                     <parameter name="TargetFolder">src/bloomreach/ProductInventoryFeed</parameter>
@@ -306,7 +306,7 @@
         <parameters/>
         <flow>
             <context site-id="RefArch"/>
-            <step step-id="generateVariationProductInventoryFeed" type="custom.Exponea.Generate.VariationProductInventoryFeed" enforce-restart="false">
+            <step step-id="generateVariationProductInventoryFeed" type="custom.BloomreachEngagement.Generate.VariationProductInventoryFeed" enforce-restart="false">
                 <description/>
                 <parameters>
                     <parameter name="TargetFolder">src/bloomreach/VariantsInventoryFeed</parameter>

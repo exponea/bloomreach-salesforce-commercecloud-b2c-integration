@@ -1,12 +1,12 @@
-/* Exponea Customer Info Export Job */
+/* BloomreachEngagement Customer Info Export Job */
 'use strict';
 
-var Logger = require('dw/system/Logger').getLogger('ExponeaCustomerInfoFeedExport');
+var Logger = require('dw/system/Logger').getLogger('BloomreachEngagementCustomerInfoFeedExport');
 var Status = require('dw/system/Status');
 var File = require('dw/io/File');
-var ExponeaCustomerInfoFeedHelpers = require('~/cartridge/scripts/helpers/ExponeaCustomerInfoFeedHelpers.js');
-var BREngagementAPIHelper = require('~/cartridge/scripts/helpers/BloomReachEngagementHelper.js');
-var ExponeaConstants = require('~/cartridge/scripts/util/ExponeaCustomerInfoFeedConstants');
+var BloomreachEngagementCustomerInfoFeedHelpers = require('~/cartridge/scripts/helpers/BloomreachEngagementCustomerInfoFeedHelpers.js');
+var BREngagementAPIHelper = require('~/cartridge/scripts/helpers/BloomreachEngagementHelper.js');
+var BloomreachEngagementConstants = require('~/cartridge/scripts/util/customerInfoFeedConstants');
 var FileUtils = require('~/cartridge/scripts/util/fileUtils');
 var CustomerMgr = require('dw/customer/CustomerMgr');
 var Transaction = require('dw/system/Transaction');
@@ -53,13 +53,13 @@ var webDavFilePath;
         } else if (columnValue === 'gender') {
             csvCustomerArray.push(columnValue in customer && customer[columnValue].value ? customer[columnValue].displayValue : '');
         } else if (columnValue === 'creationDate') {
-            var creationDate = ExponeaCustomerInfoFeedHelpers.getTimeStamp(customer[columnValue]);
+            var creationDate = BloomreachEngagementCustomerInfoFeedHelpers.getTimeStamp(customer[columnValue]);
             csvCustomerArray.push(creationDate);
         } else if (columnValue === 'lastModified') {
-            var lastModified = ExponeaCustomerInfoFeedHelpers.getTimeStamp(customer[columnValue]);
+            var lastModified = BloomreachEngagementCustomerInfoFeedHelpers.getTimeStamp(customer[columnValue]);
             csvCustomerArray.push(lastModified);
         } else if (columnValue == 'birthday') {
-            var birthday = ExponeaCustomerInfoFeedHelpers.getTimeStamp(customer[columnValue]);
+            var birthday = BloomreachEngagementCustomerInfoFeedHelpers.getTimeStamp(customer[columnValue]);
             csvCustomerArray.push(birthday);
         } else {
             csvCustomerArray.push(columnValue in customer ? customer[columnValue] : '');
@@ -86,7 +86,7 @@ var webDavFilePath;
     }
     var FileWriter = require('dw/io/FileWriter');
     var CSVStreamWriter = require('dw/io/CSVStreamWriter');
-    var fileName = FileUtils.createFileName(fileNamePrefix, ExponeaConstants.FILE_EXTENSTION.CSV);
+    var fileName = FileUtils.createFileName(fileNamePrefix, BloomreachEngagementConstants.FILE_EXTENSTION.CSV);
     var folderFile = new File(File.getRootDirectory(File.IMPEX), targetFolder);
     if (!folderFile.exists() && !folderFile.mkdirs()) {
         Logger.info('Cannot create IMPEX folders {0}', (File.getRootDirectory(File.IMPEX).fullPath + targetFolder));
@@ -97,7 +97,7 @@ var webDavFilePath;
     fileWriter = new FileWriter(csvFile);
     csvWriter = new CSVStreamWriter(fileWriter);
     // Push Header
-    var results = ExponeaCustomerInfoFeedHelpers.generateCSVHeader();
+    var results = BloomreachEngagementCustomerInfoFeedHelpers.generateCSVHeader();
     headerColumn = results.csvHeaderArray;
     SFCCAttributesValue = results.SFCCAttributesValue;
     csvWriter.writeNext(headerColumn);
@@ -135,7 +135,7 @@ var webDavFilePath;
 
     var FileWriter = require('dw/io/FileWriter');
     var CSVStreamWriter = require('dw/io/CSVStreamWriter');
-    var fileName = FileUtils.createFileName(fileNamePrefix, ExponeaConstants.FILE_EXTENSTION.CSV);
+    var fileName = FileUtils.createFileName(fileNamePrefix, BloomreachEngagementConstants.FILE_EXTENSTION.CSV);
     var folderFile = new File(File.getRootDirectory(File.IMPEX), targetFolder);
     if (!folderFile.exists() && !folderFile.mkdirs()) {
         Logger.info('Cannot create IMPEX folders {0}', (File.getRootDirectory(File.IMPEX).fullPath + targetFolder));
@@ -146,7 +146,7 @@ var webDavFilePath;
     fileWriter = new FileWriter(csvFile);
     csvWriter = new CSVStreamWriter(fileWriter);
     // Push Header
-    var results = ExponeaCustomerInfoFeedHelpers.generateCSVHeader();
+    var results = BloomreachEngagementCustomerInfoFeedHelpers.generateCSVHeader();
     headerColumn = results.csvHeaderArray;
     SFCCAttributesValue = results.SFCCAttributesValue;
     csvWriter.writeNext(headerColumn);
@@ -245,7 +245,7 @@ function splitFile() {
 
     var FileWriter = require('dw/io/FileWriter');
     var CSVStreamWriter = require('dw/io/CSVStreamWriter');
-    var fileName = FileUtils.createFileName(fileNamePrefix, ExponeaConstants.FILE_EXTENSTION.CSV);
+    var fileName = FileUtils.createFileName(fileNamePrefix, BloomreachEngagementConstants.FILE_EXTENSTION.CSV);
     var folderFile = new File(File.getRootDirectory(File.IMPEX), targetFolder);
     if (!folderFile.exists() && !folderFile.mkdirs()) {
         Logger.info('Cannot create IMPEX folders {0}', (File.getRootDirectory(File.IMPEX).fullPath + targetFolder));
@@ -256,7 +256,7 @@ function splitFile() {
     fileWriter = new FileWriter(csvFile);
     csvWriter = new CSVStreamWriter(fileWriter);
     // Push Header
-    var results = ExponeaCustomerInfoFeedHelpers.generateCSVHeader();
+    var results = BloomreachEngagementCustomerInfoFeedHelpers.generateCSVHeader();
     headerColumn = results.csvHeaderArray;
     SFCCAttributesValue = results.SFCCAttributesValue;
     csvWriter.writeNext(headerColumn);

@@ -1,15 +1,15 @@
-/* Feedonomics Product Export Job */
+/* BloomreachEngagement Master Products Inventory Export Job */
 'use strict';
 
-var Logger = require('dw/system/Logger').getLogger('ExponeaMasterProductFeedExport');;
+var Logger = require('dw/system/Logger').getLogger('BloomreachEngagementMasterInventoryFeedExport');;
 var Status = require('dw/system/Status');
 var File = require('dw/io/File');
 var Transaction = require('dw/system/Transaction');
 var site = dw.system.Site.getCurrent();
-var ExponeaProductFeedHelpers = require('~/cartridge/scripts/helpers/ExponeaProductFeedHelpers');
-var ExponeaConstants = require('~/cartridge/scripts/util/ExponeaProductFeedConstants');
+var BloomreachEngagementProductInventoryFeedHelpers = require('~/cartridge/scripts/helpers/BloomreachEngagementProductInventoryFeedHelpers');
+var BloomreachEngagementConstants = require('~/cartridge/scripts/util/productFeedConstants');
 var FileUtils = require('~/cartridge/scripts/util/fileUtils');
-var BREngagementAPIHelper = require('~/cartridge/scripts/helpers/BloomReachEngagementHelper.js');
+var BREngagementAPIHelper = require('~/cartridge/scripts/helpers/BloomreachEngagementHelper.js');
 var currentSite = require('dw/system/Site').getCurrent();
 var CustomObjectMgr = require('dw/object/CustomObjectMgr');
 
@@ -24,12 +24,11 @@ var rowsCount = 1;
 var targetFolder;
 var fileNamePrefix;
 var maxNoOfRows;
-var timeStamp = Date.now().toString();
 var generatePreInitFile = false;
 var webDavFilePath;
 
 /**
- * Adds the column value to the CSV line Array of Product Feed export CSV file
+ * Adds the column value to the CSV line Array of Products inventory Feed export CSV file
  * @param {dw.catalog.Product} product - SFCC Product
  * @param {Array} csvProductArray - CSV  Array
  * @param {Object} columnValue - Catalog Feed Column
@@ -40,73 +39,8 @@ var webDavFilePath;
     var currentSite = Site.getCurrent();
 
     if (isCustomAttribute == 'false' || !isCustomAttribute) {
-        if (columnValue == 'url') {
-            csvProductArray.push(URLUtils.abs('Product-Show', 'pid', product.ID).toString());
-        } else if (columnValue == 'exported_timestamp') {
-            csvProductArray.push(timeStamp);
-        } else if (columnValue == 'onlineFrom') {
-            csvProductArray.push(ExponeaProductFeedHelpers.getTimeStamp(product.onlineFrom) || '');
-        } else if (columnValue == 'primaryCategory') { 
-            var primaryCategory = ExponeaProductFeedHelpers.getPrimaryCategory(product);
-            var primaryCategoryName = primaryCategory ? primaryCategory.displayName : '';
-
-            csvProductArray.push(primaryCategoryName || '');
-        } else if(columnValue == 'categoryLevelTwo') {
-            var categoryLevelTwo = ExponeaProductFeedHelpers.getCategoryLevel(product, 2);
-            var categoryLevelTwoName = categoryLevelTwo ? categoryLevelTwo.displayName : '';
-
-            csvProductArray.push(categoryLevelTwoName || '');
-        } else if(columnValue == 'categoryLevelThree') {
-            var categoryLevelThree = ExponeaProductFeedHelpers.getCategoryLevel(product, 3);
-            var categoryLevelThreeName = categoryLevelThree ? categoryLevelThree.displayName : '';
-
-            csvProductArray.push(categoryLevelThreeName || '');
-        } else if(columnValue == 'primaryCategoryURL') {
-            var category = ExponeaProductFeedHelpers.getPrimaryCategory(product);
-            var categoryURL;
-
-            if (category) {
-                categoryURL = URLUtils.abs('Search-Show', 'cgid', category.ID).toString();
-            }
-
-            csvProductArray.push(categoryURL || '');
-        } else if(columnValue == 'categoryLevelTwoURL') {
-            var category = ExponeaProductFeedHelpers.getCategoryLevel(product, 2);
-            var categoryURL;
-
-            if (category) {
-                categoryURL = URLUtils.abs('Search-Show', 'cgid', category.ID).toString();
-            }
-
-            csvProductArray.push(categoryURL || '');
-        } else if(columnValue == 'categoryLevelThreeURL') {
-            var category = ExponeaProductFeedHelpers.getCategoryLevel(product, 3);
-            var categoryURL;
-
-            if (category) {
-                categoryURL = URLUtils.abs('Search-Show', 'cgid', category.ID).toString();
-            }
-
-            csvProductArray.push(categoryURL || '');
-        } else if(columnValue == 'categoryPath') {
-            var primaryCategory = ExponeaProductFeedHelpers.getPrimaryCategory(product);
-            var primaryCategoryName = primaryCategory ? primaryCategory.displayName : '';
-            var categoryLevelTwo = ExponeaProductFeedHelpers.getCategoryLevel(product, 2);
-            var categoryLevelTwoName = categoryLevelTwo ? categoryLevelTwo.displayName : '';
-            var categoryLevelThree = ExponeaProductFeedHelpers.getCategoryLevel(product, 3);
-            var categoryLevelThreeName = categoryLevelThree ? categoryLevelThree.displayName : '';
-            var categoryPath = (primaryCategoryName ? primaryCategoryName + '|' : '') + (categoryLevelTwoName ? categoryLevelTwoName + '|' : '') + (categoryLevelThreeName ? categoryLevelThreeName : '');
-            csvProductArray.push(categoryPath);
-        } else if(columnValue == 'categoriesIDs') {
-            csvProductArray.push(ExponeaProductFeedHelpers.getCategoryIdlist(product));
-        } else if(columnValue == 'price') {
-            csvProductArray.push(ExponeaProductFeedHelpers.calculateSalePrice(product));
-        } else if(columnValue == 'priceLocalCurrency') {
-            csvProductArray.push(currentSite.currencyCode);
-        } else if(columnValue == 'image') {
-            csvProductArray.push(ExponeaProductFeedHelpers.getProductImage(product));
-        } else if(columnValue == 'active') {
-            csvProductArray.push(ExponeaProductFeedHelpers.getActiveStatus(product));
+        if (columnValue == 'allocation') {
+            csvProductArray.push(BloomreachEngagementProductInventoryFeedHelpers.getAvailability(product));;
         } else {
             csvProductArray.push(columnValue in product ? product[columnValue] : '');
         }
@@ -115,7 +49,7 @@ var webDavFilePath;
     }
  }
 
-/**
+ /**
  * Executed Before Processing of Chunk and Validates all required fields
  */
 exports.beforeStep = function () {
@@ -143,7 +77,7 @@ exports.beforeStep = function () {
     fileWriter = new FileWriter(csvFile);
     csvWriter = new CSVStreamWriter(fileWriter);
     // Push Header
-    var results = ExponeaProductFeedHelpers.generateCSVHeader(ExponeaConstants.EXPORT_TYPE.MASTERPRODUCT);
+    var results = BloomreachEngagementProductInventoryFeedHelpers.generateCSVHeader(BloomreachEngagementConstants.EXPORT_TYPE.MASTERPRODUCT);
     headerColumn = results.csvHeaderArray;
     SFCCAttributesValue = results.SFCCAttributesValue;
     csvWriter.writeNext(headerColumn);
@@ -175,8 +109,8 @@ exports.beforeStep = function () {
  exports.getTotalCount = function () {
  	if (generatePreInitFile)
  		return 1;
- 
-    Logger.info('Processed products {0}', productsIter.count);
+
+    Logger.info('Processed products inventory {0}', productsIter.count);
     return productsIter.count;
 };
 
@@ -191,24 +125,30 @@ exports.beforeStep = function () {
 };
 
 /**
- * Process product and returns required field in array
+ * Process product inventory records and returns required field in array
  * @param {dw.catalog.Product} product - Product
  * @returns {Array} csvProductArray : Product Details
  */
  exports.process = function (product) { // eslint-disable-line consistent-return
+    var currentSite = require('dw/system/Site').getCurrent();
+    var lastMasterInventoryExportCO = CustomObjectMgr.getCustomObject('BloomreachEngagementJobLastExecution', 'lastMasterInventoryExport');
+    var masterInventoryLastRun = lastMasterInventoryExportCO ? lastMasterInventoryExportCO.custom.lastExecution : null;
+    var currentColumn;
+
     try {
-        if (product.isMaster()) {
+        if (product.isMaster() && BloomreachEngagementProductInventoryFeedHelpers.IsProductInventoryExportValid(product, masterInventoryLastRun)) {
             var csvProductArray = [];
-            var currentColumn;
+
             SFCCAttributesValue.forEach(function (columnValue, index) { // eslint-disable-line
                 currentColumn = columnValue;
                 writeProductExportField(this, csvProductArray, columnValue.SFCCProductAttribute, columnValue.isCustom);
             }, product);
+
             return csvProductArray;
         }
     } catch (ex) {
         processedAll = false;
-        Logger.info('Not able to process product {0} on column {1} having error : {2}', product.ID, currentColumn.SFCCProductAttribute, ex.toString());
+        Logger.info('Not able to process product {0} invnetory on column {1} having error : {2}', product.ID, currentColumn ? currentColumn.SFCCProductAttribute : '', ex.toString());
     }
 };
 
@@ -235,9 +175,9 @@ exports.beforeStep = function () {
 };
 
 function triggerFileImport() {
-    var masterProductFeedImportId = currentSite.getCustomPreferenceValue("bloomreachProductFeed-Import_id");
+    var masterProductInventoryFeedImportId = currentSite.getCustomPreferenceValue("bloomreachProductInventoryFeed-Import_id");
     try {
-        var result = BREngagementAPIHelper.bloomReachEngagementAPIService(masterProductFeedImportId, webDavFilePath);
+        var result = BREngagementAPIHelper.bloomReachEngagementAPIService(masterProductInventoryFeedImportId, webDavFilePath);
     } catch (e) {
         Logger.error('Error while triggering bloomreach import start {0}', e.message);
     }
@@ -267,7 +207,7 @@ function splitFile() {
     fileWriter = new FileWriter(csvFile);
     csvWriter = new CSVStreamWriter(fileWriter);
     // Push Header
-    var results = ExponeaProductFeedHelpers.generateCSVHeader(ExponeaConstants.EXPORT_TYPE.MASTERPRODUCT);
+    var results = BloomreachEngagementProductInventoryFeedHelpers.generateCSVHeader(BloomreachEngagementConstants.EXPORT_TYPE.MASTERPRODUCT);
     headerColumn = results.csvHeaderArray;
     SFCCAttributesValue = results.SFCCAttributesValue;
     csvWriter.writeNext(headerColumn);
@@ -284,28 +224,29 @@ function splitFile() {
     fileWriter.flush();
     csvWriter.close();
     fileWriter.close();
+
     if (processedAll) {
         var currentSite = require('dw/system/Site').getCurrent();
-
         if (currentSite) {
             var siteCurrentTime =  currentSite.getCalendar().getTime();
-
-            var lastMasterExportCO = CustomObjectMgr.getCustomObject('BloomreachEngagementJobLastExecution', 'lastMasterExport');
-    		if (lastMasterExportCO) {
+            var lastMasterInventoryExportCO = CustomObjectMgr.getCustomObject('BloomreachEngagementJobLastExecution', 'lastMasterInventoryExport');
+	    	if (lastMasterInventoryExportCO) {
+		        Transaction.wrap(function() {
+		            lastMasterInventoryExportCO.custom.lastExecution = siteCurrentTime;
+		        });
+	        } else {
 	        	Transaction.wrap(function() {
-	            	lastMasterExportCO.custom.lastExecution = siteCurrentTime;
-	        	});
-        	} else {
-        		Transaction.wrap(function() {
-        			var newlastMasterExportCO = CustomObjectMgr.createCustomObject('BloomreachEngagementJobLastExecution', 'lastMasterExport');
-        			newlastMasterExportCO.custom.lastExecution = siteCurrentTime;
-	        	});
-        	}
+	        		var newlastMasterInventoryExportCO = CustomObjectMgr.createCustomObject('BloomreachEngagementJobLastExecution', 'lastMasterInventoryExport');
+	        		newlastMasterInventoryExportCO.custom.lastExecution = siteCurrentTime;
+		        });
+	        }
         }
 
-        Logger.info('Export Product Feed Successful');
+        Logger.info('Export Product Inventory Feed Successful');
         triggerFileImport();
-        return new Status(Status.OK, 'OK', 'Export Product Feed Successful');
+
+        return new Status(Status.OK, 'OK', 'Export Product Inventory Feed Successful');
     }
-    throw new Error('Could not process all the products');
+
+    throw new Error('Could not process all the products inventory');
 };

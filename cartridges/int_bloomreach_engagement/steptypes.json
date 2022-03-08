@@ -3,7 +3,7 @@
         "chunk-script-module-step": [
         	{
                 "@type-id":"custom.BloomreachGeneratePurchaseCSV",
-                "description":"Export Exponea Master Product Feed",
+                "description":"Export BloomreachEngagement Master Product Feed",
                 "@supports-site-context":true,
                 "@supports-organization-context":"false",
                 "@supports-parallel-execution":"false",
@@ -123,7 +123,7 @@
             },
             {
                 "@type-id":"custom.BloomreachGeneratePurchaseProductsCSV",
-                "description":"Export Exponea Master Product Feed",
+                "description":"Export BloomreachEngagement Master Product Feed",
                 "@supports-site-context":true,
                 "@supports-organization-context":"false",
                 "@supports-parallel-execution":"false",
@@ -235,12 +235,12 @@
                 }
             },
             {
-                "@type-id":"custom.Exponea.Generate.MasterProductFeed",
-                "description":"Export Exponea Master Product Feed",
+                "@type-id":"custom.BloomreachEngagement.Generate.MasterProductFeed",
+                "description":"Export BloomreachEngagement Master Product Feed",
                 "@supports-site-context":true,
                 "@supports-organization-context":"false",
                 "@supports-parallel-execution":"false",
-                "module":"int_bloomreach_engagement/cartridge/scripts/jobSteps/exponeaMasterProductFeed.js",
+                "module":"int_bloomreach_engagement/cartridge/scripts/jobSteps/masterProductFeed.js",
                 "before-step-function":"beforeStep",
                 "total-count-function":"getTotalCount",
                 "read-function":"read",
@@ -295,12 +295,12 @@
                 }
             },
             {
-                "@type-id":"custom.Exponea.Generate.VariationProductFeed",
+                "@type-id":"custom.BloomreachEngagement.Generate.VariationProductFeed",
                 "@supports-site-context":true,
-                "description":"Export Exponea Variation Product Feed",
+                "description":"Export BloomreachEngagement Variation Product Feed",
                 "@supports-organization-context":false,
                 "@supports-parallel-execution":"false",
-                "module":"int_bloomreach_engagement/cartridge/scripts/jobSteps/exponeaVariationProductFeed.js",
+                "module":"int_bloomreach_engagement/cartridge/scripts/jobSteps/variationProductFeed.js",
                 "before-step-function":"beforeStep",
                 "total-count-function":"getTotalCount",
                 "read-function":"read",
@@ -355,12 +355,12 @@
                 }
             },
             {
-                "@type-id":"custom.Exponea.Generate.CustomerFeed",
+                "@type-id":"custom.BloomreachEngagement.Generate.CustomerFeed",
                 "@supports-site-context":true,
-                "description":"Export Exponea Customer Info Feed",
+                "description":"Export BloomreachEngagement Customer Info Feed",
                 "@supports-organization-context":false,
                 "@supports-parallel-execution":"false",
-                "module":"int_bloomreach_engagement/cartridge/scripts/jobSteps/exponeaCustomerInfoFeed.js",
+                "module":"int_bloomreach_engagement/cartridge/scripts/jobSteps/customerInfoFeed.js",
                 "before-step-function":"beforeStep",
                 "total-count-function":"getTotalCount",
                 "read-function":"read",
@@ -422,12 +422,12 @@
                 }
             },
             {
-                "@type-id":"custom.Exponea.Generate.CustomerInfoFeedDelta",
+                "@type-id":"custom.BloomreachEngagement.Generate.CustomerInfoFeedDelta",
                 "@supports-site-context":true,
-                "description":"Export Exponea Customer Info Feed Delta",
+                "description":"Export BloomreachEngagement Customer Info Feed Delta",
                 "@supports-organization-context":false,
                 "@supports-parallel-execution":"false",
-                "module":"int_bloomreach_engagement/cartridge/scripts/jobSteps/exponeaCustomerInfoFeed.js",
+                "module":"int_bloomreach_engagement/cartridge/scripts/jobSteps/customerInfoFeed.js",
                 "before-step-function":"beforeStepDelta",
                 "total-count-function":"getTotalCount",
                 "read-function":"read",
@@ -490,12 +490,12 @@
                 }
             },
             {
-                "@type-id":"custom.Exponea.Generate.MasterProductInventoryFeed",
-                "description":"Export Exponea Master Product Inventory Feed",
+                "@type-id":"custom.BloomreachEngagement.Generate.MasterProductInventoryFeed",
+                "description":"Export BloomreachEngagement Master Product Inventory Feed",
                 "@supports-site-context":true,
                 "@supports-organization-context":"false",
                 "@supports-parallel-execution":"false",
-                "module":"int_bloomreach_engagement/cartridge/scripts/jobSteps/exponeaMasterProductInventoryFeed.js",
+                "module":"int_bloomreach_engagement/cartridge/scripts/jobSteps/masterProductInventoryFeed.js",
                 "before-step-function":"beforeStep",
                 "total-count-function":"getTotalCount",
                 "read-function":"read",
@@ -551,12 +551,12 @@
                 }
             },
             {
-                "@type-id":"custom.Exponea.Generate.VariationProductInventoryFeed",
+                "@type-id":"custom.BloomreachEngagement.Generate.VariationProductInventoryFeed",
                 "@supports-site-context":true,
-                "description":"Export Exponea Variation Product Inventory Feed",
+                "description":"Export BloomreachEngagement Variation Product Inventory Feed",
                 "@supports-organization-context":false,
                 "@supports-parallel-execution":"false",
-                "module":"int_bloomreach_engagement/cartridge/scripts/jobSteps/exponeaVariationProductInventoryFeed.js",
+                "module":"int_bloomreach_engagement/cartridge/scripts/jobSteps/variationProductInventoryFeed.js",
                 "before-step-function":"beforeStep",
                 "total-count-function":"getTotalCount",
                 "read-function":"read",

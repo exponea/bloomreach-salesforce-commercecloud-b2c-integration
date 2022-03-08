@@ -9,7 +9,7 @@ const CSVStreamWriter = require('dw/io/CSVStreamWriter');
 
 const bloomreachLogger = Logger.getLogger('bloomreach_purchase_job', 'bloomreach');
 const logger = Logger.getLogger('Bloomreach', 'bloomreach');
-var BREngagementAPIHelper = require('~/cartridge/scripts/helpers/BloomReachEngagementHelper.js');
+var BREngagementAPIHelper = require('~/cartridge/scripts/helpers/BloomreachEngagementHelper.js');
 var currentSite = require('dw/system/Site').getCurrent();
 
 var fileNum = 0;
@@ -28,7 +28,7 @@ var headers;
 var SFCCAttributesValue;
 var updateCustomDateExportPreference = false;
 var feedFileGenerationDate;
-var csvGeneratorHelper = require('~/cartridge/scripts/helpers/generateCSVHelper');
+var csvGeneratorHelper = require('~/cartridge/scripts/helpers/BloomreachEngagementGenerateCSVHelper');
 var generatePreInitFile = false;
 var webDavFilePath;
 
