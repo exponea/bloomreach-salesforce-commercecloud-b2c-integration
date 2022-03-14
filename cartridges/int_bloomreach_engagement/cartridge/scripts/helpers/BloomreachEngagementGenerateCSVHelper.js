@@ -133,6 +133,7 @@ function writePurchaseFeedRow(csw,headers,SFCCAttr,bloomreachOrderObject) {
 */
 function writePurchaseProductFeedRow(csw,headers,SFCCAttr,bloomreachOrderObject) {	
 	var a = BloomreachEngagementConstants.PRODUCT_ATTRIBUTES.CATEGORYLEVEL1;
+	var orderCSVAttributesRows = [];
 	for each (var productLineItem in bloomreachOrderObject.allProductLineItems){
 		var orderCSVAttributes = [];
 		for each (var i = 0; i < headers.length; i++){
@@ -203,9 +204,10 @@ function writePurchaseProductFeedRow(csw,headers,SFCCAttr,bloomreachOrderObject)
 		
 		}
 		
+		orderCSVAttributesRows.push(orderCSVAttributes);
 	}
 	
-	return orderCSVAttributes;
+	return orderCSVAttributesRows;
 }
 
 /**

@@ -149,7 +149,10 @@ var webDavFilePath;
         splitFile();
     }
     for (var i = 0; i < lines.size(); i++) {
-        csw.writeNext(lines.get(i).toArray());
+    	var productItemsRows = lines.get(i).toArray();
+    	for (var j = 0; j < productItemsRows.length; ++j) {
+			csw.writeNext(productItemsRows[j].toArray());
+		}
     }
      
     rowsCount = rowsCount + lines.size();
