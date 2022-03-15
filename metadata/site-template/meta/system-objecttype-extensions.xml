@@ -282,7 +282,7 @@
             </attribute-definition>
             <attribute-definition attribute-id="bloomreach_project_token">
                 <display-name xml:lang="x-default">Bloomreach Project Token</display-name>
-                <type>string</type>
+                <type>password</type>
                 <mandatory-flag>false</mandatory-flag>
                 <externally-managed-flag>false</externally-managed-flag>
                 <min-length>0</min-length>
