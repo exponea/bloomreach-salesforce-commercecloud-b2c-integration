@@ -10,7 +10,8 @@ var Logger = dw.system.Logger.getLogger('BloomreachEngagementAPI');
 
 function getBloomreachEngagementAPIService(import_Id) {
     var currentSite = Site.getCurrent();
-    var bloomreachServiceURL = currentSite.getCustomPreferenceValue('bloomreach_api_base_url');
+    var bloomreachServiceURL = currentSite.getCustomPreferenceValue('bloomreach_api_base_url')
+    	+ '/data/v2/projects/projectToken/imports/import_id/start';
     var bloomreachAPIKeyId = currentSite.getCustomPreferenceValue('bloomreach_api_key_id');
     var bloomreachAPIKeySecret = currentSite.getCustomPreferenceValue('bloomreach_api_key_secret');
     var bloomreachProjectToken = currentSite.getCustomPreferenceValue('bloomreach_project_token');

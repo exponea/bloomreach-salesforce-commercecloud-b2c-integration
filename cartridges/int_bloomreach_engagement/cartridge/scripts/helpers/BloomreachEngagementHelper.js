@@ -4,7 +4,8 @@ var Site = require('dw/system/Site');
 
 const bloomReachEngagementAPIService = function(import_Id, webDavFilePath) {
 	var currentSite = Site.getCurrent();
-	var bloomreachServiceURL = currentSite.getCustomPreferenceValue('bloomreach_api_base_url');
+	var bloomreachServiceURL = currentSite.getCustomPreferenceValue('bloomreach_api_base_url')
+		+ '/data/v2/projects/projectToken/imports/import_id/start';
     var bloomreachProjectToken = currentSite.getCustomPreferenceValue('bloomreach_project_token');
 
     var BREngagementAPISerivce = bloomReachEngagementAPIServices.getBloomreachEngagementAPIService(import_Id);
