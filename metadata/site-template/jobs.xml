@@ -278,7 +278,7 @@
         </triggers>
     </job>
 
-    <job job-id="Bloomreach - Product Inventory Feed (Full Export)" priority="0">
+    <job job-id="Bloomreach - Product Inventory Feed (Delta Export)" priority="0">
         <description/>
         <parameters/>
         <flow>
@@ -287,7 +287,7 @@
                 <description/>
                 <parameters>
                     <parameter name="TargetFolder">src/bloomreach/ProductInventoryFeed</parameter>
-                    <parameter name="FileNamePrefix">products-inventory-FULL-</parameter>
+                    <parameter name="FileNamePrefix">products-inventory-</parameter>
                     <parameter name="MaxNumberOfRows">1000000</parameter>
                 </parameters>
             </step>
@@ -301,7 +301,7 @@
         </triggers>
     </job>
 
-    <job job-id="Bloomreach - Variants Inventory Feed  (Full Export)" priority="0">
+    <job job-id="Bloomreach - Variants Inventory Feed (Delta Export)" priority="0">
         <description/>
         <parameters/>
         <flow>
@@ -310,7 +310,7 @@
                 <description/>
                 <parameters>
                     <parameter name="TargetFolder">src/bloomreach/VariantsInventoryFeed</parameter>
-                    <parameter name="FileNamePrefix">variants-inventory-FULL-</parameter>
+                    <parameter name="FileNamePrefix">variants-inventory-</parameter>
                     <parameter name="MaxNumberOfRows">1000000</parameter>
                 </parameters>
             </step>
