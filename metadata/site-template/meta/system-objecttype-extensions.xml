@@ -275,14 +275,14 @@
             </attribute-definition>
             <attribute-definition attribute-id="bloomreach_api_key_secret">
                 <display-name xml:lang="x-default">Bloomreach API Key Secret</display-name>
-                <type>string</type>
+                <type>password</type>
                 <mandatory-flag>false</mandatory-flag>
                 <externally-managed-flag>false</externally-managed-flag>
                 <min-length>0</min-length>
             </attribute-definition>
             <attribute-definition attribute-id="bloomreach_project_token">
                 <display-name xml:lang="x-default">Bloomreach Project Token</display-name>
-                <type>password</type>
+                <type>string</type>
                 <mandatory-flag>false</mandatory-flag>
                 <externally-managed-flag>false</externally-managed-flag>
                 <min-length>0</min-length>
