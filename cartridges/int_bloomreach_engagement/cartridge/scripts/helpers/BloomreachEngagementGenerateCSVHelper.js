@@ -105,7 +105,7 @@ function writePurchaseFeedRow(csw,headers,SFCCAttr,bloomreachOrderObject) {
 			var jsonObj = {};
 			var arrayObj = [];
 			for each (var productLineItem in bloomreachOrderObject.allProductLineItems){
-				var productID = 'masterProduct' in productLineItem.product ? productLineItem.product.masterProduct.ID : productLineItem.product.ID;
+				var productID = productLineItem.product ? ('masterProduct' in productLineItem.product ? productLineItem.product.masterProduct.ID : productLineItem.product.ID) : '';
 				jsonObj.productId = productID;
 				jsonObj.quantity = productLineItem.quantityValue;
 				arrayObj.push(JSON.stringify(jsonObj));
@@ -114,8 +114,8 @@ function writePurchaseFeedRow(csw,headers,SFCCAttr,bloomreachOrderObject) {
 		}else if(headers[i].equalsIgnoreCase(BloomreachEngagementConstants.PRODUCT_ATTRIBUTES.PRODUCTIDS)){
 			var arrayObj = [];
 			for each (var productLineItem in bloomreachOrderObject.allProductLineItems){
-				var productID = 'masterProduct' in productLineItem.product ? productLineItem.product.masterProduct.ID : productLineItem.product.ID;
-				arrayObj.push(productID);				
+				var productID = productLineItem.product ? ('masterProduct' in productLineItem.product ? productLineItem.product.masterProduct.ID : productLineItem.product.ID) : '';
+				arrayObj.push(productID);
 			}
 			orderCSVAttributes.push(arrayObj.toString());
 		} else if(headers[i].equalsIgnoreCase(BloomreachEngagementConstants.PRODUCT_ATTRIBUTES.TIMESTAMP)){
@@ -150,38 +150,38 @@ function writePurchaseProductFeedRow(csw,headers,SFCCAttr,bloomreachOrderObject)
 		}else if(headers[i].equalsIgnoreCase(BloomreachEngagementConstants.PRODUCT_ATTRIBUTES.DOMAIN)){
 			orderCSVAttributes.push(URLUtils.home().siteHost().toString());
 		}else if(headers[i].equalsIgnoreCase(BloomreachEngagementConstants.PRODUCT_ATTRIBUTES.CATEGORYLEVEL3)){
-			orderCSVAttributes.push(!empty(productLineItem.product[SFCCAttr[i].SFCCProductAttribute]) ? productLineItem.product[SFCCAttr[i].SFCCProductAttribute].displayName : "");			
+			orderCSVAttributes.push(!empty(productLineItem.product) && !empty(productLineItem.product[SFCCAttr[i].SFCCProductAttribute]) ? productLineItem.product[SFCCAttr[i].SFCCProductAttribute].displayName : "");			
 		}else if(headers[i].equalsIgnoreCase(BloomreachEngagementConstants.PRODUCT_ATTRIBUTES.CATEGORYLEVEL2)){
-			orderCSVAttributes.push(!empty(productLineItem.product[SFCCAttr[i].SFCCProductAttribute]) && !empty(productLineItem.product[SFCCAttr[i].SFCCProductAttribute].parent)? productLineItem.product[SFCCAttr[i].SFCCProductAttribute].parent.displayName : "");			
+			orderCSVAttributes.push(!empty(productLineItem.product) && !empty(productLineItem.product[SFCCAttr[i].SFCCProductAttribute]) && !empty(productLineItem.product[SFCCAttr[i].SFCCProductAttribute].parent)? productLineItem.product[SFCCAttr[i].SFCCProductAttribute].parent.displayName : "");			
 		}else if(headers[i].equalsIgnoreCase(BloomreachEngagementConstants.PRODUCT_ATTRIBUTES.CATEGORYLEVEL1)){
-			orderCSVAttributes.push(!empty(productLineItem.product[SFCCAttr[i].SFCCProductAttribute]) && !empty(productLineItem.product[SFCCAttr[i].SFCCProductAttribute].parent) && !empty(productLineItem.product[SFCCAttr[i].SFCCProductAttribute].parent.parent)? productLineItem.product[SFCCAttr[i].SFCCProductAttribute].parent.parent.displayName : "");			
+			orderCSVAttributes.push(!empty(productLineItem.product) && !empty(productLineItem.product[SFCCAttr[i].SFCCProductAttribute]) && !empty(productLineItem.product[SFCCAttr[i].SFCCProductAttribute].parent) && !empty(productLineItem.product[SFCCAttr[i].SFCCProductAttribute].parent.parent)? productLineItem.product[SFCCAttr[i].SFCCProductAttribute].parent.parent.displayName : "");			
 		}else if(headers[i].equalsIgnoreCase(BloomreachEngagementConstants.PRODUCT_ATTRIBUTES.CATEGORYPATH)){
-			orderCSVAttributes.push(!empty(productLineItem.product[SFCCAttr[i].SFCCProductAttribute]) && !empty(productLineItem.product[SFCCAttr[i].SFCCProductAttribute].parent) && !empty(productLineItem.product[SFCCAttr[i].SFCCProductAttribute].parent.parent)? URLUtils.abs('Search-Show','cgid',productLineItem.product[SFCCAttr[i].SFCCProductAttribute].parent.parent.ID).toString() : "");			
+			orderCSVAttributes.push(!empty(productLineItem.product) && !empty(productLineItem.product[SFCCAttr[i].SFCCProductAttribute]) && !empty(productLineItem.product[SFCCAttr[i].SFCCProductAttribute].parent) && !empty(productLineItem.product[SFCCAttr[i].SFCCProductAttribute].parent.parent)? URLUtils.abs('Search-Show','cgid',productLineItem.product[SFCCAttr[i].SFCCProductAttribute].parent.parent.ID).toString() : "");			
 		}else if(headers[i].equalsIgnoreCase(BloomreachEngagementConstants.PRODUCT_ATTRIBUTES.PURCHASESOURCENAME)){
 			orderCSVAttributes.push(URLUtils.home().toString());			
 		}else if(headers[i].equalsIgnoreCase(BloomreachEngagementConstants.PRODUCT_ATTRIBUTES.PRODUCTLIST)){
 			var jsonObj = {};
-			var productID = 'masterProduct' in productLineItem.product ? productLineItem.product.masterProduct.ID : productLineItem.product.ID;
+			var productID = productLineItem.product ? ('masterProduct' in productLineItem.product ? productLineItem.product.masterProduct.ID : productLineItem.product.ID) : '';
 			jsonObj.productId = productID;
 			jsonObj.quantity = productLineItem.quantityValue;
 			orderCSVAttributes.push(JSON.stringify(jsonObj));
 		}else if(headers[i].equalsIgnoreCase(BloomreachEngagementConstants.PRODUCT_ATTRIBUTES.PRODUCTIDS)){
 			var arrayObj = [];
 			for each (var productLineItem in bloomreachOrderObject.allProductLineItems){
-				var productID = 'masterProduct' in productLineItem.product ? productLineItem.product.masterProduct.ID : productLineItem.product.ID;
+				var productID = productLineItem.product ? ('masterProduct' in productLineItem.product ? productLineItem.product.masterProduct.ID : productLineItem.product.ID) : '';
 				arrayObj.push(productID);				
 			}
 			orderCSVAttributes.push(arrayObj.toString());
 		}else if(headers[i].equalsIgnoreCase(BloomreachEngagementConstants.PRODUCT_ATTRIBUTES.PRODUCTID)){			
-			orderCSVAttributes.push('masterProduct' in productLineItem.product ? productLineItem.product.masterProduct.ID : productLineItem.product.ID);
+			orderCSVAttributes.push(productLineItem.product ? ('masterProduct' in productLineItem.product ? productLineItem.product.masterProduct.ID : productLineItem.product.ID) : '');
 		}else if(headers[i].equalsIgnoreCase(BloomreachEngagementConstants.PRODUCT_ATTRIBUTES.TOTALPRICE) || headers[i].equalsIgnoreCase(BloomreachEngagementConstants.PRODUCT_ATTRIBUTES.TOTALPRICEWITHOUTTAX) || headers[i].equalsIgnoreCase(BloomreachEngagementConstants.PRODUCT_ATTRIBUTES.QUANTITY)){
 			orderCSVAttributes.push(productLineItem[SFCCAttr[i].SFCCProductAttribute]);
 		}else if(headers[i].equalsIgnoreCase(BloomreachEngagementConstants.PRODUCT_ATTRIBUTES.VARIANTID) || headers[i].equalsIgnoreCase(BloomreachEngagementConstants.PRODUCT_ATTRIBUTES.BRAND) || headers[i].equalsIgnoreCase(BloomreachEngagementConstants.PRODUCT_ATTRIBUTES.TITLE)){
-			orderCSVAttributes.push(productLineItem.product[SFCCAttr[i].SFCCProductAttribute]);
+			orderCSVAttributes.push(productLineItem.product ? productLineItem.product[SFCCAttr[i].SFCCProductAttribute] : '');
 		}else if(headers[i].equalsIgnoreCase(BloomreachEngagementConstants.PRODUCT_ATTRIBUTES.TAGS)){
-			orderCSVAttributes.push(productLineItem.product.custom[SFCCAttr[i].SFCCProductAttribute]);
+			orderCSVAttributes.push(productLineItem.product ? productLineItem.product.custom[SFCCAttr[i].SFCCProductAttribute] : '');
 		}else if(headers[i].equalsIgnoreCase(BloomreachEngagementConstants.PRODUCT_ATTRIBUTES.ORIGINALPRICE) || headers[i].equalsIgnoreCase(BloomreachEngagementConstants.PRODUCT_ATTRIBUTES.PRICE)){
-			orderCSVAttributes.push(productLineItem.product.priceModel.pricePerUnit);
+			orderCSVAttributes.push(productLineItem.product ? productLineItem.product.priceModel.pricePerUnit : '');
 		}		
 		else if(headers[i].equalsIgnoreCase(BloomreachEngagementConstants.PRODUCT_ATTRIBUTES.DISCOUNTVALUE)){
 			if(!empty(productLineItem.priceAdjustments)){
