@@ -179,7 +179,7 @@
                         {"XSDField": "discount_percentage", "SFCCProductAttribute": "discount_percentage", "isCustomAttribute": false},
                         {"XSDField": "discount_value", "SFCCProductAttribute": "discount_value", "isCustomAttribute": false},
                         {"XSDField": "total_quantity", "SFCCProductAttribute": "quantity", "isCustomAttribute": false},
-                        {"XSDField": "total_price", "SFCCProductAttribute": "totalGrossPrice", "isCustomAttribute": false},
+                        {"XSDField": "total_price", "SFCCProductAttribute": "adjustedMerchandizeTotalGrossPrice", "isCustomAttribute": false},
                         {"XSDField": "total_price_without_tax", "SFCCProductAttribute": "adjustedMerchandizeTotalNetPrice", "isCustomAttribute": false},
                         {"XSDField": "timestamp", "SFCCProductAttribute": "creationDate", "isCustomAttribute": false},                        
                         {"XSDField": "shipping_company", "SFCCProductAttribute": "shippipng-method", "isCustomAttribute": false},

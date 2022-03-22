@@ -236,7 +236,6 @@ function getOrderPurchaseFeedAttributes() {
 * writes the order attributes headers in the CSV 
 */
 function getFeedAttributes(headers) {
-   //var headers = getPurchaseProductFeedFileHeaders();
    var csvHeaderArray = [];
    var SFCCAttributesValue = [];
    var results = {};
