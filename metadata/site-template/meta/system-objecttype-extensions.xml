@@ -156,8 +156,6 @@
                         {"XSDField": "total_price_without_tax", "SFCCProductAttribute": "adjustedNetPrice", "isCustomAttribute": false},
                         {"XSDField": "timestamp", "SFCCProductAttribute": "creationDate", "isCustomAttribute": false},                        
                         {"XSDField": "shipping_company", "SFCCProductAttribute": "shippipng-method", "isCustomAttribute": false},
-                        {"XSDField": "product_ids", "SFCCProductAttribute": "product_ids", "isCustomAttribute": false},
-                        {"XSDField": "product_list", "SFCCProductAttribute": "product_list", "isCustomAttribute": false},
                         {"XSDField": "domain", "SFCCProductAttribute": "domain", "isCustomAttribute": false},
                         {"XSDField": "purchase_source_name", "SFCCProductAttribute": "purchase_source_name", "isCustomAttribute": false},
                         {"XSDField": "category_level_1", "SFCCProductAttribute": "classificationCategory", "isCustomAttribute": false},
