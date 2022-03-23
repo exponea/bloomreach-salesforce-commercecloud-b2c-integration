@@ -5,11 +5,13 @@ const Order = require('dw/order/Order');
 const Status = require('dw/system/Status');
 const FileWriter = require('dw/io/FileWriter');
 const CSVStreamWriter = require('dw/io/CSVStreamWriter');
+var Transaction = require('dw/system/Transaction');
 
 const bloomreachLogger = Logger.getLogger('bloomreach_purchase_job', 'bloomreach');
 const logger = Logger.getLogger('Bloomreach', 'bloomreach');
 var BREngagementAPIHelper = require('~/cartridge/scripts/helpers/BloomreachEngagementHelper.js');
 var currentSite = require('dw/system/Site').getCurrent();
+var CustomObjectMgr = require('dw/object/CustomObjectMgr');
 
 var fileNum = 0;
 var ordersToProcess;
@@ -22,7 +24,6 @@ var maxNoOfRows;
 var targetFolder;
 var FileNamePrefix;
 var chunks = 0;
-var jobID;
 var headers;
 var SFCCAttributesValue;
 var updateCustomDateExportPreference = false;
@@ -36,7 +37,6 @@ var webDavFilePath;
  */
  exports.beforeStep = function () {
     var args = arguments[0];
-    jobID = arguments[1].jobExecution.jobID;
     updateCustomDateExportPreference = args.UpdateFromDatePreference;
 	maxNoOfRows = args.MaxNumberOfRows - 1000;
 	targetFolder = args.TargetFolder;
@@ -74,8 +74,15 @@ var webDavFilePath;
     	var results = csvGeneratorHelper.getFeedAttributes(getAttrSitePref);
     	headers = results.headers;
     	SFCCAttributesValue = results.SFCCAttributesValue;
-    	csw.writeNext(headers); 	
-    	ordersToProcess = csvGeneratorHelper.getOrdersForPurchaseFeed(orderStatusForExport,jobID);
+    	csw.writeNext(headers);
+    	
+    	var PurchaseLastRun = null;
+    	if (updateCustomDateExportPreference) {
+    		var lastPurchaseExportCO = CustomObjectMgr.getCustomObject('BloomreachEngagementJobLastExecution', 'lastPurchaseExport');
+    		PurchaseLastRun = lastPurchaseExportCO ? lastPurchaseExportCO.custom.lastExecution : null;
+    	}
+ 
+    	ordersToProcess = csvGeneratorHelper.getOrdersForPurchaseFeed(orderStatusForExport,PurchaseLastRun);
     	
     	if (generatePreInitFile && ordersToProcess.hasNext()) {
 	    	var firstOrder = ordersToProcess.next();
@@ -194,10 +201,24 @@ function splitFile() {
     csw.close();
     fw.close();
     if (processedAll) {
-    	if(updateCustomDateExportPreference){
-    		csvGeneratorHelper.updateOrderExportDate(jobID,feedFileGenerationDate);
+    	if(updateCustomDateExportPreference) {
+    		if (currentSite) {
+	            var siteCurrentTime = currentSite.getCalendar().getTime();
+	            var lastPurchaseExportCO = CustomObjectMgr.getCustomObject('BloomreachEngagementJobLastExecution', 'lastPurchaseExport');
+		    	if (lastPurchaseExportCO) {
+			        Transaction.wrap(function() {
+			            lastPurchaseExportCO.custom.lastExecution = siteCurrentTime;
+			        });
+		        } else {
+		        	Transaction.wrap(function() {
+		        		var newPurchaseExportCO = CustomObjectMgr.createCustomObject('BloomreachEngagementJobLastExecution', 'lastPurchaseExport');
+		        		newPurchaseExportCO.custom.lastExecution = siteCurrentTime;
+			        });
+		        }
+	        }
     	}
-        Logger.info('Export Order Feed Successful');
+
+    	Logger.info('Export Order Feed Successful');
         triggerFileImport();
         return new Status(Status.OK, 'OK', 'Export Order Feed Successful');
     }

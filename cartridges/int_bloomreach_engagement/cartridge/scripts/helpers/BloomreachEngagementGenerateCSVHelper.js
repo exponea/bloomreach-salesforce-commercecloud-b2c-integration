@@ -273,13 +273,12 @@ function getPurchaseProductFeedFileHeaders(){
 * query the orders in BM based on order status
 * @returns {Iterator} the iterator of order objects
 */
-function getOrdersForPurchaseFeed(orderStatusForExport,jobID) {
-	var dateOfPurchaseOrders = getOrderExportDate(jobID);
-	var ordersToProcess
-	if(empty(dateOfPurchaseOrders)){
+function getOrdersForPurchaseFeed(orderStatusForExport,lastRunDate) {
+	var ordersToProcess;
+	if(empty(lastRunDate)){
 		ordersToProcess = OrderMgr.searchOrders(orderStatusForExport.join(' OR '), 'creationDate asc');
 	}else{
-    	ordersToProcess = OrderMgr.searchOrders(orderStatusForExport.join(' OR ') + ' AND creationDate >= {0}', 'creationDate asc', dateOfPurchaseOrders);
+    	ordersToProcess = OrderMgr.searchOrders(orderStatusForExport.join(' OR ') + ' AND creationDate >= {0}', 'creationDate asc', lastRunDate);
 	}
     return ordersToProcess;
 }

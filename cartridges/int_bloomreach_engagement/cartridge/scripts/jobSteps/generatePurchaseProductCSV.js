@@ -6,6 +6,8 @@ const Status = require('dw/system/Status');
 const FileWriter = require('dw/io/FileWriter');
 const HashMap = require('dw/util/HashMap');
 const CSVStreamWriter = require('dw/io/CSVStreamWriter');
+var CustomObjectMgr = require('dw/object/CustomObjectMgr');
+var Transaction = require('dw/system/Transaction');
 
 const bloomreachLogger = Logger.getLogger('bloomreach_purchase_job', 'bloomreach');
 const logger = Logger.getLogger('Bloomreach', 'bloomreach');
@@ -23,7 +25,6 @@ var maxNoOfRows;
 var targetFolder;
 var FileNamePrefix;
 var chunks = 0;
-var jobID;
 var headers;
 var SFCCAttributesValue;
 var updateCustomDateExportPreference = false;
@@ -37,7 +38,6 @@ var webDavFilePath;
  */
  exports.beforeStep = function () {
     var args = arguments[0];
-    jobID = arguments[1].jobExecution.jobID;
     updateCustomDateExportPreference = args.UpdateFromDatePreference;
 	maxNoOfRows = args.MaxNumberOfRows - 1000;
 	targetFolder = args.TargetFolder;
@@ -76,7 +76,14 @@ var webDavFilePath;
     	headers = results.headers;
     	SFCCAttributesValue = results.SFCCAttributesValue;
     	csw.writeNext(headers);	
-    	ordersToProcess = csvGeneratorHelper.getOrdersForPurchaseFeed(orderStatusForExport,jobID);
+    	
+    	var PurchaseItemLastRun = null;
+    	if (updateCustomDateExportPreference) {
+    		var lastPurchaseItemExportCO = CustomObjectMgr.getCustomObject('BloomreachEngagementJobLastExecution', 'lastPurchaseItemExport');
+    		PurchaseItemLastRun = lastPurchaseItemExportCO ? lastPurchaseItemExportCO.custom.lastExecution : null;
+    	}
+    	
+    	ordersToProcess = csvGeneratorHelper.getOrdersForPurchaseFeed(orderStatusForExport,PurchaseItemLastRun);
     	
     	if (generatePreInitFile && ordersToProcess.hasNext()) {
 	    	var firstOrder = ordersToProcess.next();
@@ -199,7 +206,21 @@ function splitFile() {
     fw.close();
     if (processedAll) {
     	if(updateCustomDateExportPreference){
-    		csvGeneratorHelper.updateOrderExportDate(jobID,feedFileGenerationDate);
+    		var currentSite = require('dw/system/Site').getCurrent();
+    		if (currentSite) {
+	            var siteCurrentTime = currentSite.getCalendar().getTime();
+	            var lastPurchaseItemExportCO = CustomObjectMgr.getCustomObject('BloomreachEngagementJobLastExecution', 'lastPurchaseItemExport');
+		    	if (lastPurchaseItemExportCO) {
+			        Transaction.wrap(function() {
+			            lastPurchaseItemExportCO.custom.lastExecution = siteCurrentTime;
+			        });
+		        } else {
+		        	Transaction.wrap(function() {
+		        		var newPurchaseItemExportCO = CustomObjectMgr.createCustomObject('BloomreachEngagementJobLastExecution', 'lastPurchaseItemExport');
+		        		newPurchaseItemExportCO.custom.lastExecution = siteCurrentTime;
+			        });
+		        }
+	        }
     	}
         Logger.info('Export Order Product Feed Successful');
         triggerFileImport();
