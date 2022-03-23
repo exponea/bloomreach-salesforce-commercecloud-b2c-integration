@@ -186,11 +186,7 @@
                         {"XSDField": "product_ids", "SFCCProductAttribute": "product_ids", "isCustomAttribute": false},
                         {"XSDField": "product_list", "SFCCProductAttribute": "product_list", "isCustomAttribute": false},
                         {"XSDField": "domain", "SFCCProductAttribute": "domain", "isCustomAttribute": false},
-                        {"XSDField": "purchase_source_name", "SFCCProductAttribute": "purchase_source_name", "isCustomAttribute": false},
-                        {"XSDField": "category_level_1", "SFCCProductAttribute": "classificationCategory", "isCustomAttribute": false},
-                        {"XSDField": "category_level_2", "SFCCProductAttribute": "classificationCategory", "isCustomAttribute": false},
-                        {"XSDField": "category_level_3", "SFCCProductAttribute": "classificationCategory", "isCustomAttribute": false},
-                        {"XSDField": "category_path", "SFCCProductAttribute": "classificationCategory", "isCustomAttribute": false}
+                        {"XSDField": "purchase_source_name", "SFCCProductAttribute": "purchase_source_name", "isCustomAttribute": false}
                     ]</default-value>
             </attribute-definition>
             <attribute-definition attribute-id="bloomreachPurchaseItemFeedFullExportFromDate">
