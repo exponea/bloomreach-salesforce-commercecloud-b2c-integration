@@ -225,11 +225,8 @@ var webDavFilePath;
 
 function triggerFileImport() {
     var customerFeedImportId = sitePrefs.getCustom()["bloomreachCustomerFeed-Import_id"];
-    try {
-        var result = BREngagementAPIHelper.bloomReachEngagementAPIService(customerFeedImportId, webDavFilePath);
-    } catch (e) {
-        Logger.error('Error while triggering bloomreach import start {0}', e.message);
-    }
+    
+    var result = BREngagementAPIHelper.bloomReachEngagementAPIService(customerFeedImportId, webDavFilePath);
 }
 
 function splitFile() {
@@ -274,20 +271,24 @@ function splitFile() {
     csvWriter.close();
     fileWriter.close();
     if (processedAll) {
-    	var lastCustomerExportCO = CustomObjectMgr.getCustomObject('BloomreachEngagementJobLastExecution', 'lastCustomerExport');
-    	if (lastCustomerExportCO) {
-	        Transaction.wrap(function() {
-	            lastCustomerExportCO.custom.lastExecution = new Date();
-	        });
-        } else {
-        	Transaction.wrap(function() {
-        		var newlastCustomerExportCO = CustomObjectMgr.createCustomObject('BloomreachEngagementJobLastExecution', 'lastCustomerExport');
-        		newlastCustomerExportCO.custom.lastExecution = new Date();
-	        });
+        triggerFileImport();
+
+		if (query) {
+	        var lastCustomerExportCO = CustomObjectMgr.getCustomObject('BloomreachEngagementJobLastExecution', 'lastCustomerExport');
+	    	if (lastCustomerExportCO) {
+		        Transaction.wrap(function() {
+		            lastCustomerExportCO.custom.lastExecution = new Date();
+		        });
+	        } else {
+	        	Transaction.wrap(function() {
+	        		var newlastCustomerExportCO = CustomObjectMgr.createCustomObject('BloomreachEngagementJobLastExecution', 'lastCustomerExport');
+	        		newlastCustomerExportCO.custom.lastExecution = new Date();
+		        });
+	        }
         }
         
         Logger.info('Export Customer Feed Successful');
-        triggerFileImport();
+
         return new Status(Status.OK, 'OK', 'Export Customer Feed Successful');
     }
     throw new Error('Could not process all the customers');

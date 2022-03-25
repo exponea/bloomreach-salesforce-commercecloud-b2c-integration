@@ -181,11 +181,7 @@ exports.write = function (lines) {
 
 function triggerFileImport() {
     var variationProductFeedImportId = currentSite.getCustomPreferenceValue("bloomreachVariantsInventoryFeed-Import_id");
-    try {
-        var result = BREngagementAPIHelper.bloomReachEngagementAPIService(variationProductFeedImportId, webDavFilePath);
-    } catch (e) {
-        Logger.error('Error while triggering bloomreach import start {0}', e.message);
-    }
+    var result = BREngagementAPIHelper.bloomReachEngagementAPIService(variationProductFeedImportId, webDavFilePath);
 }
 
 function splitFile() {
@@ -231,6 +227,8 @@ function splitFile() {
     fileWriter.close();
 
     if (processedAll) {
+    	triggerFileImport();
+
         var currentSite = require('dw/system/Site').getCurrent();
 
         if (currentSite) {
@@ -249,7 +247,7 @@ function splitFile() {
         }
 
         Logger.info('Export Product Inventory Feed Successful');
-        triggerFileImport();
+
         return new Status(Status.OK, 'OK', 'Export Product Feed Successful');
     }
 

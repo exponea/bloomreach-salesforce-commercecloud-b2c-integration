@@ -10,22 +10,18 @@ const bloomReachEngagementAPIService = function(import_Id, webDavFilePath) {
 
     var BREngagementAPISerivce = bloomReachEngagementAPIServices.getBloomreachEngagementAPIService(import_Id);
     var result = {};
-    try {
-        // Result Object
-        var requestObject = {
-        	webDavFilePath: webDavFilePath
-       	};
-        result = BREngagementAPISerivce.call(requestObject);
 
-        var serviceURL = bloomreachServiceURL.replace('projectToken', bloomreachProjectToken).replace('import_id', import_Id);
-        
-        Logger.info('bloomreach.engagement.service call URL: ' + serviceURL);
-        Logger.info('Request Data: ' + BREngagementAPISerivce.getRequestData());
-        Logger.info('Response Data: ' + result);
-        
-    } catch (e) {
-        Logger.error('Error while triggering bloomreach engagement api {0}', e.message);
-    }
+    // Result Object
+    var requestObject = {
+    	webDavFilePath: webDavFilePath
+   	};
+    result = BREngagementAPISerivce.call(requestObject);
+
+    var serviceURL = bloomreachServiceURL.replace('projectToken', bloomreachProjectToken).replace('import_id', import_Id);
+    
+    Logger.info('bloomreach.engagement.service call URL: ' + serviceURL);
+    Logger.info('Request Data: ' + BREngagementAPISerivce.getRequestData());
+    Logger.info('Response Data: ' + result);
 
     if (result.status === 'OK') {
         // The result.object is the object returned by the 'after' callback.

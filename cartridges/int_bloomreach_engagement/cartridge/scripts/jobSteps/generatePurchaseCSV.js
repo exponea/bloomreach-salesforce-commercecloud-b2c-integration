@@ -163,11 +163,7 @@ var webDavFilePath;
 
 function triggerFileImport() {
     var purchaseFeedImportId = currentSite.getCustomPreferenceValue("bloomreachPurchaseFeed-Import_id");
-    try {
-        var result = BREngagementAPIHelper.bloomReachEngagementAPIService(purchaseFeedImportId, webDavFilePath);
-    } catch (e) {
-        Logger.error('Error while triggering bloomreach import start {0}', e.message);
-    }
+    var result = BREngagementAPIHelper.bloomReachEngagementAPIService(purchaseFeedImportId, webDavFilePath);
 }
 
 function splitFile() {
@@ -201,7 +197,9 @@ function splitFile() {
     csw.close();
     fw.close();
     if (processedAll) {
-    	if(updateCustomDateExportPreference) {
+        triggerFileImport();
+        
+        if(updateCustomDateExportPreference) {
     		if (currentSite) {
 	            var siteCurrentTime = currentSite.getCalendar().getTime();
 	            var lastPurchaseExportCO = CustomObjectMgr.getCustomObject('BloomreachEngagementJobLastExecution', 'lastPurchaseExport');
@@ -219,7 +217,7 @@ function splitFile() {
     	}
 
     	Logger.info('Export Order Feed Successful');
-        triggerFileImport();
+
         return new Status(Status.OK, 'OK', 'Export Order Feed Successful');
     }
     throw new Error('Could not process all the orders');
