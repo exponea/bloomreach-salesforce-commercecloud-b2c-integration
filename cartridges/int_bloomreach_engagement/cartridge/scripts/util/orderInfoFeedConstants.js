@@ -29,7 +29,7 @@ var PRODUCT_ATTRIBUTES = {
 		CATEGORYLEVEL1 : 'category_level_1',
 		CATEGORYLEVEL2 : 'category_level_2',
 		CATEGORYLEVEL3 : 'category_level_3',
-		CATEGORYPATH : 'category_path',
+		CATEGORYPATH : 'categories_path',
 		TIMESTAMP: 'timestamp'
 };
 

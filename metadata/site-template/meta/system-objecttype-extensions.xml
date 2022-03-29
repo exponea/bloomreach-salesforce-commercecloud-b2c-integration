@@ -161,7 +161,7 @@
                         {"XSDField": "category_level_1", "SFCCProductAttribute": "classificationCategory", "isCustomAttribute": false},
                         {"XSDField": "category_level_2", "SFCCProductAttribute": "classificationCategory", "isCustomAttribute": false},
                         {"XSDField": "category_level_3", "SFCCProductAttribute": "classificationCategory", "isCustomAttribute": false},
-                        {"XSDField": "category_path", "SFCCProductAttribute": "classificationCategory", "isCustomAttribute": false}
+                        {"XSDField": "categories_path", "SFCCProductAttribute": "classificationCategory", "isCustomAttribute": false}
                     ]</default-value>
             </attribute-definition>
             <attribute-definition attribute-id="bloomreachCustomOrderPropertiesForExport">

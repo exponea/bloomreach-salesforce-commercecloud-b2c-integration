@@ -161,7 +161,16 @@ function writePurchaseProductFeedRow(csw,headers,SFCCAttr,bloomreachOrderObject)
 			}else if(headers[i].equalsIgnoreCase(BloomreachEngagementConstants.PRODUCT_ATTRIBUTES.CATEGORYLEVEL1)){
 				orderCSVAttributes.push(!empty(productLineItem.product) && !empty(productLineItem.product[SFCCAttr[i].SFCCProductAttribute]) && !empty(productLineItem.product[SFCCAttr[i].SFCCProductAttribute].parent) && !empty(productLineItem.product[SFCCAttr[i].SFCCProductAttribute].parent.parent)? productLineItem.product[SFCCAttr[i].SFCCProductAttribute].parent.parent.displayName : "");			
 			}else if(headers[i].equalsIgnoreCase(BloomreachEngagementConstants.PRODUCT_ATTRIBUTES.CATEGORYPATH)){
-				orderCSVAttributes.push(!empty(productLineItem.product) && !empty(productLineItem.product[SFCCAttr[i].SFCCProductAttribute]) && !empty(productLineItem.product[SFCCAttr[i].SFCCProductAttribute].parent) && !empty(productLineItem.product[SFCCAttr[i].SFCCProductAttribute].parent.parent)? URLUtils.abs('Search-Show','cgid',productLineItem.product[SFCCAttr[i].SFCCProductAttribute].parent.parent.ID).toString() : "");			
+				var category1 = !empty(productLineItem.product) && !empty(productLineItem.product[SFCCAttr[i].SFCCProductAttribute]) && !empty(productLineItem.product[SFCCAttr[i].SFCCProductAttribute].parent) && !empty(productLineItem.product[SFCCAttr[i].SFCCProductAttribute].parent.parent)? productLineItem.product[SFCCAttr[i].SFCCProductAttribute].parent.parent.displayName : "";			
+
+				var category2 = !empty(productLineItem.product) && !empty(productLineItem.product[SFCCAttr[i].SFCCProductAttribute]) && !empty(productLineItem.product[SFCCAttr[i].SFCCProductAttribute].parent)? productLineItem.product[SFCCAttr[i].SFCCProductAttribute].parent.displayName : "";
+				
+				var category3 = !empty(productLineItem.product) && !empty(productLineItem.product[SFCCAttr[i].SFCCProductAttribute]) ? productLineItem.product[SFCCAttr[i].SFCCProductAttribute].displayName : "";
+				
+				var categoriesPath = category1 + (category2 ? '>' + category2 : '') + (category3 ? '>' + category3 : '');
+				
+				orderCSVAttributes.push(categoriesPath);
+
 			}else if(headers[i].equalsIgnoreCase(BloomreachEngagementConstants.PRODUCT_ATTRIBUTES.PURCHASESOURCENAME)){
 				orderCSVAttributes.push(URLUtils.home().toString());			
 			}else if(headers[i].equalsIgnoreCase(BloomreachEngagementConstants.PRODUCT_ATTRIBUTES.PRODUCTLIST)){
