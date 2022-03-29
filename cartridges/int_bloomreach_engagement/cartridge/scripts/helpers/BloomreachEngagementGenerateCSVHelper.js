@@ -136,29 +136,13 @@ function writePurchaseProductFeedRow(csw,headers,SFCCAttr,bloomreachOrderObject)
 	var orderCSVAttributesRows = [];
 	for each (var productLineItem in bloomreachOrderObject.allProductLineItems){
 		var orderCSVAttributes = [];
-		
-		/*
-		 * Export Product Options as empty rows only with title field
-		 */
-		if (productLineItem.isOptionProductLineItem()) {
-		
-			var optionItemText = productLineItem.lineItemText;		
-			var optionOrderCSVAttributes = [];
-			for each (var i = 0; i < headers.length; i++){
-				if (headers[i].equalsIgnoreCase(BloomreachEngagementConstants.PRODUCT_ATTRIBUTES.TITLE)) {
-					optionOrderCSVAttributes.push(optionItemText);
-				}else {
-					optionOrderCSVAttributes.push('');
-				}
-			}
-			
-			orderCSVAttributesRows.push(optionOrderCSVAttributes);
-			
-			continue;
-		}
+		var isOptionPLItem = productLineItem.isOptionProductLineItem();
 		
 		for each (var i = 0; i < headers.length; i++){
-			if(headers[i].equalsIgnoreCase(BloomreachEngagementConstants.PRODUCT_ATTRIBUTES.PURCHASESTATUS)){
+			if (isOptionPLItem && headers[i].equalsIgnoreCase(BloomreachEngagementConstants.PRODUCT_ATTRIBUTES.TITLE)) {
+				var optionItemText = productLineItem.lineItemText;
+				orderCSVAttributes.push(optionItemText);
+			}else if(headers[i].equalsIgnoreCase(BloomreachEngagementConstants.PRODUCT_ATTRIBUTES.PURCHASESTATUS)){
 				orderCSVAttributes.push(BloomreachEngagementConstants.PRODUCT_ATTRIBUTES.SUCCESS);
 			}else if (headers[i].equalsIgnoreCase(BloomreachEngagementConstants.PRODUCT_ATTRIBUTES.TOTALQUANTITY)){
 				orderCSVAttributes.push(bloomreachOrderObject.allProductQuantities.values().toArray().join(','));
