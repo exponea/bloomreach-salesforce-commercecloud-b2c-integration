@@ -107,6 +107,14 @@ var webDavFilePath;
             csvProductArray.push(BloomreachEngagementProductFeedHelpers.getProductImage(product));
         } else if(columnValue == 'active') {
             csvProductArray.push(BloomreachEngagementProductFeedHelpers.getActiveStatus(product));
+        } else if(columnValue == 'online') {
+            csvProductArray.push(BloomreachEngagementProductFeedHelpers.getOnlineStatus(product));
+        } else if(columnValue == 'categorized') {
+            csvProductArray.push(BloomreachEngagementProductFeedHelpers.getCategorizedStatus(product));
+        } else if(columnValue == 'searchable') {
+            csvProductArray.push(BloomreachEngagementProductFeedHelpers.getSearchableStatus(product));
+        } else if(columnValue == 'have_price') {
+            csvProductArray.push(BloomreachEngagementProductFeedHelpers.getHasPriceStatus(product));
         } else {
             csvProductArray.push(columnValue in product ? product[columnValue] : '');
         }

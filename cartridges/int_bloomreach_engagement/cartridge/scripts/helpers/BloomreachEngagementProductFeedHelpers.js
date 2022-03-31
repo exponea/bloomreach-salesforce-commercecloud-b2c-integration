@@ -223,6 +223,99 @@ function getTimeStamp(date) {
     return imageURL;
 }
 
+/**
+ * Gets Product Online Active Status
+ * @param {dw.catalog.Product} product - Product
+ * @returns {boolean} True/False
+ */
+function getOnlineStatus(product) {
+	return product.isOnline();
+}
+
+/**
+ * Gets Product Categorized Status
+ * @param {dw.catalog.Product} product - Product
+ * @returns {boolean} True/False
+ */
+function getCategorizedStatus(product) {
+	var isMasterCategorized = false;
+	var isVariantCategorized = false;
+	
+	if (product.isMaster()) {
+		var variationModel = product.getVariationModel();
+		
+		if (variationModel) {
+			var defaultVariant = variationModel.getDefaultVariant();
+			
+			if (defaultVariant) {
+				isVariantCategorized = product.isCategorized();
+			}
+		}
+	}
+	
+	if (product.isVariant()) {
+		var masterProduct = product.masterProduct;
+		isMasterCategorized = masterProduct ? masterProduct.isCategorized() : false;
+	}
+
+	return isVariantCategorized || isMasterCategorized || product.isCategorized();
+}
+
+/**
+ * Gets Product Searchable Status
+ * @param {dw.catalog.Product} product - Product
+ * @returns {boolean} True/False
+ */
+function getSearchableStatus(product) {
+    return product.isSearchable();
+}
+
+/**
+ * Gets Product Has Price Status
+ * @param {dw.catalog.Product} product - Product
+ * @returns {boolean} True/False
+ */
+function getHasPriceStatus(product) {
+	var masterHasPrice = false;
+	var variantHasPrice = false;
+	var productHasPrice = false;
+	
+	if (product.isMaster()) {
+		var variationModel = product.getVariationModel();
+		
+		if (variationModel) {
+			var defaultVariant = variationModel.getDefaultVariant();
+			
+			if (defaultVariant) {
+				var variantPriceModel = defaultVariant.getPriceModel();
+				
+				if (variantPriceModel) {
+					variantHasPrice = variantPriceModel.getPrice() ? variantPriceModel.getPrice().available : false;
+				}
+			}
+		}
+	}
+	
+	if (product.isVariant()) {
+		var masterProduct = product.masterProduct;
+		if (masterProduct) {
+			var masterPriceModel = masterProduct.getPriceModel();
+			
+			if (masterPriceModel) {
+				masterHasPrice = masterPriceModel.getPrice() ? masterPriceModel.getPrice().available : false;
+			}
+		}
+	}
+
+	var priceModel = product.getPriceModel();
+	if (priceModel) {
+		var price = priceModel.getPrice();
+		
+		productHasPrice = price ? price.available : false;
+	} 
+	
+	return masterHasPrice || variantHasPrice || productHasPrice;
+}
 
 /**
  * Gets Product Active
@@ -230,22 +323,10 @@ function getTimeStamp(date) {
  * @returns {boolean} True/False
  */
 function getActiveStatus(product) {
-    var isActive = false;
-
-    if (product.isMaster()) {
-        var productAvailability = product.getAvailabilityModel() ? product.getAvailabilityModel().getAvailabilityStatus() : null;
-        var isAvailable = productAvailability && productAvailability !== productAvailability.AVAILABILITY_STATUS_NOT_AVAILABLE,
-            isOnline = product.isOnline();
-            isActive = isOnline && isAvailable
-    } else {
-        var isOnline = product.isOnline(),
-        isCategorized = product.isCategorized(),
-        isSearchable = product.isSearchable(),
-        hasPrice = product.getPriceModel() ? product.getPriceModel().getPrice() : false;
-        isActive = isOnline && isCategorized && isSearchable && hasPrice;
-    }
-
-    return isActive;
+	return getOnlineStatus(product)
+			&& getCategorizedStatus(product)
+			&& getSearchableStatus(product)
+			&& getHasPriceStatus(product);
 }
 
 module.exports = {
@@ -257,5 +338,9 @@ module.exports = {
     getAllVariationAttrs: getAllVariationAttrs,
     getProductImage: getProductImage,
     getActiveStatus: getActiveStatus,
-    getTimeStamp: getTimeStamp
+    getTimeStamp: getTimeStamp,
+    getOnlineStatus: getOnlineStatus,
+    getCategorizedStatus: getCategorizedStatus,
+    getSearchableStatus: getSearchableStatus,
+    getHasPriceStatus: getHasPriceStatus
 };
