@@ -15,7 +15,7 @@ function generateCSVHeader(exportType) {
     var results = {};
 
     if (exportType === BloomreachEngagementConstants.EXPORT_TYPE.MASTERPRODUCT) {
-        var masterProductFeedJSON = sitePrefs.getCustom()["bloomreachProductInventoryFeed"];
+        var masterProductFeedJSON = sitePrefs.getCustom()["brEngProductInventoryFeedDataMapping"];
         var masterProductFeed = JSON.parse(masterProductFeedJSON);
 
         for (var i = 0; i < masterProductFeed.length; i++) {
@@ -25,7 +25,7 @@ function generateCSVHeader(exportType) {
             }
         }
     } else if (exportType === BloomreachEngagementConstants.EXPORT_TYPE.VARIATIONPRODUCT) {
-        var variationProductFeedJSON = sitePrefs.getCustom()["bloomreachVariantsInventoryFeed"];
+        var variationProductFeedJSON = sitePrefs.getCustom()["brEngVariantsInventoryFeedDataMapping"];
         var variationProductFeed = JSON.parse(variationProductFeedJSON);
 
         for (let j = 0; j < variationProductFeed.length; j++) {

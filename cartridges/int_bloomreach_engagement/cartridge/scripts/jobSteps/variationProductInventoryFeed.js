@@ -180,7 +180,7 @@ exports.write = function (lines) {
 };
 
 function triggerFileImport() {
-    var variationProductFeedImportId = currentSite.getCustomPreferenceValue("bloomreachVariantsInventoryFeed-Import_id");
+    var variationProductFeedImportId = currentSite.getCustomPreferenceValue("brEngVariantInventoryFeedImportId");
     var result = BREngagementAPIHelper.bloomReachEngagementAPIService(variationProductFeedImportId, webDavFilePath);
 }
 

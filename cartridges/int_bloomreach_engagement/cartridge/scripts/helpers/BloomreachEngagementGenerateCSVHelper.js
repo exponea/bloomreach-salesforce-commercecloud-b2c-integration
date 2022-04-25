@@ -270,7 +270,7 @@ function getFeedAttributes(headers) {
 * @returns {string} returns the properties of orders which needs to be exported
 */
 function getPurchaseFeedFileHeaders(){
-	return Site.current.getCustomPreferenceValue('bloomreachCustomOrderPropertiesForExport');
+	return Site.current.getCustomPreferenceValue('brEngPurchaseFeedDataMapping');
 }
 
 /**
@@ -278,7 +278,7 @@ function getPurchaseFeedFileHeaders(){
 * @returns {string} returns the properties of products which needs to be exported
 */
 function getPurchaseProductFeedFileHeaders(){
-	return Site.current.getCustomPreferenceValue('bloomreachCustomOrderProductPropertiesForExport');
+	return Site.current.getCustomPreferenceValue('brEngPurchaseItemDataMapping');
 }
 
 

@@ -175,7 +175,7 @@ exports.beforeStep = function () {
 };
 
 function triggerFileImport() {
-    var masterProductInventoryFeedImportId = currentSite.getCustomPreferenceValue("bloomreachProductInventoryFeed-Import_id");
+    var masterProductInventoryFeedImportId = currentSite.getCustomPreferenceValue("brEngProductInventoryFeedImportId");
     
     var result = BREngagementAPIHelper.bloomReachEngagementAPIService(masterProductInventoryFeedImportId, webDavFilePath);
 }

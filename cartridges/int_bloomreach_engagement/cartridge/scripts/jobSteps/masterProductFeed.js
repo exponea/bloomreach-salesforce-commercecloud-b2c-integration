@@ -243,7 +243,7 @@ exports.beforeStep = function () {
 };
 
 function triggerFileImport() {
-    var masterProductFeedImportId = currentSite.getCustomPreferenceValue("bloomreachProductFeed-Import_id");
+    var masterProductFeedImportId = currentSite.getCustomPreferenceValue("brEngProductFeedImportId");
     try {
         var result = BREngagementAPIHelper.bloomReachEngagementAPIService(masterProductFeedImportId, webDavFilePath);
     } catch (e) {

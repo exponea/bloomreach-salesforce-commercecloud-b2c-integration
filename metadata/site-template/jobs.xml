@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jobs xmlns="http://www.demandware.com/xml/impex/jobs/2015-07-01">
-    <job job-id="Bloomreach - Generate (Pre-Init) CSV Files" priority="0">
+    <job job-id="Bloomreach Engagement - Generate Initialization CSV Files" priority="0">
         <description/>
         <parameters/>
         <flow>
@@ -10,7 +10,7 @@
                 <parameters>
                     <parameter name="OPEN">true</parameter>
                     <parameter name="NEW">true</parameter>
-                    <parameter name="TargetFolder">src/bloomreach/PreInit</parameter>
+                    <parameter name="TargetFolder">src/bloomreach_engagement/PreInit</parameter>
                     <parameter name="FileNamePrefix">purchase-pre-init-</parameter>
                     <parameter name="MaxNumberOfRows">1000000</parameter>
                     <parameter name="UpdateFromDatePreference">false</parameter>
@@ -22,7 +22,7 @@
                 <parameters>
                     <parameter name="OPEN">true</parameter>
                     <parameter name="NEW">true</parameter>
-                    <parameter name="TargetFolder">src/bloomreach/PreInit</parameter>
+                    <parameter name="TargetFolder">src/bloomreach_engagement/PreInit</parameter>
                     <parameter name="FileNamePrefix">purchase_item-pre-init-</parameter>
                     <parameter name="GeneratePreInitFile">true</parameter>
                 </parameters>
@@ -30,7 +30,7 @@
             <step step-id="generateProductFeedPreInit" type="custom.BloomreachEngagement.Generate.MasterProductFeed" enforce-restart="false">
                 <description/>
                 <parameters>
-                    <parameter name="TargetFolder">src/bloomreach/PreInit</parameter>
+                    <parameter name="TargetFolder">src/bloomreach_engagement/PreInit</parameter>
                     <parameter name="FileNamePrefix">products-pre-init-</parameter>
                     <parameter name="MaxNumberOfRows">1000000</parameter>
                     <parameter name="GeneratePreInitFile">true</parameter>
@@ -39,7 +39,7 @@
             <step step-id="generateVariantsFeedPreInit" type="custom.BloomreachEngagement.Generate.VariationProductFeed" enforce-restart="false">
                 <description/>
                 <parameters>
-                    <parameter name="TargetFolder">src/bloomreach/PreInit</parameter>
+                    <parameter name="TargetFolder">src/bloomreach_engagement/PreInit</parameter>
                     <parameter name="FileNamePrefix">variants-pre-init-</parameter>
                     <parameter name="MaxNumberOfRows">1000000</parameter>
                     <parameter name="GeneratePreInitFile">true</parameter>
@@ -48,7 +48,7 @@
             <step step-id="generateCustomerFeedPreInit" type="custom.BloomreachEngagement.Generate.CustomerFeed" enforce-restart="false">
                 <description/>
                 <parameters>
-                    <parameter name="TargetFolder">src/bloomreach/PreInit</parameter>
+                    <parameter name="TargetFolder">src/bloomreach_engagement/PreInit</parameter>
                     <parameter name="FileNamePrefix">customers-pre-init-</parameter>
                     <parameter name="MaxNumberOfRows">1000000</parameter>
                     <parameter name="GeneratePreInitFile">true</parameter>
@@ -57,7 +57,7 @@
             <step step-id="generateProductInventoryFeedPreInit" type="custom.BloomreachEngagement.Generate.MasterProductInventoryFeed" enforce-restart="false">
                 <description/>
                 <parameters>
-                    <parameter name="TargetFolder">src/bloomreach/PreInit</parameter>
+                    <parameter name="TargetFolder">src/bloomreach_engagement/PreInit</parameter>
                     <parameter name="FileNamePrefix">products-inventory-pre-init-</parameter>
                     <parameter name="MaxNumberOfRows">1000000</parameter>
                     <parameter name="GeneratePreInitFile">true</parameter>
@@ -66,7 +66,7 @@
             <step step-id="generateVariantsInventoryFeedPreInit" type="custom.BloomreachEngagement.Generate.VariationProductInventoryFeed" enforce-restart="false">
                 <description/>
                 <parameters>
-                    <parameter name="TargetFolder">src/bloomreach/PreInit</parameter>
+                    <parameter name="TargetFolder">src/bloomreach_engagement/PreInit</parameter>
                     <parameter name="FileNamePrefix">variants-inventory-pre-init-</parameter>
                     <parameter name="MaxNumberOfRows">1000000</parameter>
                     <parameter name="GeneratePreInitFile">true</parameter>
@@ -81,17 +81,17 @@
             </run-once>
         </triggers>
     </job>
-	<job job-id="Bloomreach - Purchase Item Feed (Full Export)" priority="0">
+	<job job-id="Bloomreach Engagement - Purchase Item Feed (Full Export)" priority="0">
         <description/>
         <parameters/>
         <flow>
             <context site-id="RefArch"/>
-            <step step-id="generatePurchaseOrderProductFeedFull" type="custom.BloomreachGeneratePurchaseProductsCSV" enforce-restart="false">
+            <step step-id="generatePurchaseItemFeed" type="custom.BloomreachGeneratePurchaseProductsCSV" enforce-restart="false">
                 <description/>
                 <parameters>
                     <parameter name="OPEN">true</parameter>
                     <parameter name="NEW">true</parameter>
-                    <parameter name="TargetFolder">src/bloomreach/PurchaseItemFeed</parameter>
+                    <parameter name="TargetFolder">src/bloomreach_engagement/PurchaseItemFeed</parameter>
                     <parameter name="FileNamePrefix">purchase_item-FULL-</parameter>
                 </parameters>
             </step>
@@ -106,17 +106,17 @@
     </job>
 	
 	
-    <job job-id="Bloomreach - Purchase Feed (Full Export)" priority="0">
+    <job job-id="Bloomreach Engagement - Purchase Feed (Full Export)" priority="0">
         <description/>
         <parameters/>
         <flow>
             <context site-id="RefArch"/>
-            <step step-id="generatepurchasefeedFull" type="custom.BloomreachGeneratePurchaseCSV" enforce-restart="false">
+            <step step-id="generatePurchaseFeed" type="custom.BloomreachGeneratePurchaseCSV" enforce-restart="false">
                 <description/>
                 <parameters>
                     <parameter name="OPEN">true</parameter>
                     <parameter name="NEW">true</parameter>
-                    <parameter name="TargetFolder">src/bloomreach/PurchaseFeed</parameter>
+                    <parameter name="TargetFolder">src/bloomreach_engagement/PurchaseFeed</parameter>
                     <parameter name="FileNamePrefix">purchase-FULL-</parameter>
                     <parameter name="MaxNumberOfRows">1000000</parameter>
                 </parameters>
@@ -131,15 +131,15 @@
         </triggers>
     </job>
     
-    <job job-id="Bloomreach - Product Feed (Full Export)" priority="0">
+    <job job-id="Bloomreach Engagement - Product Feed (Full Export)" priority="0">
         <description/>
         <parameters/>
         <flow>
             <context site-id="RefArch"/>
-            <step step-id="generateMasterProductFeed" type="custom.BloomreachEngagement.Generate.MasterProductFeed" enforce-restart="false">
+            <step step-id="generateProductFeed" type="custom.BloomreachEngagement.Generate.MasterProductFeed" enforce-restart="false">
                 <description/>
                 <parameters>
-                    <parameter name="TargetFolder">src/bloomreach/ProductFeed</parameter>
+                    <parameter name="TargetFolder">src/bloomreach_engagement/ProductFeed</parameter>
                     <parameter name="FileNamePrefix">products-FULL-</parameter>
                     <parameter name="MaxNumberOfRows">1000000</parameter>
                 </parameters>
@@ -154,15 +154,15 @@
         </triggers>
     </job>
 
-    <job job-id="Bloomreach - Variants Feed (Full Export)" priority="0">
+    <job job-id="Bloomreach Engagement - Variant Feed (Full Export)" priority="0">
         <description/>
         <parameters/>
         <flow>
             <context site-id="RefArch"/>
-            <step step-id="generateVariationProductFeed" type="custom.BloomreachEngagement.Generate.VariationProductFeed" enforce-restart="false">
+            <step step-id="generateVariantFeed" type="custom.BloomreachEngagement.Generate.VariationProductFeed" enforce-restart="false">
                 <description/>
                 <parameters>
-                    <parameter name="TargetFolder">src/bloomreach/VariantsFeed</parameter>
+                    <parameter name="TargetFolder">src/bloomreach_engagement/VariantFeed</parameter>
                     <parameter name="FileNamePrefix">variants-FULL-</parameter>
                     <parameter name="MaxNumberOfRows">1000000</parameter>
                 </parameters>
@@ -177,7 +177,7 @@
         </triggers>
     </job>
 
-    <job job-id="Bloomreach - Customer Feed (Full Export)" priority="0">
+    <job job-id="Bloomreach Engagement - Customer Feed (Full Export)" priority="0">
         <description/>
         <parameters/>
         <flow>
@@ -185,7 +185,7 @@
             <step step-id="generateCustomerFeed" type="custom.BloomreachEngagement.Generate.CustomerFeed" enforce-restart="false">
                 <description/>
                 <parameters>
-                    <parameter name="TargetFolder">src/bloomreach/CustomerFeed/</parameter>
+                    <parameter name="TargetFolder">src/bloomreach_engagement/CustomerFeed/</parameter>
                     <parameter name="FileNamePrefix">customers-FULL-</parameter>
                     <parameter name="MaxNumberOfRows">1000000</parameter>
                 </parameters>
@@ -200,7 +200,7 @@
         </triggers>
     </job>
 
-    <job job-id="Bloomreach - Customer Feed (Delta Export)" priority="0">
+    <job job-id="Bloomreach Engagement - Customer Feed (Delta Export)" priority="0">
         <description/>
         <parameters/>
         <split sequential="false">
@@ -211,7 +211,7 @@
                 <step step-id="generateCustomerFeedDelta" type="custom.BloomreachEngagement.Generate.CustomerInfoFeedDelta" enforce-restart="false">
                     <description/>
                     <parameters>
-                        <parameter name="TargetFolder">src/bloomreach/CustomerFeed</parameter>
+                        <parameter name="TargetFolder">src/bloomreach_engagement/CustomerFeed</parameter>
                         <parameter name="FileNamePrefix">customers-</parameter>
                         <parameter name="Query">lastModified &gt; {0}</parameter>
                         <parameter name="MaxNumberOfRows">1000000</parameter>
@@ -228,17 +228,17 @@
         </triggers>
     </job>
 
-    <job job-id="Bloomreach - Purchase Item Feed (Delta Export)" priority="0">
+    <job job-id="Bloomreach Engagement - Purchase Item Feed (Delta Export)" priority="0">
         <description/>
         <parameters/>
         <flow>
             <context site-id="RefArch"/>
-            <step step-id="GenerateProductPurchaseFeed" type="custom.BloomreachGeneratePurchaseProductsCSV" enforce-restart="false">
+            <step step-id="generatePurchaseItemFeedDelta" type="custom.BloomreachGeneratePurchaseProductsCSV" enforce-restart="false">
                 <description/>
                 <parameters>
                     <parameter name="OPEN">true</parameter>
                     <parameter name="NEW">true</parameter>
-                    <parameter name="TargetFolder">src/bloomreach/PurchaseItemFeed</parameter>
+                    <parameter name="TargetFolder">src/bloomreach_engagement/PurchaseItemFeed</parameter>
                     <parameter name="FileNamePrefix">purchase_item-</parameter>
                     <parameter name="UpdateFromDatePreference">true</parameter>
                 </parameters>
@@ -252,17 +252,17 @@
             </run-once>
         </triggers>
     </job>
-    <job job-id="Bloomreach - Purchase Feed (Delta Export)" priority="0">
+    <job job-id="Bloomreach Engagement - Purchase Feed (Delta Export)" priority="0">
         <description/>
         <parameters/>
         <flow>
             <context site-id="RefArch"/>
-            <step step-id="GeneratePurchaseCSV" type="custom.BloomreachGeneratePurchaseCSV" enforce-restart="false">
+            <step step-id="generatePurchaseFeedDelta" type="custom.BloomreachGeneratePurchaseCSV" enforce-restart="false">
                 <description/>
                 <parameters>
                     <parameter name="OPEN">true</parameter>
                     <parameter name="NEW">true</parameter>
-                    <parameter name="TargetFolder">src/bloomreach/PurchaseFeed</parameter>
+                    <parameter name="TargetFolder">src/bloomreach_engagement/PurchaseFeed</parameter>
                     <parameter name="FileNamePrefix">purchase-</parameter>
                     <parameter name="MaxNumberOfRows">1000000</parameter>
                     <parameter name="UpdateFromDatePreference">true</parameter>
@@ -278,15 +278,15 @@
         </triggers>
     </job>
 
-    <job job-id="Bloomreach - Product Inventory Feed (Delta Export)" priority="0">
+    <job job-id="Bloomreach Engagement - Product Inventory Feed (Delta Export)" priority="0">
         <description/>
         <parameters/>
         <flow>
             <context site-id="RefArch"/>
-            <step step-id="generateMasterProductInventoryFeed" type="custom.BloomreachEngagement.Generate.MasterProductInventoryFeed" enforce-restart="false">
+            <step step-id="generateProductInventoryFeed" type="custom.BloomreachEngagement.Generate.MasterProductInventoryFeed" enforce-restart="false">
                 <description/>
                 <parameters>
-                    <parameter name="TargetFolder">src/bloomreach/ProductInventoryFeed</parameter>
+                    <parameter name="TargetFolder">src/bloomreach_engagement/ProductInventoryFeed</parameter>
                     <parameter name="FileNamePrefix">products-inventory-</parameter>
                     <parameter name="MaxNumberOfRows">1000000</parameter>
                 </parameters>
@@ -301,15 +301,15 @@
         </triggers>
     </job>
 
-    <job job-id="Bloomreach - Variants Inventory Feed (Delta Export)" priority="0">
+    <job job-id="Bloomreach Engagement - Variant Inventory Feed (Delta Export)" priority="0">
         <description/>
         <parameters/>
         <flow>
             <context site-id="RefArch"/>
-            <step step-id="generateVariationProductInventoryFeed" type="custom.BloomreachEngagement.Generate.VariationProductInventoryFeed" enforce-restart="false">
+            <step step-id="generateVariantInventoryFeed" type="custom.BloomreachEngagement.Generate.VariationProductInventoryFeed" enforce-restart="false">
                 <description/>
                 <parameters>
-                    <parameter name="TargetFolder">src/bloomreach/VariantsInventoryFeed</parameter>
+                    <parameter name="TargetFolder">src/bloomreach_engagement/VariantInventoryFeed</parameter>
                     <parameter name="FileNamePrefix">variants-inventory-</parameter>
                     <parameter name="MaxNumberOfRows">1000000</parameter>
                 </parameters>

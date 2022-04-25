@@ -7,7 +7,7 @@
  */
 function generateCSVHeader() {
     var sitePrefs : SitePreferences = dw.system.Site.getCurrent().getPreferences();
-    var customerInfoFeedJSON = sitePrefs.getCustom()["bloomreachCustomerFeed"];
+    var customerInfoFeedJSON = sitePrefs.getCustom()["brEngCustomerFeedDataMapping"];
     var customerInfoFeed = JSON.parse(customerInfoFeedJSON);
 
     var csvHeaderArray = [];

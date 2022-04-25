@@ -162,7 +162,7 @@ var webDavFilePath;
 };
 
 function triggerFileImport() {
-    var purchaseFeedImportId = currentSite.getCustomPreferenceValue("bloomreachPurchaseFeed-Import_id");
+    var purchaseFeedImportId = currentSite.getCustomPreferenceValue("brEngPurchaseFeedImportId");
     var result = BREngagementAPIHelper.bloomReachEngagementAPIService(purchaseFeedImportId, webDavFilePath);
 }
 

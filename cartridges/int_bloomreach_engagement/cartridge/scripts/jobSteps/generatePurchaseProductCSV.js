@@ -166,7 +166,7 @@ var webDavFilePath;
 };
 
 function triggerFileImport() {
-    var purchaseProductFeedImportId = currentSite.getCustomPreferenceValue("bloomreachPurchaseItemFeed-Import_id");
+    var purchaseProductFeedImportId = currentSite.getCustomPreferenceValue("brEngPurchaseItemFeedImportId");
     var result = BREngagementAPIHelper.bloomReachEngagementAPIService(purchaseProductFeedImportId, webDavFilePath);
 }
 

@@ -224,7 +224,7 @@ var webDavFilePath;
 };
 
 function triggerFileImport() {
-    var customerFeedImportId = sitePrefs.getCustom()["bloomreachCustomerFeed-Import_id"];
+    var customerFeedImportId = sitePrefs.getCustom()["brEngCustomerFeedImportId"];
     
     var result = BREngagementAPIHelper.bloomReachEngagementAPIService(customerFeedImportId, webDavFilePath);
 }

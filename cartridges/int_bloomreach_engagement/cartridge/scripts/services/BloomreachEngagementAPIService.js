@@ -10,11 +10,11 @@ var Logger = dw.system.Logger.getLogger('BloomreachEngagementAPI');
 
 function getBloomreachEngagementAPIService(import_Id) {
     var currentSite = Site.getCurrent();
-    var bloomreachServiceURL = currentSite.getCustomPreferenceValue('bloomreach_api_base_url')
+    var bloomreachServiceURL = currentSite.getCustomPreferenceValue('brEngApiBaseUrl')
     	+ '/data/v2/projects/projectToken/imports/import_id/start';
-    var bloomreachAPIKeyId = currentSite.getCustomPreferenceValue('bloomreach_api_key_id');
-    var bloomreachAPIKeySecret = currentSite.getCustomPreferenceValue('bloomreach_api_key_secret');
-    var bloomreachProjectToken = currentSite.getCustomPreferenceValue('bloomreach_project_token');
+    var bloomreachAPIKeyId = currentSite.getCustomPreferenceValue('brEngApiKeyId');
+    var bloomreachAPIKeySecret = currentSite.getCustomPreferenceValue('brEngApiKeySecret');
+    var bloomreachProjectToken = currentSite.getCustomPreferenceValue('brEngProjectToken');
     if (import_Id && bloomreachAPIKeyId && bloomreachAPIKeySecret && bloomreachProjectToken) {
         var service : Service = LocalServiceRegistry.createService('bloomreach.engagement.service', {
         	createRequest: function (svc, requestObject) {

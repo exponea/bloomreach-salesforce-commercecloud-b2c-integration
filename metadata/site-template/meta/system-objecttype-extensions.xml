@@ -2,8 +2,9 @@
 <metadata xmlns="http://www.demandware.com/xml/impex/metadata/2006-10-31">
     <type-extension type-id="SitePreferences">
         <custom-attribute-definitions>
-            <attribute-definition attribute-id="bloomreachProductInventoryFeed">
-                <display-name xml:lang="x-default">Bloomreach Product Inventory Feed</display-name>
+            <attribute-definition attribute-id="brEngProductInventoryFeedDataMapping">
+                <display-name xml:lang="x-default">Product Inventory Feed Custom Data Mapping</display-name>
+                <description xml:lang="x-default">Overrides default data mapping with user-defined custom data mapping for Product Inventory Feed</description>
                 <type>text</type>
                 <mandatory-flag>false</mandatory-flag>
                 <externally-managed-flag>false</externally-managed-flag>
@@ -14,8 +15,9 @@
                     ]
                 </default-value>
             </attribute-definition>
-            <attribute-definition attribute-id="bloomreachVariantsInventoryFeed">
-                <display-name xml:lang="x-default">Bloomreach Variants Inventory Feed</display-name>
+            <attribute-definition attribute-id="brEngVariantsInventoryFeedDataMapping">
+                <display-name xml:lang="x-default">Variants Inventory Feed Custom Data Mapping</display-name>
+                <description xml:lang="x-default">Overrides default data mapping with user-defined custom data mapping for Variants Inventory Feed</description>
                 <type>text</type>
                 <mandatory-flag>false</mandatory-flag>
                 <externally-managed-flag>false</externally-managed-flag>
@@ -28,8 +30,9 @@
                     ]
                 </default-value>
             </attribute-definition>
-            <attribute-definition attribute-id="bloomreachProductFeed">
-                <display-name xml:lang="x-default">Bloomreach Product Feed</display-name>
+            <attribute-definition attribute-id="brEngProductsFeedDataMapping">
+                <display-name xml:lang="x-default">Product Feed Custom Data Mapping</display-name>
+                <description xml:lang="x-default">Overrides default data mapping with user-defined custom data mapping for Product Feed</description>
                 <type>text</type>
                 <mandatory-flag>false</mandatory-flag>
                 <externally-managed-flag>false</externally-managed-flag>
@@ -70,8 +73,9 @@
 ]
                 </default-value>
             </attribute-definition>
-            <attribute-definition attribute-id="bloomreachVariantsFeed">
-                <display-name xml:lang="x-default">Bloomreach Variants Feed</display-name>
+            <attribute-definition attribute-id="brEngVariantsFeedDataMapping">
+                <display-name xml:lang="x-default">Variant Feed Custom Data Mapping</display-name>
+                <description xml:lang="x-default">Overrides default data mapping with user-defined custom data mapping for Variant Feed</description>
                 <type>text</type>
                 <mandatory-flag>false</mandatory-flag>
                 <externally-managed-flag>false</externally-managed-flag>
@@ -115,8 +119,9 @@
 ]
                 </default-value>
             </attribute-definition>
-            <attribute-definition attribute-id="bloomreachCustomerFeed">
-                <display-name xml:lang="x-default">Bloomreach Customer Feed</display-name>
+            <attribute-definition attribute-id="brEngCustomerFeedDataMapping">
+                <display-name xml:lang="x-default">Customer Feed Custom Data Mapping</display-name>
+                <description xml:lang="x-default">Overrides default data mapping with user-defined custom data mapping for Customer Feed</description>
                 <type>text</type>
                 <mandatory-flag>false</mandatory-flag>
                 <externally-managed-flag>false</externally-managed-flag>
@@ -140,8 +145,9 @@
                     ]
                 </default-value>
             </attribute-definition>
-            <attribute-definition attribute-id="bloomreachCustomOrderProductPropertiesForExport">
+            <attribute-definition attribute-id="brEngPurchaseItemDataMapping">
                 <display-name xml:lang="x-default">Bloomreach Custom Order Product Properties For Export</display-name>
+                <description xml:lang="x-default">Overrides default data mapping with user-defined custom data mapping for Purchase Item Feed</description>
                 <type>text</type>
                 <mandatory-flag>false</mandatory-flag>
                 <externally-managed-flag>false</externally-managed-flag>
@@ -172,9 +178,9 @@
                         {"XSDField": "categories_path", "SFCCProductAttribute": "classificationCategory", "isCustomAttribute": false}
                     ]</default-value>
             </attribute-definition>
-            <attribute-definition attribute-id="bloomreachCustomOrderPropertiesForExport">
-                <display-name xml:lang="x-default">Bloomreach Custom Order Properties For Export</display-name>
-                <description xml:lang="x-default">This preference will hold the properties of the export which needs to b e exported in CSV</description>
+            <attribute-definition attribute-id="brEngPurchaseFeedDataMapping">
+                <display-name xml:lang="x-default">Purchase Feed Custom Data Mapping</display-name>
+                <description xml:lang="x-default">Overrides default data mapping with user-defined custom data mapping for Purchase Feed</description>
                 <type>text</type>
                 <mandatory-flag>false</mandatory-flag>
                 <externally-managed-flag>false</externally-managed-flag>
@@ -197,16 +203,16 @@
                         {"XSDField": "purchase_source_name", "SFCCProductAttribute": "purchase_source_name", "isCustomAttribute": false}
                     ]</default-value>
             </attribute-definition>
-            <attribute-definition attribute-id="bloomreachPurchaseItemFeedFullExportFromDate">
-                <display-name xml:lang="x-default">Bloomreach Date Of Order Export - Purchase_item Feed(FullExport)</display-name>
-                <description xml:lang="x-default">The orders placed after the configured date will be exported in the purchase product feed</description>
+            <attribute-definition attribute-id="brEngPurchaseItemFeedFullExportFromDate">
+                <display-name xml:lang="x-default">Purchase Item Feed (Full Export) From Date</display-name>
+                <description xml:lang="x-default">The orders placed after the configured date will be exported in the Purchase Item Feed (Full Export)</description>
                 <type>date</type>
                 <mandatory-flag>false</mandatory-flag>
                 <externally-managed-flag>false</externally-managed-flag>
             </attribute-definition>
-            <attribute-definition attribute-id="bloomreachPurchaseFeedFullExportFromDate">
-                <display-name xml:lang="x-default">Bloomreach Date Of Order Export - Purchase Feed(FullExport)</display-name>
-                <description xml:lang="x-default">The orders placed after the configured date will be exported in the purchase feed</description>
+            <attribute-definition attribute-id="brEngPurchaseFeedFullExportFromDate">
+                <display-name xml:lang="x-default">Purchase Feed (Full Export) From Date</display-name>
+                <description xml:lang="x-default">The orders placed after the configured date will be exported in the Purchase Feed (Full Export)</description>
                 <type>date</type>
                 <mandatory-flag>false</mandatory-flag>
                 <externally-managed-flag>false</externally-managed-flag>
@@ -218,86 +224,86 @@
                 <mandatory-flag>false</mandatory-flag>
                 <externally-managed-flag>false</externally-managed-flag>
             </attribute-definition>  
-             <attribute-definition attribute-id="bloomreachPurchaseFeedNewOrdersFromDate">
-                <display-name xml:lang="x-default">Bloomreach Date Of Order Export - Purchase Feed(NewOrders)</display-name>
-                <description xml:lang="x-default">The orders placed after the configured date will be exported in the purchase feed</description>
+             <attribute-definition attribute-id="brEngPurchaseFeedDeltaExportFromDate">
+                <display-name xml:lang="x-default">Purchase Feed (Delta Export) From Date</display-name>
+                <description xml:lang="x-default">The orders placed after the configured date will be exported in the Purchase Feed (Delta Export)</description>
                 <type>date</type>
                 <mandatory-flag>false</mandatory-flag>
                 <externally-managed-flag>false</externally-managed-flag>
             </attribute-definition>
-            <attribute-definition attribute-id="bloomreachCustomerFeed-Import_id">
-                <display-name xml:lang="x-default">Bloomreach Customer Feed Import Id</display-name>
+            <attribute-definition attribute-id="brEngCustomerFeedImportId">
+                <display-name xml:lang="x-default">Customer Feed Import Id</display-name>
                 <type>string</type>
                 <mandatory-flag>false</mandatory-flag>
                 <externally-managed-flag>false</externally-managed-flag>
                 <min-length>0</min-length>
             </attribute-definition>
-            <attribute-definition attribute-id="bloomreachProductFeed-Import_id">
-                <display-name xml:lang="x-default">Bloomreach Product Feed Import Id</display-name>
+            <attribute-definition attribute-id="brEngProductFeedImportId">
+                <display-name xml:lang="x-default">Product Feed Import Id</display-name>
                 <type>string</type>
                 <mandatory-flag>false</mandatory-flag>
                 <externally-managed-flag>false</externally-managed-flag>
                 <min-length>0</min-length>
             </attribute-definition>
-            <attribute-definition attribute-id="bloomreachPurchaseFeed-Import_id">
-                <display-name xml:lang="x-default">Bloomreach Purchase Feed Import Id</display-name>
+            <attribute-definition attribute-id="brEngPurchaseFeedImportId">
+                <display-name xml:lang="x-default">Purchase Feed Import Id</display-name>
                 <type>string</type>
                 <mandatory-flag>false</mandatory-flag>
                 <externally-managed-flag>false</externally-managed-flag>
                 <min-length>0</min-length>
             </attribute-definition>
-            <attribute-definition attribute-id="bloomreachPurchaseItemFeed-Import_id">
-                <display-name xml:lang="x-default">Bloomreach Purchase_item Feed Import Id</display-name>
+            <attribute-definition attribute-id="brEngPurchaseItemFeedImportId">
+                <display-name xml:lang="x-default">Purchase Item Feed Import Id</display-name>
                 <type>string</type>
                 <mandatory-flag>false</mandatory-flag>
                 <externally-managed-flag>false</externally-managed-flag>
                 <min-length>0</min-length>
             </attribute-definition>
-            <attribute-definition attribute-id="bloomreachVariantsFeed-Import_id">
-                <display-name xml:lang="x-default">Bloomreach Variants Feed Import Id</display-name>
+            <attribute-definition attribute-id="brEngVariantFeedImportId">
+                <display-name xml:lang="x-default">Variant Feed Import Id</display-name>
                 <type>string</type>
                 <mandatory-flag>false</mandatory-flag>
                 <externally-managed-flag>false</externally-managed-flag>
                 <min-length>0</min-length>
             </attribute-definition>
-            <attribute-definition attribute-id="bloomreach_api_base_url">
-                <display-name xml:lang="x-default">Bloomreach API Base URL</display-name>
+            <attribute-definition attribute-id="brEngApiBaseUrl">
+                <display-name xml:lang="x-default">API Base URL</display-name>
                 <type>string</type>
                 <mandatory-flag>false</mandatory-flag>
                 <externally-managed-flag>false</externally-managed-flag>
                 <min-length>0</min-length>
                 <default-value></default-value>
             </attribute-definition>
-            <attribute-definition attribute-id="bloomreach_api_key_id">
-                <display-name xml:lang="x-default">Bloomreach API key ID</display-name>
+            <attribute-definition attribute-id="brEngApiKeyId">
+                <display-name xml:lang="x-default">API key ID</display-name>
                 <type>string</type>
                 <mandatory-flag>false</mandatory-flag>
                 <externally-managed-flag>false</externally-managed-flag>
                 <min-length>0</min-length>
             </attribute-definition>
-            <attribute-definition attribute-id="bloomreach_api_key_secret">
-                <display-name xml:lang="x-default">Bloomreach API Key Secret</display-name>
+            <attribute-definition attribute-id="brEngApiKeySecret">
+                <display-name xml:lang="x-default">API Key Secret</display-name>
                 <type>password</type>
                 <mandatory-flag>false</mandatory-flag>
                 <externally-managed-flag>false</externally-managed-flag>
                 <min-length>0</min-length>
             </attribute-definition>
-            <attribute-definition attribute-id="bloomreach_project_token">
-                <display-name xml:lang="x-default">Bloomreach Project Token</display-name>
+            <attribute-definition attribute-id="brEngProjectToken">
+                <display-name xml:lang="x-default">Project Token</display-name>
                 <type>string</type>
                 <mandatory-flag>false</mandatory-flag>
                 <externally-managed-flag>false</externally-managed-flag>
                 <min-length>0</min-length>
             </attribute-definition>
-            <attribute-definition attribute-id="bloomreachProductInventoryFeed-Import_id">
-                <display-name xml:lang="x-default">Bloomreach Product Inventory Feed Import Id</display-name>
+            <attribute-definition attribute-id="brEngProductInventoryFeedImportId">
+                <display-name xml:lang="x-default">Product Inventory Feed Import Id</display-name>
                 <type>string</type>
                 <mandatory-flag>false</mandatory-flag>
                 <externally-managed-flag>false</externally-managed-flag>
                 <min-length>0</min-length>
             </attribute-definition>
-            <attribute-definition attribute-id="bloomreachVariantsInventoryFeed-Import_id">
-                <display-name xml:lang="x-default">Bloomreach Variants Inventory Feed Import Id</display-name>
+            <attribute-definition attribute-id="brEngVariantInventoryFeedImportId">
+                <display-name xml:lang="x-default">Variant Inventory Feed Import Id</display-name>
                 <type>string</type>
                 <mandatory-flag>false</mandatory-flag>
                 <externally-managed-flag>false</externally-managed-flag>
@@ -305,33 +311,33 @@
             </attribute-definition>
         </custom-attribute-definitions>
         <group-definitions>
-            <attribute-group group-id="Bloomreach">
-                <display-name xml:lang="x-default">Bloomreach</display-name>
-                <attribute attribute-id="bloomreachVariantsFeed"/>
-                <attribute attribute-id="bloomreachProductFeed"/>
-                <attribute attribute-id="bloomreachCustomerFeed"/>
-                <attribute attribute-id="bloomreachPurchaseFeedFullExportFromDate"/>
-                <attribute attribute-id="bloomreachPurchaseItemFeedFullExportFromDate"/>
-                <attribute attribute-id="bloomreachPurchaseItemFeedNewOrdersFromDate"/>
-                <attribute attribute-id="bloomreachPurchaseFeedNewOrdersFromDate"/>
-                <attribute attribute-id="bloomreachCustomOrderProductPropertiesForExport"/>
-                <attribute attribute-id="bloomreachCustomOrderPropertiesForExport"/>
-                <attribute attribute-id="bloomreachProductInventoryFeed"/>
-                <attribute attribute-id="bloomreachVariantsInventoryFeed"/>
+            <attribute-group group-id="BloomreachEngagement">
+                <display-name xml:lang="x-default">Bloomreach Engagement</display-name>
+                <attribute attribute-id="brEngCustomerFeedDataMapping"/>
+                <attribute attribute-id="brEngPurchaseFeedDataMapping"/>
+                <attribute attribute-id="brEngPurchaseItemDataMapping"/>
+                <attribute attribute-id="brEngProductsFeedDataMapping"/>
+                <attribute attribute-id="brEngVariantsFeedDataMapping"/>
+                <attribute attribute-id="brEngProductInventoryFeedDataMapping"/>
+                <attribute attribute-id="brEngVariantsInventoryFeedDataMapping"/>
+                <attribute attribute-id="brEngPurchaseFeedFullExportFromDate"/>
+                <attribute attribute-id="brEngPurchaseFeedDeltaExportFromDate"/>
+                <attribute attribute-id="brEngPurchaseItemFeedFullExportFromDate"/>
+                <attribute attribute-id="bloomreachPurchaseItemFeedNewOrdersFromDate"/>                
             </attribute-group>
-            <attribute-group group-id="BloomreachEngagementApi">
+            <attribute-group group-id="Bloomreach Engagement API">
                 <display-name xml:lang="x-default">Bloomreach Engagement API</display-name>
-				<attribute attribute-id="bloomreach_project_token"/>
-                <attribute attribute-id="bloomreach_api_base_url"/>
-				<attribute attribute-id="bloomreach_api_key_id"/>
-				<attribute attribute-id="bloomreach_api_key_secret"/>
-				<attribute attribute-id="bloomreachCustomerFeed-Import_id"/>
-                <attribute attribute-id="bloomreachProductFeed-Import_id"/>
-                <attribute attribute-id="bloomreachVariantsFeed-Import_id"/>
-                <attribute attribute-id="bloomreachPurchaseFeed-Import_id"/>
-                <attribute attribute-id="bloomreachPurchaseItemFeed-Import_id"/>
-                <attribute attribute-id="bloomreachProductInventoryFeed-Import_id"/>
-                <attribute attribute-id="bloomreachVariantsInventoryFeed-Import_id"/>
+                <attribute attribute-id="brEngApiBaseUrl"/>
+				<attribute attribute-id="brEngProjectToken"/>
+				<attribute attribute-id="brEngApiKeyId"/>
+				<attribute attribute-id="brEngApiKeySecret"/>
+				<attribute attribute-id="brEngCustomerFeedImportId"/>
+                <attribute attribute-id="brEngPurchaseFeedImportId"/>
+                <attribute attribute-id="brEngPurchaseItemFeedImportId"/>
+                <attribute attribute-id="brEngProductFeedImportId"/>
+                <attribute attribute-id="brEngProductInventoryFeedImportId"/>
+                <attribute attribute-id="brEngVariantFeedImportId"/>
+                <attribute attribute-id="brEngVariantInventoryFeedImportId"/>
             </attribute-group>
         </group-definitions>
     </type-extension>
