@@ -325,7 +325,7 @@
                 <attribute attribute-id="brEngPurchaseItemFeedFullExportFromDate"/>
                 <attribute attribute-id="bloomreachPurchaseItemFeedNewOrdersFromDate"/>                
             </attribute-group>
-            <attribute-group group-id="Bloomreach Engagement API">
+            <attribute-group group-id="BloomreachEngagementApi">
                 <display-name xml:lang="x-default">Bloomreach Engagement API</display-name>
                 <attribute attribute-id="brEngApiBaseUrl"/>
 				<attribute attribute-id="brEngProjectToken"/>
