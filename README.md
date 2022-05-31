@@ -45,4 +45,4 @@ Cartridge provides full initial data export and incremental updates in near real
 - Variants Inventory Feed
   - full dumps every 4 hours from PRODUCTION
   - variant_id, stock level
-        As a partial import for Variants Catalog (to update stock)
+  - As a partial import for Variants Catalog (to update stock)
