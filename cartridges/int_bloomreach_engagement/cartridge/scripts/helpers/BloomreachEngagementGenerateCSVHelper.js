@@ -138,7 +138,7 @@ function writePurchaseProductFeedRow(csw,headers,SFCCAttr,bloomreachOrderObject)
 		var orderCSVAttributes = [];
 		var isOptionPLItem = productLineItem.isOptionProductLineItem();
 		
-		for each (var i = 0; i < headers.length; i++){
+		for (var i = 0; i < headers.length; i++){
 			if (isOptionPLItem && headers[i].equalsIgnoreCase(BloomreachEngagementConstants.PRODUCT_ATTRIBUTES.TITLE)) {
 				var optionItemText = productLineItem.lineItemText;
 				orderCSVAttributes.push(optionItemText);
