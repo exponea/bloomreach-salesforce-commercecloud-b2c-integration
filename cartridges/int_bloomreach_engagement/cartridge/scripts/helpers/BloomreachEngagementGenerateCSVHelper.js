@@ -54,6 +54,8 @@ function updateOrderExportDate(jobID,date) {
 */
 function writePurchaseFeedRow(csw,headers,SFCCAttr,bloomreachOrderObject) {
 	var orderCSVAttributes = [];
+	/** @type {dw.util.Iterator} */
+	var itemIterator;
 	for (var i = 0; i < headers.length; i++){
 		if(headers[i].equalsIgnoreCase(BloomreachEngagementConstants.PRODUCT_ATTRIBUTES.PURCHASESTATUS)){
 			orderCSVAttributes.push(BloomreachEngagementConstants.PRODUCT_ATTRIBUTES.SUCCESS);
@@ -64,7 +66,10 @@ function writePurchaseFeedRow(csw,headers,SFCCAttr,bloomreachOrderObject) {
 		}else if(headers[i].equalsIgnoreCase(BloomreachEngagementConstants.PRODUCT_ATTRIBUTES.PURCHASESOURCENAME)){
 			orderCSVAttributes.push(URLUtils.home().toString());			
 		}else if(headers[i].equalsIgnoreCase(BloomreachEngagementConstants.PRODUCT_ATTRIBUTES.SHIPPINGCOMPANY)){
-			for each(var lineItem in bloomreachOrderObject.allLineItems){
+			itemIterator = bloomreachOrderObject.allLineItems.iterator();
+			while (itemIterator.hasNext()) {
+				/** @type {dw.order.LineItem} */
+				var lineItem = itemIterator.next();
 				if(lineItem.lineItemText.equalsIgnoreCase(BloomreachEngagementConstants.PRODUCT_ATTRIBUTES.SHIPPING)){
 					orderCSVAttributes.push(lineItem.ID);
 				}
@@ -79,7 +84,10 @@ function writePurchaseFeedRow(csw,headers,SFCCAttr,bloomreachOrderObject) {
 			orderCSVAttributes.push(!empty(bloomreachOrderObject.allProductLineItems[0].product[SFCCAttr[i].SFCCProductAttribute]) && !empty(bloomreachOrderObject.allProductLineItems[0].product[SFCCAttr[i].SFCCProductAttribute].parent) && !empty(bloomreachOrderObject.allProductLineItems[0].product[SFCCAttr[i].SFCCProductAttribute].parent.parent)? URLUtils.abs('Search-Show','cgid',bloomreachOrderObject.allProductLineItems[0].product[SFCCAttr[i].SFCCProductAttribute].parent.parent.ID).toString() : "");			
 		}else if(headers[i].equalsIgnoreCase(BloomreachEngagementConstants.PRODUCT_ATTRIBUTES.DISCOUNTVALUE)){
 			var valueExist = false;
-			for each(var lineItem in bloomreachOrderObject.allLineItems){
+			itemIterator = bloomreachOrderObject.allLineItems.iterator();
+			while (itemIterator.hasNext()) {
+				/** @type {dw.order.LineItem} */
+				var lineItem = itemIterator.next();
 				if('appliedDiscount' in lineItem){
 					orderCSVAttributes.push(lineItem.priceValue);
 					valueExist = true;
@@ -91,7 +99,10 @@ function writePurchaseFeedRow(csw,headers,SFCCAttr,bloomreachOrderObject) {
 			}
 		}else if(headers[i].equalsIgnoreCase(BloomreachEngagementConstants.PRODUCT_ATTRIBUTES.DISCOUNTPERCENTAGE)){
 			var valueExist = false;
-			for each(var lineItem in bloomreachOrderObject.allLineItems){
+			itemIterator = bloomreachOrderObject.allLineItems.iterator();
+			while (itemIterator.hasNext()) {
+				/** @type {dw.order.LineItem} */
+				var lineItem = itemIterator.next();
 				if('appliedDiscount' in lineItem){
 					orderCSVAttributes.push(lineItem.appliedDiscount.percentage);
 					valueExist = true;
@@ -104,7 +115,10 @@ function writePurchaseFeedRow(csw,headers,SFCCAttr,bloomreachOrderObject) {
 		}else if(headers[i].equalsIgnoreCase(BloomreachEngagementConstants.PRODUCT_ATTRIBUTES.PRODUCTLIST)){
 			var jsonObj = {};
 			var arrayObj = [];
-			for each (var productLineItem in bloomreachOrderObject.allProductLineItems){
+			itemIterator = bloomreachOrderObject.allProductLineItems.iterator();
+			while (itemIterator.hasNext()) {
+				/** @type {dw.order.ProductLineItem} */
+				var productLineItem = itemIterator.next();
 				var productID = productLineItem.product ? ('masterProduct' in productLineItem.product ? productLineItem.product.masterProduct.ID : productLineItem.product.ID) : '';
 				jsonObj.productId = productID;
 				jsonObj.quantity = productLineItem.quantityValue;
@@ -113,7 +127,10 @@ function writePurchaseFeedRow(csw,headers,SFCCAttr,bloomreachOrderObject) {
 			orderCSVAttributes.push(arrayObj.toString());
 		}else if(headers[i].equalsIgnoreCase(BloomreachEngagementConstants.PRODUCT_ATTRIBUTES.PRODUCTIDS)){
 			var arrayObj = [];
-			for each (var productLineItem in bloomreachOrderObject.allProductLineItems){
+			itemIterator = bloomreachOrderObject.allProductLineItems.iterator();
+			while (itemIterator.hasNext()) {
+				/** @type {dw.order.ProductLineItem} */
+				var productLineItem = itemIterator.next();
 				var productID = productLineItem.product ? ('masterProduct' in productLineItem.product ? productLineItem.product.masterProduct.ID : productLineItem.product.ID) : '';
 				arrayObj.push(productID);
 			}
