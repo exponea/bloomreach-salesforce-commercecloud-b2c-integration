@@ -200,7 +200,7 @@ function getTimeStamp(date) {
     var timeStamp;
     if (date) {
         var date = new Date(date);
-        timeStamp = date.getTime();
+        timeStamp = Math.floor(date.getTime()/1000);
         return timeStamp.toString();
     } else {
         return "";
