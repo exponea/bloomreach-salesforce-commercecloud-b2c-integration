@@ -7,6 +7,9 @@
 node_modules/
 dist/
 
+# SFCC credentials (IMPORTANT: Never commit this file)
+dw.json
+
 # Compiled Java class files
 *.class
 

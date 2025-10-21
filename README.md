@@ -8,6 +8,10 @@ Installation and configuration guides for Controllers integration and SFRA integ
 
 Installation of cartridge is performed on a client side by a developer who has access to Salesforce Commerce Cloud store, or client's Salesforce agency. Client should be ready that the installation and configuration process may take few hours. Configuration of the cartridge can be then done by an admin, to save time, close cooperation with Engagement consultant is strongly advised. Both systems must be configured by their admins for the data exchange to work properly.
 
+Note
+
+The cartridge can be installed on these SFCC versions: the older SiteGenesis (also known as Demandware) since the Commerce Cloud Platform Release 16.8 and Site Genesis 105.2.0, and the newer Storefront Reference Architecture (SFRA) since the Commerce Cloud Platform Release 16.8 and SFRA 6.0.0.
+
 ## Features
 
 ### Feeds
