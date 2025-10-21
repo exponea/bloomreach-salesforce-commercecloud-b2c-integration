@@ -4,6 +4,9 @@
   "description": "New overlay cartridge",
   "main": "index.js",
   "scripts": {
+    "test": "mocha test/**/*.test.js",
+    "test:watch": "mocha test/**/*.test.js --watch",
+    "test:coverage": "istanbul cover _mocha test/**/*.test.js",
     "lint": "sgmf-scripts --lint js && sgmf-scripts --lint css",
     "upload": "sgmf-scripts --upload -- ",
     "uploadCartridge": "sgmf-scripts --uploadCartridge bm_bloomreach_engagement",
