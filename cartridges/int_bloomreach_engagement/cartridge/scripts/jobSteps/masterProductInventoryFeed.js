@@ -181,10 +181,10 @@ function triggerFileImport() {
 }
 
 function splitFile() {
-    triggerFileImport();
     fileWriter.flush();
     csvWriter.close();
     fileWriter.close();
+    triggerFileImport();
     rowsCount = 1;
 
     if (!targetFolder) {
