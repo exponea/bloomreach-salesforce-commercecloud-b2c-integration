@@ -8,7 +8,7 @@ var BloomreachEngagementConstants = require('~/cartridge/scripts/util/productFee
  * @returns {Array} Header Values Array for CSV file
  */
 function generateCSVHeader(exportType) {
-    var sitePrefs : SitePreferences = dw.system.Site.getCurrent().getPreferences();
+    var sitePrefs = dw.system.Site.getCurrent().getPreferences();
 
     var csvHeaderArray = [];
     var SFCCAttributesValue = [];

@@ -6,7 +6,7 @@
  * @returns {Array} Header Values Array for CSV file
  */
 function generateCSVHeader() {
-    var sitePrefs : SitePreferences = dw.system.Site.getCurrent().getPreferences();
+    var sitePrefs = dw.system.Site.getCurrent().getPreferences();
     var customerInfoFeedJSON = sitePrefs.getCustom()["brEngCustomerFeedDataMapping"];
     var customerInfoFeed = JSON.parse(customerInfoFeedJSON);
 
