@@ -12,6 +12,7 @@ var FileUtils = require('~/cartridge/scripts/util/fileUtils');
 var BREngagementAPIHelper = require('~/cartridge/scripts/helpers/BloomreachEngagementHelper.js');
 var currentSite = require('dw/system/Site').getCurrent();
 var CustomObjectMgr = require('dw/object/CustomObjectMgr');
+var URLSigningHelper = require('~/cartridge/scripts/helpers/URLSigningHelper');
 
 var productsIter;
 var fileWriter;
@@ -73,7 +74,8 @@ exports.beforeStep = function () {
         throw new Error('Cannot create IMPEX folders.');
     }
     var csvFile = new File(folderFile.fullPath + File.SEPARATOR + fileName);
-    webDavFilePath = 'https://' + dw.system.System.getInstanceHostname().toString() + '/on/demandware.servlet/webdav/Sites' + csvFile.fullPath.toString();
+    // Generate signed URL instead of WebDAV URL to avoid credential expiration issues
+    webDavFilePath = URLSigningHelper.generateSignedURL(csvFile.fullPath, 72);
     fileWriter = new FileWriter(csvFile);
     csvWriter = new CSVStreamWriter(fileWriter);
     // Push Header
@@ -200,7 +202,8 @@ function splitFile() {
         throw new Error('Cannot create IMPEX folders.');
     }
     var csvFile = new File(folderFile.fullPath + File.SEPARATOR + fileName);
-    webDavFilePath = 'https://' + dw.system.System.getInstanceHostname().toString() + '/on/demandware.servlet/webdav/Sites' + csvFile.fullPath.toString();
+    // Generate signed URL instead of WebDAV URL to avoid credential expiration issues
+    webDavFilePath = URLSigningHelper.generateSignedURL(csvFile.fullPath, 72);
     fileWriter = new FileWriter(csvFile);
     csvWriter = new CSVStreamWriter(fileWriter);
     // Push Header
