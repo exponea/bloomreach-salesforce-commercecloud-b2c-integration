@@ -47,6 +47,8 @@ var generatedFilePaths = []; // Track all generated CSV files for merging
             csvProductArray.push(BloomreachEngagementProductInventoryFeedHelpers.getPreorderBackorderHandling(product) || 0);
         } else if(columnValue == 'stockLevel') {
             csvProductArray.push(BloomreachEngagementProductInventoryFeedHelpers.getStockLevel(product) || 0);
+        } else if(columnValue == 'masterProductID') {
+            csvProductArray.push(BloomreachEngagementProductInventoryFeedHelpers.getMasterProductID(product) || '');
         } else {
             csvProductArray.push(columnValue in product ? product[columnValue] : '');
         }

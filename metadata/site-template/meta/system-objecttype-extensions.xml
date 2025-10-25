@@ -24,6 +24,7 @@
                 <default-value>
                     [
                         {"XSDField": "item_id", "SFCCProductAttribute": "ID", "isCustomAttribute": false},
+                        {"XSDField": "parent_id", "SFCCProductAttribute": "masterProductID", "isCustomAttribute": false},
                         {"XSDField": "stock_level", "SFCCProductAttribute": "stockLevel", "isCustomAttribute": false},
                         {"XSDField": "preorder-backorder-allocation", "SFCCProductAttribute": "preorderbackorderallocation", "isCustomAttribute": false},
                         {"XSDField": "preorder-backorder-handling", "SFCCProductAttribute": "preorderbackorderhandling", "isCustomAttribute": false}
