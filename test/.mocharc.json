@@ -1,0 +1,10 @@
+{
+  "require": ["test/setup.js"],
+  "spec": "test/**/*.test.js",
+  "exclude": ["test/examples/**/*.test.js"],
+  "timeout": 5000,
+  "reporter": "spec",
+  "colors": true,
+  "recursive": true
+}
+
