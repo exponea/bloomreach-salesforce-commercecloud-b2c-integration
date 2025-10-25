@@ -292,6 +292,28 @@ Bloomreach imports data ✓
 
 ---
 
+## Platform Limitations
+
+### HTTP Headers
+
+**Limitation:** SFCC does not allow setting the `WWW-Authenticate` HTTP response header.
+
+**Impact:** When authentication fails (401 response), the standard `WWW-Authenticate` header cannot be included. However, this does not affect functionality:
+- The 401 status code clearly indicates authentication is required
+- Clients can still send credentials using the `Authorization` header
+- The JSON error response provides clear messaging
+
+**Technical Detail:** 
+```javascript
+// This line causes an error in SFCC:
+response.setHttpHeader('WWW-Authenticate', 'Basic realm="..."');
+// Error: Header name WWW-Authenticate is not allowed to be set or added.
+```
+
+**Workaround:** The controller returns a 401 status code with a JSON error message instead. Most HTTP clients and tools understand this is an authentication error and will prompt for credentials.
+
+---
+
 ## FAQ
 
 ### Q: Do I need to configure anything in Bloomreach before deploying?

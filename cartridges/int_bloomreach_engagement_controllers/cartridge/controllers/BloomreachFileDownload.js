@@ -101,7 +101,8 @@ function validateAndSanitizeFilePath(requestedPath) {
         'src/bloomreach_engagement/VariantFeed/',
         'src/bloomreach_engagement/ProductInventoryFeed/',
         'src/bloomreach_engagement/VariantInventoryFeed/',
-        'src/bloomreach_engagement/PreInit/'
+        'src/bloomreach_engagement/PreInit/',
+        'src/bloomreach_engagement/test/'
     ];
     
     // Check if path starts with an allowed prefix
@@ -158,7 +159,8 @@ function download() {
         if (!validateBasicAuth(authHeader)) {
             Logger.warn('Authentication failed for download request');
             response.setStatus(401);
-            response.setHttpHeader('WWW-Authenticate', 'Basic realm="Bloomreach File Download"');
+            // Note: Cannot set WWW-Authenticate header in SFCC (platform restriction)
+            // The 401 status code is sufficient to indicate authentication is required
             response.setContentType('application/json');
             response.writer.print(JSON.stringify({ 
                 error: 'Unauthorized',
