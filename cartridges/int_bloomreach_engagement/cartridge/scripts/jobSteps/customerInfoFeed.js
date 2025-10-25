@@ -6,6 +6,7 @@ var Status = require('dw/system/Status');
 var File = require('dw/io/File');
 var BloomreachEngagementCustomerInfoFeedHelpers = require('~/cartridge/scripts/helpers/BloomreachEngagementCustomerInfoFeedHelpers.js');
 var BREngagementAPIHelper = require('~/cartridge/scripts/helpers/BloomreachEngagementHelper.js');
+var BRFileDownloadHelper = require('~/cartridge/scripts/helpers/BloomreachEngagementFileDownloadHelper.js');
 var BloomreachEngagementConstants = require('~/cartridge/scripts/util/customerInfoFeedConstants');
 var FileUtils = require('~/cartridge/scripts/util/fileUtils');
 var CustomerMgr = require('dw/customer/CustomerMgr');
@@ -93,7 +94,8 @@ var webDavFilePath;
         throw new Error('Cannot create IMPEX folders.');
     }
     var csvFile = new File(folderFile.fullPath + File.SEPARATOR + fileName);
-    webDavFilePath = 'https://' + dw.system.System.getInstanceHostname().toString() + '/on/demandware.servlet/webdav/Sites' + csvFile.fullPath.toString();
+    // Generate controller-based download URL (replaces WebDAV)
+    webDavFilePath = BRFileDownloadHelper.generateDownloadUrl(csvFile);
     fileWriter = new FileWriter(csvFile);
     csvWriter = new CSVStreamWriter(fileWriter);
     // Push Header
@@ -142,7 +144,8 @@ var webDavFilePath;
         throw new Error('Cannot create IMPEX folders.');
     }
     var csvFile = new File(folderFile.fullPath + File.SEPARATOR + fileName);
-    webDavFilePath = 'https://' + dw.system.System.getInstanceHostname().toString() + '/on/demandware.servlet/webdav/Sites' + csvFile.fullPath.toString();
+    // Generate controller-based download URL (replaces WebDAV)
+    webDavFilePath = BRFileDownloadHelper.generateDownloadUrl(csvFile);
     fileWriter = new FileWriter(csvFile);
     csvWriter = new CSVStreamWriter(fileWriter);
     // Push Header
@@ -249,7 +252,8 @@ function splitFile() {
         throw new Error('Cannot create IMPEX folders.');
     }
     var csvFile = new File(folderFile.fullPath + File.SEPARATOR + fileName);
-    webDavFilePath = 'https://' + dw.system.System.getInstanceHostname().toString() + '/on/demandware.servlet/webdav/Sites' + csvFile.fullPath.toString();
+    // Generate controller-based download URL (replaces WebDAV)
+    webDavFilePath = BRFileDownloadHelper.generateDownloadUrl(csvFile);
     fileWriter = new FileWriter(csvFile);
     csvWriter = new CSVStreamWriter(fileWriter);
     // Push Header
