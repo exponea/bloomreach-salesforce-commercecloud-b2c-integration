@@ -104,6 +104,11 @@ describe('customerInfoFeed Job Step', function() {
             'dw/io/FileReader': require('../mocks/dw/io/FileReader'),
             '~/cartridge/scripts/helpers/BloomreachEngagementCustomerInfoFeedHelpers.js': mockHelpers,
             '~/cartridge/scripts/helpers/BloomreachEngagementHelper.js': mockBREngagementAPIHelper,
+            '~/cartridge/scripts/helpers/BloomreachEngagementFileDownloadHelper.js': {
+                generateDownloadUrl: sinon.stub().returns('https://test.com/download?path=test.csv'),
+                validateDownloadCredentialsConfigured: sinon.stub().returns(true),
+                getDownloadUrlInfo: sinon.stub().returns({})
+            },
             '~/cartridge/scripts/util/customerInfoFeedConstants': mockConstants,
             '~/cartridge/scripts/util/fileUtils': mockFileUtils
         });

@@ -60,6 +60,11 @@ describe('generatePurchaseCSV', function() {
             'dw/util/ArrayList': ArrayList,
             '~/cartridge/scripts/helpers/BloomreachEngagementGenerateCSVHelper': mockCsvGeneratorHelper,
             '~/cartridge/scripts/helpers/BloomreachEngagementHelper.js': mockBREngagementAPIHelper,
+            '~/cartridge/scripts/helpers/BloomreachEngagementFileDownloadHelper.js': {
+                generateDownloadUrl: sinon.stub().returns('https://test.com/download?path=test.csv'),
+                validateDownloadCredentialsConfigured: sinon.stub().returns(true),
+                getDownloadUrlInfo: sinon.stub().returns({})
+            },
             // Mock the global dw object that's used in the module
             'dw/system/System': {
                 getInstanceHostname: () => ({ toString: () => 'test-instance.demandware.net' })
@@ -563,6 +568,11 @@ describe('generatePurchaseCSV', function() {
                 'dw/util/ArrayList': ArrayList,
                 '~/cartridge/scripts/helpers/BloomreachEngagementGenerateCSVHelper': mockCsvGeneratorHelper,
                 '~/cartridge/scripts/helpers/BloomreachEngagementHelper.js': mockBREngagementAPIHelper,
+                '~/cartridge/scripts/helpers/BloomreachEngagementFileDownloadHelper.js': {
+                    generateDownloadUrl: sinon.stub().returns('https://test.com/download?path=test.csv'),
+                    validateDownloadCredentialsConfigured: sinon.stub().returns(true),
+                    getDownloadUrlInfo: sinon.stub().returns({})
+                },
                 'dw/system/System': {
                     getInstanceHostname: () => ({ toString: () => 'test-instance.demandware.net' })
                 }
