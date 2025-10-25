@@ -26,7 +26,7 @@ function createLatestFileName(fileNamePrefix, fileExtension) {
     if (!fileExtension) {
         fileExtension = EConstants.FILE_EXTENSTION.CSV; // eslint-disable-line no-param-reassign
     }
-    return fileNamePrefix + '-LATEST.' + fileExtension;
+    return fileNamePrefix.replace(/-+$/, '') + '-LATEST.' + fileExtension;
 }
 
 /**
