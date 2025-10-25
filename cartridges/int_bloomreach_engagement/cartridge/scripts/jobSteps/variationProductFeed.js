@@ -27,6 +27,7 @@ var maxNoOfRows;
 var timeStamp = Date.now().toString();
 var generatePreInitFile = false;
 var webDavFilePath;
+var generatedFilePaths = []; // Track all generated CSV files for merging
 
 
 /**
@@ -148,6 +149,9 @@ exports.beforeStep = function () {
         throw new Error('One or more mandatory parameters are missing.');
     }
 
+    // Initialize array to track all generated files
+    generatedFilePaths = [];
+
     var FileWriter = require('dw/io/FileWriter');
     var CSVStreamWriter = require('dw/io/CSVStreamWriter');
     var fileName = FileUtils.createFileName(fileNamePrefix);
@@ -158,6 +162,10 @@ exports.beforeStep = function () {
     }
     var csvFile = new File(folderFile.fullPath + File.SEPARATOR + fileName);
     webDavFilePath = 'https://' + dw.system.System.getInstanceHostname().toString() + '/on/demandware.servlet/webdav/Sites' + csvFile.fullPath.toString();
+    
+    // Track the first file
+    generatedFilePaths.push(csvFile.fullPath);
+    
     fileWriter = new FileWriter(csvFile);
     csvWriter = new CSVStreamWriter(fileWriter);
     // Push Header
@@ -261,10 +269,10 @@ function triggerFileImport() {
 }
 
 function splitFile() {
-    triggerFileImport();
     fileWriter.flush();
     csvWriter.close();
     fileWriter.close();
+    triggerFileImport();
     rowsCount = 1;
 
     if (!targetFolder) {
@@ -281,6 +289,10 @@ function splitFile() {
     }
     var csvFile = new File(folderFile.fullPath + File.SEPARATOR + fileName);
     webDavFilePath = 'https://' + dw.system.System.getInstanceHostname().toString() + '/on/demandware.servlet/webdav/Sites' + csvFile.fullPath.toString();
+    
+    // Track the new split file
+    generatedFilePaths.push(csvFile.fullPath);
+    
     fileWriter = new FileWriter(csvFile);
     csvWriter = new CSVStreamWriter(fileWriter);
     // Push Header
@@ -319,6 +331,18 @@ function splitFile() {
 
         Logger.info('Export Product Feed Successful');
         triggerFileImport();
+        
+        // Merge all generated files into LATEST file
+        try {
+            if (generatedFilePaths.length > 0) {
+                Logger.info('Merging {0} file(s) into LATEST file', generatedFilePaths.length);
+                FileUtils.mergeCSVFilesIntoLatest(generatedFilePaths, targetFolder, fileNamePrefix, Logger);
+            }
+        } catch (e) {
+            Logger.error('Error while creating LATEST file: {0}', e.message);
+            // Don't fail the job if LATEST file creation fails
+        }
+        
         return new Status(Status.OK, 'OK', 'Export Product Feed Successful');
     }
     throw new Error('Could not process all the products');

@@ -9,7 +9,7 @@ var newArrivals = null;
  * @returns {Array} Header Values Array for CSV file
  */
 function generateCSVHeader(exportType) {
-    var sitePrefs : SitePreferences = dw.system.Site.getCurrent().getPreferences();
+    var sitePrefs = dw.system.Site.getCurrent().getPreferences();
 
     var csvHeaderArray = [];
     var SFCCAttributesValue = [];
@@ -200,7 +200,7 @@ function getTimeStamp(date) {
     var timeStamp;
     if (date) {
         var date = new Date(date);
-        timeStamp = date.getTime();
+        timeStamp = Math.floor(date.getTime()/1000);
         return timeStamp.toString();
     } else {
         return "";

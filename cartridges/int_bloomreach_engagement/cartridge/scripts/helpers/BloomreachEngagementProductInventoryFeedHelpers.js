@@ -8,7 +8,7 @@ var BloomreachEngagementConstants = require('~/cartridge/scripts/util/productFee
  * @returns {Array} Header Values Array for CSV file
  */
 function generateCSVHeader(exportType) {
-    var sitePrefs : SitePreferences = dw.system.Site.getCurrent().getPreferences();
+    var sitePrefs = dw.system.Site.getCurrent().getPreferences();
 
     var csvHeaderArray = [];
     var SFCCAttributesValue = [];
@@ -133,6 +133,24 @@ function getPreorderBackorderHandling(product) {
 }
 
 /**
+ * Gets Master Product ID for Variant Products
+ * @param {dw.catalog.Product} product - Product
+ * @returns {string}
+ */
+function getMasterProductID(product) {
+    var masterProductID = '';
+
+    if (!product.isMaster() && product.isVariant()) {
+        var masterProduct = product.getMasterProduct();
+        if (masterProduct) {
+            masterProductID = masterProduct.ID;
+        }
+    }
+
+    return masterProductID;
+}
+
+/**
  * Evaluate if product inventory is valid for export
  * @param {dw.catalog.Product} product - Product
  * @param {Date} lastRun - contain the last run time of the job
@@ -178,5 +196,6 @@ module.exports = {
     getStockLevel: getStockLevel,
     getPreorderBackorderAllocation: getPreorderBackorderAllocation,
     getPreorderBackorderHandling: getPreorderBackorderHandling,
+    getMasterProductID: getMasterProductID,
     IsProductInventoryExportValid: IsProductInventoryExportValid
 };

@@ -16,7 +16,7 @@ function getBloomreachEngagementAPIService(import_Id) {
     var bloomreachAPIKeySecret = currentSite.getCustomPreferenceValue('brEngApiKeySecret');
     var bloomreachProjectToken = currentSite.getCustomPreferenceValue('brEngProjectToken');
     if (import_Id && bloomreachAPIKeyId && bloomreachAPIKeySecret && bloomreachProjectToken) {
-        var service : Service = LocalServiceRegistry.createService('bloomreach.engagement.service', {
+        var service = LocalServiceRegistry.createService('bloomreach.engagement.service', {
         	createRequest: function (svc, requestObject) {
             	var webDavFilePath = requestObject.webDavFilePath;
 

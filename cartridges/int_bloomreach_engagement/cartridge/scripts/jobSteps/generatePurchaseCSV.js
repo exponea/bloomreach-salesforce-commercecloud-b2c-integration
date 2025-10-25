@@ -167,10 +167,10 @@ function triggerFileImport() {
 }
 
 function splitFile() {
-    triggerFileImport();
     fw.flush();
     csw.close();
     fw.close();
+    triggerFileImport();
     fileNum = fileNum + 1;
     rowsCount = 1;
 
