@@ -50,3 +50,14 @@ Cartridge provides full initial data export and incremental updates in near real
   - full dumps every 4 hours from PRODUCTION
   - variant_id, stock level
   - As a partial import for Variants Catalog (to update stock)
+
+### Secure File Downloads
+
+The cartridge includes a **controller-based download endpoint** that replaces WebDAV credentials for Bloomreach imports:
+
+- ✅ **No credential expiration** - Uses site preference-based authentication
+- ✅ **Enhanced security** - Path whitelisting and input validation
+- ✅ **Zero maintenance** - No need to update credentials every 90 days
+- ✅ **Independent from users** - Not tied to individual user accounts
+
+**See [CONTROLLER-DOWNLOAD-ENDPOINT.md](./CONTROLLER-DOWNLOAD-ENDPOINT.md) for configuration details.**
