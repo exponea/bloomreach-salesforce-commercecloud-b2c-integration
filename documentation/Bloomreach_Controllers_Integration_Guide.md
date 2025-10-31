@@ -1,6 +1,6 @@
-Bloomreach Engagement Controllers \(SiteGenesis\) Integration
+Bloomreach Engagement Controllers (SiteGenesis) Integration
 
-*21\.10\.0*
+*25.10.0*
 
 ![](images/Bloomreach_Controllers_Integration_Guide_image_001.png)
 
@@ -15,6 +15,7 @@ Table of Contents
 - [Cartridge Uninstallation Guide](#cartridge-uninstallation-guide)
 - [Known Issues](#known-issues)
 - [Release History](#release-history)
+- [Changelog](#changelog)
 
 # Component Overview
 
@@ -70,61 +71,65 @@ Note: If there are data errors after import i\.e\. Finished \(11 data errors\), 
 
 ## Configuration
 
-*1\. Navigate to Administration > Operations > Jobs, assign proper site\(s\) to each of the Bloomreach jobs \(by default they are assigned to RefArch site\):*
+*1\. Navigate to Administration > Operations > Jobs, assign proper site(s) to each of the Bloomreach jobs (by default they are assigned to RefArch site):*
 
-- *Bloomreach \- CustomerFeed \(Delta Export\)*
-- *Bloomreach \- CustomerFeed \(Full Export\)*
-- *Bloomreach \- MasterProductFeed \(Full Export\)*
-- *Bloomreach \- MasterProductInventoryFeed*
-- *Bloomreach \- VariationProductFeed \(Full Export\)*
-- *Bloomreach \- VariationProductInventoryFeed*
-- *Bloomreach\- Generate \(Pre\-Init\) CSV Files*
-- *Bloomreach\-Purchase Feed \(FullExport\)*
-- *Bloomreach\-Purchase Feed \(NewOrders\)*
-- *Bloomreach\-Purchase Product Feed \(FullExport\)*
-- *Bloomreach\-Purchase Product Feed \(NewOrders\)*
+- *Bloomreach - CustomerFeed (Delta Export)*
+- *Bloomreach - CustomerFeed (Full Export)*
+- *Bloomreach - MasterProductFeed (Full Export)*
+- *Bloomreach - MasterProductInventoryFeed*
+- *Bloomreach - VariationProductFeed (Full Export)*
+- *Bloomreach - VariationProductInventoryFeed*
+- *Bloomreach- Generate (Pre-Init) CSV Files*
+- *Bloomreach-Purchase Feed (FullExport)*
+- *Bloomreach-Purchase Feed (NewOrders)*
+- *Bloomreach-Purchase Product Feed (FullExport)*
+- *Bloomreach-Purchase Product Feed (NewOrders)*
 
-*2\. Navigate to Administration > Operations > Jobs and execute ‘Bloomreach\- Generate \(Pre\-Init\) CSV Files’ Job*
+*2\. Navigate to Administration > Operations > Jobs and execute ‘Bloomreach- Generate (Pre-Init) CSV Files’ Job.*
 
-*It will generate csv files used to define Imports on Bloomreach account\.*
+*The job generates CSV samples under `src/bloomreach_engagement/PreInit`. These files are available through the secure download endpoint using the format `https://{instance-hostname}/on/demandware.store/Sites-{site-id}-Site/default/BloomreachFileDownload-Download?path=src%2Fbloomreach_engagement%2FPreInit%2F<filename>.csv`.*
 
-*Then navigate to BM > Administration > Site Development > Development Setup > Open WebDAV Access folder: Sites > Impex > src > bloomreach > preinit*
-
-*![](images/Bloomreach_Controllers_Integration_Guide_image_002.png)*
-
-*The csv full URL file paths will be used on further steps\.*
+*Review the filenames in BM > Administration > Site Development > Development Setup > File Browser (Sites > Impex > src > bloomreach_engagement > PreInit).* 
 
 *3\. Open Bloomreach API settings page:*
 
-[https://cloud\.exponea\.com/p/sandbox\-12/project\-settings/api](https://cloud.exponea.com/p/sandbox-12/project-settings/api)
+[https://cloud.exponea.com/p/sandbox-12/project-settings/api](https://cloud.exponea.com/p/sandbox-12/project-settings/api)
 
 ![](images/Bloomreach_Controllers_Integration_Guide_image_003.png)
 
-\- Copy\-Paste the ‘Project Token’, ‘API Key ID’ and ‘API Secret’ to BM > Merchant Tools > Custom Preferences > ‘Bloomreach Engagement API’ > ‘Bloomreach Project Token’, ‘Bloomreach API Key ID’ and ‘Bloomreach API Key Secret’:
+- Copy-Paste the ‘Project Token’, ‘API Key ID’ and ‘API Secret’ to BM > Merchant Tools > Custom Preferences > ‘Bloomreach Engagement API’ > ‘Bloomreach Project Token’, ‘Bloomreach API Key ID’ and ‘Bloomreach API Key Secret’:
 
 ![](images/Bloomreach_Controllers_Integration_Guide_image_004.png)
 
-and Save changes\.
+and Save changes.
 
-4\. Navigate to Bloomreach Account > Left Menu > Data & Assets > Imports \([https://cloud\.exponea\.com/p/sandbox\-12/data/imports](https://cloud.exponea.com/p/sandbox-12/data/imports)\)
+*4\. In BM > Merchant Tools > Site Preferences > Custom Preferences > ‘Bloomreach Engagement API’, set ‘File Download Endpoint Username’ and ‘File Download Endpoint Password’. Store strong, unique credentials in a secure password manager. These values are required for HTTP Basic authentication when Bloomreach downloads CSV files.*
 
-and click on '\+ New Import' button
+*5\. Navigate to Bloomreach Account > Left Menu > Data & Assets > Imports ([https://cloud.exponea.com/p/sandbox-12/data/imports](https://cloud.exponea.com/p/sandbox-12/data/imports)) and click on '+ New Import' button*
 
 ![](images/Bloomreach_Controllers_Integration_Guide_image_005.png)
 
-5\. Select Type you want to create an Import
+*6\. Select Type you want to create an Import*
 
 ![](images/Bloomreach_Controllers_Integration_Guide_image_006.png)
 
-Select ‘URL’ and fill CSV URL path from step 2 with WebDAV access for your sandbox:
+Use the controller download URL and HTTP Basic authentication when completing the form:
+
+| Setting | Value |
+| --- | --- |
+| **Source Type** | URL |
+| **URL** | Controller download URL from step 2 or job output |
+| **Authentication Type** | HTTP Basic Auth |
+| **Username** | File Download Endpoint Username |
+| **Password** | File Download Endpoint Password |
 
 ![](images/Bloomreach_Controllers_Integration_Guide_image_007.png)
 
-Finish the import \(1 row will be imported\)
+Finish the import (1 row will be imported)
 
 ![](images/Bloomreach_Controllers_Integration_Guide_image_008.png)
 
-Copy the import\_id from the import definition URL from the Exponea app
+Copy the import_id from the import definition URL from the Exponea app
 
 ![](images/Bloomreach_Controllers_Integration_Guide_image_009.png)
 
@@ -132,68 +137,52 @@ and set that value to corresponding Import ID in BM > Merchant Tools > Custom Pr
 
 ![](images/Bloomreach_Controllers_Integration_Guide_image_010.png)
 
-Repeat the above steps for repeat all data feeds
+Repeat the above steps for each data feed  
+Customer feed => "Customer" type import  
+Purchase feeds => "Event" type import, event name "purchase" and "purchase_item" (for line items)  
+Catalog feeds => "Catalog" type import, catalog name "products" (for master, bundles and single products) and "variants" (for single products)
 
-  
-Customer feed => "Customer" type import
+Product feed jobs also generate static `products-FULL-LATEST.csv` and `variants-FULL-LATEST.csv` files in their IMPEX folders. Use the corresponding controller URLs when configuring the Bloomreach Item collection to keep the import path stable.
 
-  
-Purchase feeds => "Event" type import, event name "purchase" and "purchase\_item" \(for line items\)
+*7\. Navigate to Administration > Operations > Jobs and execute Bloomreach jobs:*
 
-  
-Catalog feeds => "Catalog" type import, catalog name "products" \(for master, bundles and single products\) and "variants" \(for single products\)
+- *Bloomreach - CustomerFeed (Delta Export)*
+- *Bloomreach - CustomerFeed (Full Export)*
+- *Bloomreach - MasterProductFeed (Full Export)*
+- *Bloomreach - MasterProductInventoryFeed*
+- *Bloomreach - VariationProductFeed (Full Export)*
+- *Bloomreach - VariationProductInventoryFeed*
+- *Bloomreach-Purchase Feed (FullExport)*
+- *Bloomreach-Purchase Feed (NewOrders)*
+- *Bloomreach-Purchase Product Feed (FullExport)*
+- *Bloomreach-Purchase Product Feed (NewOrders)*
 
-5\. *Navigate to Administration > Operations > Jobs and execute Bloomreach jobs:*
+You can execute (Full Export) jobs manually and schedule recurring execution of Delta exports.
 
-- *Bloomreach \- CustomerFeed \(Delta Export\)*
-- *Bloomreach \- CustomerFeed \(Full Export\)*
-- *Bloomreach \- MasterProductFeed \(Full Export\)*
-- *Bloomreach \- MasterProductInventoryFeed*
-- *Bloomreach \- VariationProductFeed \(Full Export\)*
-- *Bloomreach \- VariationProductInventoryFeed*
-- *Bloomreach\-Purchase Feed \(FullExport\)*
-- *Bloomreach\-Purchase Feed \(NewOrders\)*
-- *Bloomreach\-Purchase Product Feed \(FullExport\)*
-- *Bloomreach\-Purchase Product Feed \(NewOrders\)*
-
-You can execute \(Full Export\) jobs manually and schedule recurring execution of Delta exports\.
-
-6\.Job Schedule: *Navigate to Administration > Operations > Jobs:  
+*8.Job Schedule: Navigate to Administration > Operations > Jobs:  
 *
 
-- Open the job need to be Scheduled\.
-- Click on Schedule and History Tab\.
-- Select Trigger \(reoccurring intervals\)\.
-- Configure the From and To dates if required\.
-- Set the run time for the job intervals\.
-	- Set the amount\.
-	- Set the interval \(Minutes, Hours, Days, Weeks and Months\)\.
-	- Select the days on with you want to run the job as per scheduled intervals\.
+- Open the job need to be Scheduled.
+- Click on Schedule and History Tab.
+- Select Trigger (reoccurring intervals).
+- Configure the From and To dates if required.
+- Set the run time for the job intervals.
+	- Set the amount.
+	- Set the interval (Minutes, Hours, Days, Weeks and Months).
+	- Select the days on with you want to run the job as per scheduled intervals.
 
 ![Graphical user interface, text, application, email
 
 Description automatically generated](images/Bloomreach_Controllers_Integration_Guide_image_011.png)
 
-Repeat the above steps to schedule all required jobs\.
+Repeat the above steps to schedule all required jobs.
 
 # Cartridge Uninstallation Guide
 
-- Remove the Cartridge from the code base\.
-- Remove Cartridge name from Cartridges path\.
-- All the configurations can be removed manually from the Business Manager\.
-- All the csv files created by the Cartridge can be removed/deleted manually from WebDAV\.
-
-WebDAV file removal: 
-
-- Navigate to Administration > Site Development > Development Setup\.
-- Open the Import/Export folder\.
-- Open src folder\.
-- Copy WebDAV URL and open that URL in new Tab\.
-- Deleted the “bloomreach” folder\.
-
-![A screenshot of a computer
-
-Description automatically generated](images/Bloomreach_Controllers_Integration_Guide_image_012.jpg)
+- Remove the Cartridge from the code base.
+- Remove Cartridge name from Cartridges path.
+- Remove related custom preferences from Merchant Tools > Site Preferences > Custom Preferences > ‘Bloomreach Engagement API’.
+- Delete CSV files generated by the cartridge from BM > Administration > Site Development > Development Setup > File Browser (Sites > Impex > src > bloomreach_engagement).
 
 # Known Issues
 
@@ -201,14 +190,13 @@ The LINK Cartridge has no known issues\.
 
 # Release History
 
-__Version__
+| Version | Date | Changes |
+| --- | --- | --- |
+| 25.10.0 | 2025-10-31 | Controller-based download endpoint and LATEST product feeds |
+| 21.10.0 | 2021-10-25 | Initial release |
 
-__Date__
+# Changelog
 
-__Changes__
-
-21\.10\.0
-
-2021\-10\-25
-
-Initial release
+## 25.10.0 (2025-10-31)
+- Introduced secure download controller with site preference credentials for Bloomreach imports.
+- Documented static `LATEST` product feed files for Bloomreach Item collection imports.
