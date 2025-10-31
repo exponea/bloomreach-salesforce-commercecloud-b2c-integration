@@ -28,6 +28,7 @@ var maxNoOfRows;
 var query;
 var generatePreInitFile = false;
 var webDavFilePath;
+var currentCsvFile; // Track the current CSV file being written
 
 
 /**
@@ -93,10 +94,8 @@ var webDavFilePath;
         Logger.info('Cannot create IMPEX folders {0}', (File.getRootDirectory(File.IMPEX).fullPath + targetFolder));
         throw new Error('Cannot create IMPEX folders.');
     }
-    var csvFile = new File(folderFile.fullPath + File.SEPARATOR + fileName);
-    // Generate controller-based download URL (replaces WebDAV)
-    webDavFilePath = BRFileDownloadHelper.generateDownloadUrl(csvFile);
-    fileWriter = new FileWriter(csvFile);
+    currentCsvFile = new File(folderFile.fullPath + File.SEPARATOR + fileName);
+    fileWriter = new FileWriter(currentCsvFile);
     csvWriter = new CSVStreamWriter(fileWriter);
     // Push Header
     var results = BloomreachEngagementCustomerInfoFeedHelpers.generateCSVHeader();
@@ -143,10 +142,8 @@ var webDavFilePath;
         Logger.info('Cannot create IMPEX folders {0}', (File.getRootDirectory(File.IMPEX).fullPath + targetFolder));
         throw new Error('Cannot create IMPEX folders.');
     }
-    var csvFile = new File(folderFile.fullPath + File.SEPARATOR + fileName);
-    // Generate controller-based download URL (replaces WebDAV)
-    webDavFilePath = BRFileDownloadHelper.generateDownloadUrl(csvFile);
-    fileWriter = new FileWriter(csvFile);
+    currentCsvFile = new File(folderFile.fullPath + File.SEPARATOR + fileName);
+    fileWriter = new FileWriter(currentCsvFile);
     csvWriter = new CSVStreamWriter(fileWriter);
     // Push Header
     var results = BloomreachEngagementCustomerInfoFeedHelpers.generateCSVHeader();
@@ -236,7 +233,11 @@ function splitFile() {
     fileWriter.flush();
     csvWriter.close();
     fileWriter.close();
+    
+    // Generate download URL for the completed file
+    webDavFilePath = BRFileDownloadHelper.generateDownloadUrl(currentCsvFile);
     triggerFileImport();
+    
     rowsCount = 1;
 
     if (!targetFolder) {
@@ -251,10 +252,8 @@ function splitFile() {
         Logger.info('Cannot create IMPEX folders {0}', (File.getRootDirectory(File.IMPEX).fullPath + targetFolder));
         throw new Error('Cannot create IMPEX folders.');
     }
-    var csvFile = new File(folderFile.fullPath + File.SEPARATOR + fileName);
-    // Generate controller-based download URL (replaces WebDAV)
-    webDavFilePath = BRFileDownloadHelper.generateDownloadUrl(csvFile);
-    fileWriter = new FileWriter(csvFile);
+    currentCsvFile = new File(folderFile.fullPath + File.SEPARATOR + fileName);
+    fileWriter = new FileWriter(currentCsvFile);
     csvWriter = new CSVStreamWriter(fileWriter);
     // Push Header
     var results = BloomreachEngagementCustomerInfoFeedHelpers.generateCSVHeader();
@@ -275,6 +274,8 @@ function splitFile() {
     csvWriter.close();
     fileWriter.close();
     if (processedAll) {
+        // Generate download URL for the final completed file
+        webDavFilePath = BRFileDownloadHelper.generateDownloadUrl(currentCsvFile);
         triggerFileImport();
 
 		if (query) {
