@@ -11,7 +11,7 @@
     "test:unit": "mocha test/**/*.test.js --exclude test/integration/**/*.test.js",
     "lint": "sgmf-scripts --lint js && sgmf-scripts --lint css",
     "upload": "sgmf-scripts --upload -- ",
-    "uploadCartridge": "sgmf-scripts --upload cartridges/int_bloomreach_engagement",
+    "uploadCartridge": "sgmf-scripts --upload int_bloomreach_engagement*",
     "compile:js": "sgmf-scripts --compile js",
     "compile:scss": "sgmf-scripts --compile css"
   },
