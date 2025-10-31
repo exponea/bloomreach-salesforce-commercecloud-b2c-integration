@@ -39,7 +39,7 @@ describe('BloomreachEngagementFileDownloadHelper', function() {
         });
         
         // Get the logger instance that the module uses
-        logger = LoggerMock.getLogger('BloomreachFileDownloadHelper', 'bloomreach.filedownload');
+        logger = LoggerMock.getLogger('BloomreachEngagementFileDownloadHelper');
     });
     
     // Clean up after all tests
