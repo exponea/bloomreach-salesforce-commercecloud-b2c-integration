@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jobs xmlns="http://www.demandware.com/xml/impex/jobs/2015-07-01">
+    <job job-id="BloomreachEngagement-ItemsCollectionFeed">
+        <description>Export products in Discovery-compatible JSON format for Bloomreach Engagement Items Collection API</description>
+        <parameters/>
+        <split-flow>
+            <context class-path="int_bloomreach_engagement.scripts.jobSteps.itemsCollectionFeed" function-name="beforeStep">
+                <parameters>
+                    <parameter name="Enabled">true</parameter>
+                    <parameter name="FeedType">IncrementalFeed</parameter>
+                    <parameter name="MultiLocaleEnabled">false</parameter>
+                </parameters>
+            </context>
+            <read class-path="int_bloomreach_engagement.scripts.jobSteps.itemsCollectionFeed" function-name="read" chunk-size="500" transactional="false">
+                <parameters>
+                    <parameter name="Enabled">true</parameter>
+                </parameters>
+            </read>
+            <process class-path="int_bloomreach_engagement.scripts.jobSteps.itemsCollectionFeed" function-name="process" transactional="false">
+                <parameters/>
+            </process>
+            <write class-path="int_bloomreach_engagement.scripts.jobSteps.itemsCollectionFeed" function-name="write" item-type="java.lang.Object" chunk-size="500" transactional="false">
+                <parameters/>
+            </write>
+            <after-step class-path="int_bloomreach_engagement.scripts.jobSteps.itemsCollectionFeed" function-name="afterStep">
+                <parameters>
+                    <parameter name="Enabled">true</parameter>
+                </parameters>
+            </after-step>
+        </split-flow>
+        <rules/>
+        <status>OK</status>
+    </job>
+</jobs>
+
