@@ -10,7 +10,6 @@ var BloomreachEngagementProductInventoryFeedHelpers = require('~/cartridge/scrip
 var BloomreachEngagementConstants = require('~/cartridge/scripts/util/productFeedConstants');
 var FileUtils = require('~/cartridge/scripts/util/fileUtils');
 var BREngagementAPIHelper = require('~/cartridge/scripts/helpers/BloomreachEngagementHelper.js');
-var BRFileDownloadHelper = require('~/cartridge/scripts/helpers/BloomreachEngagementFileDownloadHelper.js');
 var currentSite = require('dw/system/Site').getCurrent();
 var CustomObjectMgr = require('dw/object/CustomObjectMgr');
 
@@ -28,7 +27,6 @@ var maxNoOfRows;
 var generatePreInitFile = false;
 var webDavFilePath;
 var generatedFilePaths = []; // Track all generated CSV files for merging
-var currentCsvFile; // Track the current CSV file being written
 
 /**
  * Adds the column value to the CSV line Array of Products inventory Feed export CSV file
@@ -78,12 +76,13 @@ exports.beforeStep = function () {
         Logger.info('Cannot create IMPEX folders {0}', (File.getRootDirectory(File.IMPEX).fullPath + targetFolder));
         throw new Error('Cannot create IMPEX folders.');
     }
-    currentCsvFile = new File(folderFile.fullPath + File.SEPARATOR + fileName);
+    var csvFile = new File(folderFile.fullPath + File.SEPARATOR + fileName);
+    webDavFilePath = 'https://' + dw.system.System.getInstanceHostname().toString() + '/on/demandware.servlet/webdav/Sites' + csvFile.fullPath.toString();
     
     // Track the first file
-    generatedFilePaths.push(currentCsvFile.fullPath);
+    generatedFilePaths.push(csvFile.fullPath);
     
-    fileWriter = new FileWriter(currentCsvFile);
+    fileWriter = new FileWriter(csvFile);
     csvWriter = new CSVStreamWriter(fileWriter);
     // Push Header
     var results = BloomreachEngagementProductInventoryFeedHelpers.generateCSVHeader(BloomreachEngagementConstants.EXPORT_TYPE.MASTERPRODUCT);
@@ -193,11 +192,7 @@ function splitFile() {
     fileWriter.flush();
     csvWriter.close();
     fileWriter.close();
-    
-    // Generate download URL for the completed file
-    webDavFilePath = BRFileDownloadHelper.generateDownloadUrl(currentCsvFile);
     triggerFileImport();
-    
     rowsCount = 1;
 
     if (!targetFolder) {
@@ -212,12 +207,13 @@ function splitFile() {
         Logger.info('Cannot create IMPEX folders {0}', (File.getRootDirectory(File.IMPEX).fullPath + targetFolder));
         throw new Error('Cannot create IMPEX folders.');
     }
-    currentCsvFile = new File(folderFile.fullPath + File.SEPARATOR + fileName);
+    var csvFile = new File(folderFile.fullPath + File.SEPARATOR + fileName);
+    webDavFilePath = 'https://' + dw.system.System.getInstanceHostname().toString() + '/on/demandware.servlet/webdav/Sites' + csvFile.fullPath.toString();
     
     // Track the new split file
-    generatedFilePaths.push(currentCsvFile.fullPath);
+    generatedFilePaths.push(csvFile.fullPath);
     
-    fileWriter = new FileWriter(currentCsvFile);
+    fileWriter = new FileWriter(csvFile);
     csvWriter = new CSVStreamWriter(fileWriter);
     // Push Header
     var results = BloomreachEngagementProductInventoryFeedHelpers.generateCSVHeader(BloomreachEngagementConstants.EXPORT_TYPE.MASTERPRODUCT);
@@ -239,8 +235,6 @@ function splitFile() {
     fileWriter.close();
 
     if (processedAll) {
-        // Generate download URL for the final completed file
-        webDavFilePath = BRFileDownloadHelper.generateDownloadUrl(currentCsvFile);
         triggerFileImport();
 
         var currentSite = require('dw/system/Site').getCurrent();
