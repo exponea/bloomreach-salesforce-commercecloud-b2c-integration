@@ -33,7 +33,6 @@ var feedFileGenerationDate;
 var csvGeneratorHelper = require('~/cartridge/scripts/helpers/BloomreachEngagementGenerateCSVHelper');
 var generatePreInitFile = false;
 var webDavFilePath;
-var currentCsvFile; // Track the current CSV file being written
 
 /**
  * Executed Before Processing of Chunk and Validates all required fields
@@ -69,8 +68,10 @@ var currentCsvFile; // Track the current CSV file being written
     }
     try {	
     	feedFileGenerationDate = new Date();
-    	currentCsvFile = csvGeneratorHelper.createPurchaseFeedFile(FileNamePrefix,targetFolder,fileNum);
-    	fw = new FileWriter(currentCsvFile);
+    	var feedFile = csvGeneratorHelper.createPurchaseFeedFile(FileNamePrefix,targetFolder,fileNum);
+        // Generate controller-based download URL (replaces WebDAV)
+        webDavFilePath = BRFileDownloadHelper.generateDownloadUrl(feedFile);
+    	fw = new FileWriter(feedFile);
     	csw = new CSVStreamWriter(fw);
     	var getAttrSitePref = csvGeneratorHelper.getPurchaseProductFeedFileHeaders();
     	var results = csvGeneratorHelper.getFeedAttributes(getAttrSitePref);
@@ -175,19 +176,16 @@ function splitFile() {
     fw.flush();
     csw.close();
     fw.close();
-    
-    // Generate download URL for the completed file
-    webDavFilePath = BRFileDownloadHelper.generateDownloadUrl(currentCsvFile);
     triggerFileImport();
-    
     fileNum = fileNum + 1;
     rowsCount = 1;
 
     if (!targetFolder) {
         throw new Error('One or more mandatory parameters are missing.');
     }
-	currentCsvFile = csvGeneratorHelper.createPurchaseFeedFile(FileNamePrefix,targetFolder,fileNum);
-    fw = new FileWriter(currentCsvFile);
+	var feedFile = csvGeneratorHelper.createPurchaseFeedFile(FileNamePrefix,targetFolder,fileNum);
+    webDavFilePath = 'https://' + dw.system.System.getInstanceHostname().toString() + '/on/demandware.servlet/webdav/Sites' + feedFile.fullPath.toString();
+    fw = new FileWriter(feedFile);
     csw = new CSVStreamWriter(fw);
     headers = JSON.parse(csvGeneratorHelper.getPurchaseProductFeedFileHeaders());
     csw.writeNext(Object.keys(headers)); 	
@@ -205,8 +203,6 @@ function splitFile() {
     csw.close();
     fw.close();
     if (processedAll) {
-        // Generate download URL for the final completed file
-        webDavFilePath = BRFileDownloadHelper.generateDownloadUrl(currentCsvFile);
         triggerFileImport();
 
         if(updateCustomDateExportPreference){

@@ -29,7 +29,6 @@ var timeStamp = Date.now().toString();
 var generatePreInitFile = false;
 var webDavFilePath;
 var generatedFilePaths = []; // Track all generated CSV files for merging
-var currentCsvFile; // Track the current CSV file being written
 
 /**
  * Adds the column value to the CSV line Array of Product Feed export CSV file
@@ -152,12 +151,14 @@ exports.beforeStep = function () {
         Logger.info('Cannot create IMPEX folders {0}', (File.getRootDirectory(File.IMPEX).fullPath + targetFolder));
         throw new Error('Cannot create IMPEX folders.');
     }
-    currentCsvFile = new File(folderFile.fullPath + File.SEPARATOR + fileName);
+    var csvFile = new File(folderFile.fullPath + File.SEPARATOR + fileName);
+    // Generate controller-based download URL (replaces WebDAV)
+    webDavFilePath = BRFileDownloadHelper.generateDownloadUrl(csvFile);
     
     // Track the first file
-    generatedFilePaths.push(currentCsvFile.fullPath);
+    generatedFilePaths.push(csvFile.fullPath);
     
-    fileWriter = new FileWriter(currentCsvFile);
+    fileWriter = new FileWriter(csvFile);
     csvWriter = new CSVStreamWriter(fileWriter);
     // Push Header
     var results = BloomreachEngagementProductFeedHelpers.generateCSVHeader(BloomreachEngagementConstants.EXPORT_TYPE.MASTERPRODUCT);
@@ -264,11 +265,7 @@ function splitFile() {
     fileWriter.flush();
     csvWriter.close();
     fileWriter.close();
-    
-    // Generate download URL for the completed file
-    webDavFilePath = BRFileDownloadHelper.generateDownloadUrl(currentCsvFile);
     triggerFileImport();
-    
     rowsCount = 1;
 
     if (!targetFolder) {
@@ -283,12 +280,14 @@ function splitFile() {
         Logger.info('Cannot create IMPEX folders {0}', (File.getRootDirectory(File.IMPEX).fullPath + targetFolder));
         throw new Error('Cannot create IMPEX folders.');
     }
-    currentCsvFile = new File(folderFile.fullPath + File.SEPARATOR + fileName);
+    var csvFile = new File(folderFile.fullPath + File.SEPARATOR + fileName);
+    // Generate controller-based download URL (replaces WebDAV)
+    webDavFilePath = BRFileDownloadHelper.generateDownloadUrl(csvFile);
     
     // Track the new split file
-    generatedFilePaths.push(currentCsvFile.fullPath);
+    generatedFilePaths.push(csvFile.fullPath);
     
-    fileWriter = new FileWriter(currentCsvFile);
+    fileWriter = new FileWriter(csvFile);
     csvWriter = new CSVStreamWriter(fileWriter);
     // Push Header
     var results = BloomreachEngagementProductFeedHelpers.generateCSVHeader(BloomreachEngagementConstants.EXPORT_TYPE.MASTERPRODUCT);
@@ -308,7 +307,6 @@ function splitFile() {
     fileWriter.flush();
     csvWriter.close();
     fileWriter.close();
-    
     if (processedAll) {
         var currentSite = require('dw/system/Site').getCurrent();
 
@@ -329,9 +327,6 @@ function splitFile() {
         }
 
         Logger.info('Export Product Feed Successful');
-        
-        // Generate download URL for the final completed file
-        webDavFilePath = BRFileDownloadHelper.generateDownloadUrl(currentCsvFile);
         triggerFileImport();
         
         // Merge all generated files into LATEST file

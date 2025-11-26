@@ -9,17 +9,16 @@
 
 var Site = require('dw/system/Site');
 var File = require('dw/io/File');
-var Logger = require('dw/system/Logger').getLogger('BloomreachEngagementFileDownloadHelper');
+var Logger = require('dw/system/Logger').getLogger('BloomreachFileDownloadHelper', 'bloomreach.filedownload');
 
 /**
  * Generates a controller-based download URL for a CSV file
  * This replaces the WebDAV URL approach with a secure controller endpoint
- * The file must exist before calling this function
  * 
  * The generated URL format:
  * https://{hostname}/on/demandware.store/Sites-{siteId}-Site/default/BloomreachFileDownload-Download?path={relativePath}
  * 
- * @param {dw.io.File} csvFile - The CSV file object in IMPEX directory (must exist)
+ * @param {dw.io.File} csvFile - The CSV file object in IMPEX directory
  * @returns {string} - The controller-based download URL
  * 
  * @example
