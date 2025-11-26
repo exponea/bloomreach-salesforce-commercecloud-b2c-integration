@@ -12,7 +12,6 @@ var Transaction = require('dw/system/Transaction');
 const bloomreachLogger = Logger.getLogger('bloomreach_purchase_job', 'bloomreach');
 const logger = Logger.getLogger('Bloomreach', 'bloomreach');
 var BREngagementAPIHelper = require('~/cartridge/scripts/helpers/BloomreachEngagementHelper.js');
-var BRFileDownloadHelper = require('~/cartridge/scripts/helpers/BloomreachEngagementFileDownloadHelper.js');
 var currentSite = require('dw/system/Site').getCurrent();
 
 var fileNum = 0;
@@ -69,8 +68,7 @@ var webDavFilePath;
     try {	
     	feedFileGenerationDate = new Date();
     	var feedFile = csvGeneratorHelper.createPurchaseFeedFile(FileNamePrefix,targetFolder,fileNum);
-        // Generate controller-based download URL (replaces WebDAV)
-        webDavFilePath = BRFileDownloadHelper.generateDownloadUrl(feedFile);
+        webDavFilePath = 'https://' + dw.system.System.getInstanceHostname().toString() + '/on/demandware.servlet/webdav/Sites' + feedFile.fullPath.toString();
     	fw = new FileWriter(feedFile);
     	csw = new CSVStreamWriter(fw);
     	var getAttrSitePref = csvGeneratorHelper.getPurchaseProductFeedFileHeaders();
