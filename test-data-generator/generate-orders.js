@@ -12,8 +12,8 @@ const { faker } = require('@faker-js/faker');
 
 // Configuration
 const CONFIG = {
-    orderCount: 10000,
-    outputFile: path.join(__dirname, 'orders-import-10k.xml'),
+    orderCount: 100000,
+    outputFile: path.join(__dirname, 'orders-import-100k.xml'),
     startOrderNo: 1,
     startCustomerNo: 1,
     // Product SKUs to use in orders (extracted from exported-orders.xml)

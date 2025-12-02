@@ -12,8 +12,8 @@ const { faker } = require('@faker-js/faker');
 
 // Configuration
 const CONFIG = {
-    customerCount: 10000,
-    outputFile: path.join(__dirname, 'customers-import-10k.xml'),
+    customerCount: 100000,
+    outputFile: path.join(__dirname, 'customers-import-100k.xml'),
     defaultPassword: 'Test@123',
     startCustomerNo: 1
 };
