@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<customers xmlns="http://www.demandware.com/xml/impex/customer/2006-10-31">
+  <customer customer-no="CUST000001">
+    <credentials>
+      <login>john.doe@testload.com</login>
+      <password encrypted="false">Test@123</password>
+    </credentials>
+    <profile>
+      <first-name>John</first-name>
+      <last-name>Doe</last-name>
+      <email>john.doe@testload.com</email>
+    </profile>
+  </customer>
+</customers>

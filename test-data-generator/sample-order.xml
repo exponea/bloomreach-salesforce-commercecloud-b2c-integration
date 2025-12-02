@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<orders xmlns="http://www.demandware.com/xml/impex/order/2006-10-31">
+
+    <order order-no="00001301">
+        <order-date>2024-03-14T11:30:19.000Z</order-date>
+        <created-by>storefront</created-by>
+        <original-order-no>00001301</original-order-no>
+        <currency>USD</currency>
+        <customer-locale>en_US</customer-locale>
+        <taxation>net</taxation>
+        <invoice-no>00002503</invoice-no>
+        <customer>
+            <customer-name>Test Person-us</customer-name>
+            <customer-email>customer@email.us</customer-email>
+            <billing-address>
+                <first-name>Test</first-name>
+                <last-name>Person-us</last-name>
+                <address1>509 Amsterdam Ave</address1>
+                <city>New York</city>
+                <postal-code>10024-3941</postal-code>
+                <state-code>NY</state-code>
+                <country-code>US</country-code>
+                <phone>+13106683312</phone>
+            </billing-address>
+        </customer>
+        <status>
+            <order-status>NEW</order-status>
+            <shipping-status>NOT_SHIPPED</shipping-status>
+            <confirmation-status>CONFIRMED</confirmation-status>
+            <payment-status>NOT_PAID</payment-status>
+        </status>
+        <current-order-no>00001301</current-order-no>
+        <product-lineitems>
+            <product-lineitem>
+                <net-price>175.00</net-price>
+                <tax>8.75</tax>
+                <gross-price>183.75</gross-price>
+                <base-price>175.00</base-price>
+                <lineitem-text>Front Rise Straight Leg Pants</lineitem-text>
+                <tax-basis>175.00</tax-basis>
+                <position>1</position>
+                <product-id>883360520902M</product-id>
+                <product-name>Front Rise Straight Leg Pants</product-name>
+                <quantity unit="">1.0</quantity>
+                <tax-rate>0.05</tax-rate>
+                <shipment-id>00002503</shipment-id>
+                <gift>false</gift>
+            </product-lineitem>
+        </product-lineitems>
+        <shipping-lineitems>
+            <shipping-lineitem>
+                <net-price>7.99</net-price>
+                <tax>0.40</tax>
+                <gross-price>8.39</gross-price>
+                <base-price>7.99</base-price>
+                <lineitem-text>Shipping</lineitem-text>
+                <tax-basis>7.99</tax-basis>
+                <item-id>STANDARD_SHIPPING</item-id>
+                <shipment-id>00002503</shipment-id>
+                <tax-rate>0.05</tax-rate>
+            </shipping-lineitem>
+        </shipping-lineitems>
+        <shipments>
+            <shipment shipment-id="00002503">
+                <status>
+                    <shipping-status>NOT_SHIPPED</shipping-status>
+                </status>
+                <shipping-method>001</shipping-method>
+                <shipping-address>
+                    <first-name>Test</first-name>
+                    <last-name>Person-us</last-name>
+                    <address1>509 Amsterdam Ave</address1>
+                    <city>New York</city>
+                    <postal-code>10024-3941</postal-code>
+                    <state-code>NY</state-code>
+                    <country-code>us</country-code>
+                    <phone>+13106683312</phone>
+                </shipping-address>
+                <gift>false</gift>
+                <totals>
+                    <merchandize-total>
+                        <net-price>175.00</net-price>
+                        <tax>8.75</tax>
+                        <gross-price>183.75</gross-price>
+                    </merchandize-total>
+                    <adjusted-merchandize-total>
+                        <net-price>175.00</net-price>
+                        <tax>8.75</tax>
+                        <gross-price>183.75</gross-price>
+                    </adjusted-merchandize-total>
+                    <shipping-total>
+                        <net-price>7.99</net-price>
+                        <tax>0.40</tax>
+                        <gross-price>8.39</gross-price>
+                    </shipping-total>
+                    <adjusted-shipping-total>
+                        <net-price>7.99</net-price>
+                        <tax>0.40</tax>
+                        <gross-price>8.39</gross-price>
+                    </adjusted-shipping-total>
+                    <shipment-total>
+                        <net-price>182.99</net-price>
+                        <tax>9.15</tax>
+                        <gross-price>192.14</gross-price>
+                    </shipment-total>
+                </totals>
+            </shipment>
+        </shipments>
+        <totals>
+            <merchandize-total>
+                <net-price>175.00</net-price>
+                <tax>8.75</tax>
+                <gross-price>183.75</gross-price>
+            </merchandize-total>
+            <adjusted-merchandize-total>
+                <net-price>175.00</net-price>
+                <tax>8.75</tax>
+                <gross-price>183.75</gross-price>
+            </adjusted-merchandize-total>
+            <shipping-total>
+                <net-price>7.99</net-price>
+                <tax>0.40</tax>
+                <gross-price>8.39</gross-price>
+            </shipping-total>
+            <adjusted-shipping-total>
+                <net-price>7.99</net-price>
+                <tax>0.40</tax>
+                <gross-price>8.39</gross-price>
+            </adjusted-shipping-total>
+            <order-total>
+                <net-price>182.99</net-price>
+                <tax>9.15</tax>
+                <gross-price>192.14</gross-price>
+            </order-total>
+        </totals>
+        <payments>
+            <payment>
+                <custom-method>
+                    <method-name>KLARNA_PAYMENTS</method-name>
+                    <custom-attributes>
+                        <custom-attribute attribute-id="klarnaPaymentCategoryID">pay_over_time</custom-attribute>
+                        <custom-attribute attribute-id="klarnaPaymentCategoryName">4 interest-free payments</custom-attribute>
+                    </custom-attributes>
+                </custom-method>
+                <amount>192.14</amount>
+                <processor-id>KLARNA_PAYMENTS</processor-id>
+                <transaction-id>51f78c96-5406-47fc-8f7c-1fa60cfe4690</transaction-id>
+                <transaction-type>AUTH</transaction-type>
+                <custom-attributes>
+                    <custom-attribute attribute-id="kpFraudStatus">ACCEPTED</custom-attribute>
+                </custom-attributes>
+            </payment>
+        </payments>
+        <remoteHost>152.58.203.5</remoteHost>
+        <custom-attributes>
+            <custom-attribute attribute-id="klarna_oms__kpOrderID">51f78c96-5406-47fc-8f7c-1fa60cfe4690</custom-attribute>
+            <custom-attribute attribute-id="kpIsVCN">false</custom-attribute>
+            <custom-attribute attribute-id="kpRedirectURL">https://js.playground.klarna.com/na/kp/v1/sessions/4db62c02-d29f-5caf-99f1-4472a5105619/redirect</custom-attribute>
+            <custom-attribute attribute-id="kpSessionId">4db62c02-d29f-5caf-99f1-4472a5105619</custom-attribute>
+        </custom-attributes>
+    </order>
+
+</orders>
