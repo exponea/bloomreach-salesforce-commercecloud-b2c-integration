@@ -13,9 +13,12 @@
     "upload": "sgmf-scripts --upload -- ",
     "uploadCartridge": "sgmf-scripts --upload int_bloomreach_engagement*",
     "compile:js": "sgmf-scripts --compile js",
-    "compile:scss": "sgmf-scripts --compile css"
+    "compile:scss": "sgmf-scripts --compile css",
+    "generate:customers": "node test-data-generator/generate-customers.js",
+    "generate:orders": "node test-data-generator/generate-orders.js"
   },
   "devDependencies": {
+    "@faker-js/faker": "^8.4.0",
     "eslint": "^3.2.2",
     "eslint-config-airbnb-base": "^5.0.1",
     "eslint-plugin-import": "^1.12.0",
