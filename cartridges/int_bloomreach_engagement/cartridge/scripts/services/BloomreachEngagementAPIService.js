@@ -42,9 +42,15 @@ function getBloomreachEngagementAPIService(import_Id) {
         var newURL = url.replace('projectToken', bloomreachProjectToken).replace('import_id', import_Id);
         
         service.setURL(newURL);
+        
+        // Authentication and content headers
         var authorizationHeader = 'Basic ' + StringUtils.encodeBase64(bloomreachAPIKeyId + ':' + bloomreachAPIKeySecret);
         service.addHeader('Authorization', authorizationHeader);
         service.addHeader('Content-Type', 'application/json');
+        
+        // Platform identification headers
+        service.addHeader('User-Agent', 'SFCC-Bloomreach-Integration/1.0');
+        service.addHeader('X-Source-Platform', 'Salesforce-Commerce-Cloud');
 
         return service;
     } else {
