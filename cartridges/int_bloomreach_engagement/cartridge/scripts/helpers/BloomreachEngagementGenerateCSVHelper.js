@@ -312,17 +312,95 @@ function getPurchaseProductFeedFileHeaders(){
 
 
 /**
-* query the orders in BM based on order status
-* @returns {Iterator} the iterator of order objects
+* query the orders in BM based on order status using OrderMgr.processOrders()
+* This method has NO LIMIT on the number of orders returned, unlike searchOrders() which is limited to 1000
+* Uses chunked array storage to respect SFCC's 20,000 JavaScript array size limit per array
+* @returns {Iterator} custom iterator of order objects
 */
 function getOrdersForPurchaseFeed(orderStatusForExport,lastRunDate) {
-	var ordersToProcess;
-	if(empty(lastRunDate)){
-		ordersToProcess = OrderMgr.searchOrders(orderStatusForExport.join(' OR '), 'creationDate asc');
-	}else{
-    	ordersToProcess = OrderMgr.searchOrders(orderStatusForExport.join(' OR ') + ' AND creationDate >= {0}', 'creationDate asc', lastRunDate);
+	var orderChunks = []; // Array of arrays, each chunk max 19,000 elements
+	var currentChunk = [];
+	var searchQuery;
+	var searchParameters = [];
+	var Logger = require('dw/system/Logger');
+	var chunkSize = 19000; // Stay under SFCC's 20,000 array limit per chunk
+	var totalProcessed = 0;
+
+	// Build the search query
+	if (empty(lastRunDate)) {
+		searchQuery = orderStatusForExport.join(' OR ');
+	} else {
+		searchQuery = '(' + orderStatusForExport.join(' OR ') + ') AND creationDate >= {0}';
+		searchParameters.push(lastRunDate);
 	}
-    return ordersToProcess;
+
+	// Callback function to collect orders into chunks
+	var collectOrderCallback = function(order) {
+		// If current chunk is full, start a new chunk
+		if (currentChunk.length >= chunkSize) {
+			orderChunks.push(currentChunk);
+			Logger.info('Chunk {0} filled with {1} orders', orderChunks.length, currentChunk.length);
+			currentChunk = [];
+		}
+		currentChunk.push(order);
+		totalProcessed++;
+	};
+
+	// Use OrderMgr.processOrders() - NO record limit, designed for batch processing
+	Logger.info('Starting order collection...');
+	if (searchParameters.length > 0) {
+		OrderMgr.processOrders(collectOrderCallback, searchQuery, searchParameters[0]);
+	} else {
+		OrderMgr.processOrders(collectOrderCallback, searchQuery);
+	}
+
+	// Add the last chunk if it has any orders
+	if (currentChunk.length > 0) {
+		orderChunks.push(currentChunk);
+		Logger.info('Final chunk {0} has {1} orders', orderChunks.length, currentChunk.length);
+	}
+
+	Logger.info('Total orders collected: {0} across {1} chunks', totalProcessed, orderChunks.length);
+
+	// Sort all chunks by creation date ascending
+	for (var i = 0; i < orderChunks.length; i++) {
+		orderChunks[i].sort(function(a, b) {
+			return a.getCreationDate().getTime() - b.getCreationDate().getTime();
+		});
+	}
+
+	// Return a custom iterator that traverses all chunks
+	var ordersToProcess = (function() {
+		var chunkIndex = 0;
+		var itemIndex = 0;
+		var totalCount = totalProcessed;
+
+		return {
+			hasNext: function() {
+				return chunkIndex < orderChunks.length &&
+				       itemIndex < orderChunks[chunkIndex].length;
+			},
+			next: function() {
+				if (!this.hasNext()) {
+					return null;
+				}
+				var item = orderChunks[chunkIndex][itemIndex];
+				itemIndex++;
+				// Move to next chunk if current chunk is exhausted
+				if (itemIndex >= orderChunks[chunkIndex].length) {
+					chunkIndex++;
+					itemIndex = 0;
+				}
+				return item;
+			},
+			count: totalCount,
+			close: function() {
+				// No resources to clean up
+			}
+		};
+	})();
+
+	return ordersToProcess;
 }
 
 exports.getOrdersForPurchaseFeed = getOrdersForPurchaseFeed;

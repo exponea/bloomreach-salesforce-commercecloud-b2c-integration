@@ -28,6 +28,125 @@ var query;
 var generatePreInitFile = false;
 var webDavFilePath;
 
+/**
+ * Fetches all customer profiles using CustomerMgr.processProfiles()
+ * This method has NO LIMIT on the number of profiles returned, unlike searchProfiles() which is limited to 1000
+ * Uses chunked array storage to respect SFCC's 20,000 JavaScript array size limit per array
+ * @param {String} searchQuery - The search query string
+ * @param {String} sortString - The sort string (e.g., 'customerNo DESC') - Note: processProfiles doesn't support sorting, so we sort in memory
+ * @param {Date} lastModifiedDate - Optional date parameter for delta exports
+ * @returns {Object} Custom iterator for customer profiles
+ */
+function getAllCustomerProfiles(searchQuery, sortString, lastModifiedDate) {
+    var customerChunks = []; // Array of arrays, each chunk max 19,000 elements
+    var currentChunk = [];
+    var finalQuery = searchQuery || '';
+    var searchParameters = [];
+    var chunkSize = 19000; // Stay under SFCC's 20,000 array limit per chunk
+    var totalProcessed = 0;
+
+    // Build query with date filter if provided
+    if (lastModifiedDate) {
+        if (finalQuery && finalQuery.trim() !== '') {
+            finalQuery = '(' + finalQuery + ') AND lastModified > {0}';
+        } else {
+            finalQuery = 'lastModified > {0}';
+        }
+        searchParameters.push(lastModifiedDate);
+    }
+
+    // Callback function to collect customer profiles into chunks
+    var collectProfileCallback = function(profile) {
+        // If current chunk is full, start a new chunk
+        if (currentChunk.length >= chunkSize) {
+            customerChunks.push(currentChunk);
+            Logger.info('Chunk {0} filled with {1} profiles', customerChunks.length, currentChunk.length);
+            currentChunk = [];
+        }
+        currentChunk.push(profile);
+        totalProcessed++;
+    };
+
+    // Use CustomerMgr.processProfiles() - NO record limit, designed for batch processing
+    Logger.info('Starting customer profile collection...');
+    if (searchParameters.length > 0) {
+        CustomerMgr.processProfiles(collectProfileCallback, finalQuery, searchParameters[0]);
+    } else {
+        CustomerMgr.processProfiles(collectProfileCallback, finalQuery);
+    }
+
+    // Add the last chunk if it has any profiles
+    if (currentChunk.length > 0) {
+        customerChunks.push(currentChunk);
+        Logger.info('Final chunk {0} has {1} profiles', customerChunks.length, currentChunk.length);
+    }
+
+    Logger.info('Total customer profiles collected: {0} across {1} chunks', totalProcessed, customerChunks.length);
+
+    // Sort customers in memory since processProfiles doesn't support sorting
+    // Parse sortString to determine sort field and direction
+    if (sortString) {
+        var sortParts = sortString.split(' ');
+        var sortField = sortParts[0];
+        var sortDesc = sortParts.length > 1 && sortParts[1].toUpperCase() === 'DESC';
+
+        // Sort each chunk individually
+        for (var i = 0; i < customerChunks.length; i++) {
+            customerChunks[i].sort(function(a, b) {
+                var aVal = a[sortField];
+                var bVal = b[sortField];
+
+                // Handle string comparison
+                if (typeof aVal === 'string') {
+                    aVal = aVal.toLowerCase();
+                    bVal = bVal.toLowerCase();
+                    return sortDesc ? bVal.localeCompare(aVal) : aVal.localeCompare(bVal);
+                }
+
+                // Handle numeric/date comparison
+                if (sortDesc) {
+                    return bVal > aVal ? 1 : (bVal < aVal ? -1 : 0);
+                } else {
+                    return aVal > bVal ? 1 : (aVal < bVal ? -1 : 0);
+                }
+            });
+        }
+    }
+
+    // Return a custom iterator that traverses all chunks
+    var customIterator = (function() {
+        var chunkIndex = 0;
+        var itemIndex = 0;
+        var totalCount = totalProcessed;
+
+        return {
+            hasNext: function() {
+                return chunkIndex < customerChunks.length &&
+                       itemIndex < customerChunks[chunkIndex].length;
+            },
+            next: function() {
+                if (!this.hasNext()) {
+                    return null;
+                }
+                var item = customerChunks[chunkIndex][itemIndex];
+                itemIndex++;
+                // Move to next chunk if current chunk is exhausted
+                if (itemIndex >= customerChunks[chunkIndex].length) {
+                    chunkIndex++;
+                    itemIndex = 0;
+                }
+                return item;
+            },
+            count: totalCount,
+            close: function() {
+                // No resources to clean up
+            }
+        };
+    })();
+
+    return customIterator;
+}
+
 
 /**
  * Adds the column value to the CSV line Array of Customer Feed export CSV file
@@ -102,11 +221,11 @@ var webDavFilePath;
     SFCCAttributesValue = results.SFCCAttributesValue;
     csvWriter.writeNext(headerColumn);
     // Push Customer
-    customerProfilesItr = CustomerMgr.searchProfiles(query, 'customerNo DESC');
-    
+    customerProfilesItr = getAllCustomerProfiles(query, 'customerNo DESC', null);
+
     if (generatePreInitFile && customerProfilesItr.hasNext()) {
     	var firstCustomer = customerProfilesItr.next();
-    	
+
     	const ArrayList = require('dw/util/ArrayList');
     	var arrCustomers = new ArrayList();
     	arrCustomers.push(firstCustomer);
@@ -152,9 +271,9 @@ var webDavFilePath;
     csvWriter.writeNext(headerColumn);
     // Push Customer
     if (lastCustomerExport) {
-        customerProfilesItr = CustomerMgr.searchProfiles(query, 'customerNo DESC', new Date(lastCustomerExport));
+        customerProfilesItr = getAllCustomerProfiles(query, 'customerNo DESC', new Date(lastCustomerExport));
     } else {
-        customerProfilesItr = CustomerMgr.searchProfiles('', 'customerNo DESC');
+        customerProfilesItr = getAllCustomerProfiles('', 'customerNo DESC', null);
     }
 };
 
