@@ -310,6 +310,81 @@
                 <externally-managed-flag>false</externally-managed-flag>
                 <min-length>0</min-length>
             </attribute-definition>
+            <attribute-definition attribute-id="brEngSFTPEnabled">
+                <display-name xml:lang="x-default">Enable SFTP File Transfer</display-name>
+                <description xml:lang="x-default">Enable SFTP file transfer to customer SFTP server. When disabled, only WebDAV is used (default behavior).</description>
+                <type>boolean</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <default-value>false</default-value>
+            </attribute-definition>
+            <attribute-definition attribute-id="brEngSFTPHostname">
+                <display-name xml:lang="x-default">SFTP Server Hostname</display-name>
+                <description xml:lang="x-default">SFTP server hostname or IP address (e.g., sftp.example.com)</description>
+                <type>string</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <min-length>0</min-length>
+            </attribute-definition>
+            <attribute-definition attribute-id="brEngSFTPPort">
+                <display-name xml:lang="x-default">SFTP Server Port</display-name>
+                <description xml:lang="x-default">SFTP server port number (default: 22)</description>
+                <type>int</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <default-value>22</default-value>
+            </attribute-definition>
+            <attribute-definition attribute-id="brEngSFTPUsername">
+                <display-name xml:lang="x-default">SFTP Username</display-name>
+                <description xml:lang="x-default">SFTP authentication username</description>
+                <type>string</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <min-length>0</min-length>
+            </attribute-definition>
+            <attribute-definition attribute-id="brEngSFTPAuthMethod">
+                <display-name xml:lang="x-default">SFTP Authentication Method</display-name>
+                <description xml:lang="x-default">SFTP authentication method: 'password' for username/password auth, or 'ssh-key' for SSH private key auth</description>
+                <type>enum-of-string</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <value-definitions>
+                    <value-definition>
+                        <display xml:lang="x-default">Password Authentication</display>
+                        <value>password</value>
+                    </value-definition>
+                    <value-definition>
+                        <display xml:lang="x-default">SSH Private Key Authentication</display>
+                        <value>ssh-key</value>
+                    </value-definition>
+                </value-definitions>
+                <default-value>password</default-value>
+            </attribute-definition>
+            <attribute-definition attribute-id="brEngSFTPPassword">
+                <display-name xml:lang="x-default">SFTP Password</display-name>
+                <description xml:lang="x-default">SFTP password (only used when authentication method is 'password')</description>
+                <type>password</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <min-length>0</min-length>
+            </attribute-definition>
+            <attribute-definition attribute-id="brEngSFTPKeyAlias">
+                <display-name xml:lang="x-default">SFTP SSH Private Key Alias</display-name>
+                <description xml:lang="x-default">Alias of the SSH private key uploaded to Business Manager (Administration > Operations > Private Keys). Only used when authentication method is 'ssh-key'.</description>
+                <type>string</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <min-length>0</min-length>
+            </attribute-definition>
+            <attribute-definition attribute-id="brEngSFTPRemoteDirectory">
+                <display-name xml:lang="x-default">SFTP Remote Directory Path</display-name>
+                <description xml:lang="x-default">Target directory path on SFTP server where files will be uploaded (e.g., /uploads/bloomreach)</description>
+                <type>string</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <min-length>0</min-length>
+                <default-value>/</default-value>
+            </attribute-definition>
         </custom-attribute-definitions>
         <group-definitions>
             <attribute-group group-id="BloomreachEngagement">
@@ -339,6 +414,17 @@
                 <attribute attribute-id="brEngProductInventoryFeedImportId"/>
                 <attribute attribute-id="brEngVariantFeedImportId"/>
                 <attribute attribute-id="brEngVariantInventoryFeedImportId"/>
+            </attribute-group>
+            <attribute-group group-id="BloomreachEngagementSFTP">
+                <display-name xml:lang="x-default">Bloomreach Engagement SFTP</display-name>
+                <attribute attribute-id="brEngSFTPEnabled"/>
+                <attribute attribute-id="brEngSFTPHostname"/>
+                <attribute attribute-id="brEngSFTPPort"/>
+                <attribute attribute-id="brEngSFTPUsername"/>
+                <attribute attribute-id="brEngSFTPAuthMethod"/>
+                <attribute attribute-id="brEngSFTPPassword"/>
+                <attribute attribute-id="brEngSFTPKeyAlias"/>
+                <attribute attribute-id="brEngSFTPRemoteDirectory"/>
             </attribute-group>
         </group-definitions>
     </type-extension>

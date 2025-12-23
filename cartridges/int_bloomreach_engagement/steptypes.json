@@ -610,6 +610,29 @@
                     ]
                 }
             }
+        ],
+        "script-module-step": [
+            {
+                "@type-id": "custom.BloomreachEngagement.TestSFTPConnection",
+                "description": "Test SFTP connection and authentication for Bloomreach Engagement integration",
+                "@supports-site-context": true,
+                "@supports-organization-context": false,
+                "@supports-parallel-execution": false,
+                "module": "int_bloomreach_engagement/cartridge/scripts/jobSteps/testSFTPConnection.js",
+                "function": "execute",
+                "status-codes": {
+                    "status": [
+                        {
+                            "@code": "ERROR",
+                            "description": "SFTP connection test failed or SFTP is not configured properly."
+                        },
+                        {
+                            "@code": "OK",
+                            "description": "SFTP connection test succeeded."
+                        }
+                    ]
+                }
+            }
         ]
     }
 }

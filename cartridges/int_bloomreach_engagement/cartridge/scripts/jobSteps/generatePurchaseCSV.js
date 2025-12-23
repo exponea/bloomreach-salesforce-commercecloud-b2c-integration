@@ -12,6 +12,7 @@ const logger = Logger.getLogger('Bloomreach', 'bloomreach');
 var BREngagementAPIHelper = require('~/cartridge/scripts/helpers/BloomreachEngagementHelper.js');
 var currentSite = require('dw/system/Site').getCurrent();
 var CustomObjectMgr = require('dw/object/CustomObjectMgr');
+var SFTPHelper = require('~/cartridge/scripts/helpers/SFTPHelper.js');
 
 var fileNum = 0;
 var ordersToProcess;
@@ -31,6 +32,7 @@ var feedFileGenerationDate;
 var csvGeneratorHelper = require('~/cartridge/scripts/helpers/BloomreachEngagementGenerateCSVHelper');
 var generatePreInitFile = false;
 var webDavFilePath;
+var localCsvFile;
 
 /**
  * Executed Before Processing of Chunk and Validates all required fields
@@ -67,6 +69,7 @@ var webDavFilePath;
     try {	
     	feedFileGenerationDate = new Date();
     	var feedFile = csvGeneratorHelper.createPurchaseFeedFile(FileNamePrefix,targetFolder,fileNum);
+        localCsvFile = feedFile; // Store for SFTP upload
         webDavFilePath = 'https://' + dw.system.System.getInstanceHostname().toString() + '/on/demandware.servlet/webdav/Sites' + feedFile.fullPath.toString();
     	fw = new FileWriter(feedFile);
     	csw = new CSVStreamWriter(fw);
@@ -161,9 +164,58 @@ var webDavFilePath;
     rowsCount = rowsCount + lines.size();
 };
 
+/**
+ * Attempt to upload file via SFTP with fallback to WebDAV
+ * @param {dw.io.File} csvFile - CSV file to upload
+ * @returns {Object} Upload result with success flag and optional error
+ */
+function attemptSFTPUpload(csvFile) {
+    try {
+        var sftpCheck = SFTPHelper.isSFTPEnabled();
+
+        if (!sftpCheck.enabled) {
+            if (sftpCheck.error) {
+                bloomreachLogger.warn('SFTP not enabled: {0}. Using WebDAV fallback.', sftpCheck.error);
+            }
+            return {success: false, usedFallback: true};
+        }
+
+        bloomreachLogger.info('Attempting SFTP upload for file: {0}', csvFile.name);
+        var uploadResult = SFTPHelper.uploadFile(csvFile, bloomreachLogger);
+
+        if (uploadResult.success) {
+            bloomreachLogger.info('SFTP upload successful: {0}', uploadResult.remotePath);
+            return {success: true, remotePath: uploadResult.remotePath};
+        } else {
+            bloomreachLogger.error('SFTP upload failed: {0}. Falling back to WebDAV.', uploadResult.error);
+            return {success: false, error: uploadResult.error, usedFallback: true};
+        }
+
+    } catch (e) {
+        bloomreachLogger.error('SFTP upload exception: {0}. Falling back to WebDAV.', e.message);
+        return {success: false, error: e.message, usedFallback: true};
+    }
+}
+
 function triggerFileImport() {
     var purchaseFeedImportId = currentSite.getCustomPreferenceValue("brEngPurchaseFeedImportId");
-    var result = BREngagementAPIHelper.bloomReachEngagementAPIService(purchaseFeedImportId, webDavFilePath);
+
+    // Attempt SFTP upload if enabled
+    var sftpResult = attemptSFTPUpload(localCsvFile);
+
+    // Determine which file path to pass to Bloomreach API
+    var filePath = webDavFilePath; // Default to WebDAV
+    if (sftpResult.success && sftpResult.remotePath) {
+        // SFTP upload succeeded - use SFTP path for Bloomreach to fetch from customer SFTP
+        filePath = sftpResult.remotePath;
+        bloomreachLogger.info('Using SFTP path for Bloomreach API: {0}', filePath);
+    } else {
+        // SFTP failed or not enabled - use WebDAV fallback
+        bloomreachLogger.info('Using WebDAV path for Bloomreach API: {0}', filePath);
+    }
+
+    // Call Bloomreach API with appropriate file path
+    var result = BREngagementAPIHelper.bloomReachEngagementAPIService(purchaseFeedImportId, filePath);
 }
 
 function splitFile() {
