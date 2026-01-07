@@ -360,7 +360,24 @@ function splitFile() {
         try {
             if (generatedFilePaths.length > 0) {
                 Logger.info('Merging {0} file(s) into LATEST file', generatedFilePaths.length);
-                FileUtils.mergeCSVFilesIntoLatest(generatedFilePaths, targetFolder, fileNamePrefix, Logger);
+                var latestFilePath = FileUtils.mergeCSVFilesIntoLatest(generatedFilePaths, targetFolder, fileNamePrefix, Logger);
+                
+                // Upload LATEST file to SFTP if enabled
+                if (latestFilePath) {
+                    var latestFile = new File(latestFilePath);
+                    var sftpCheck = SFTPHelper.isSFTPEnabled();
+                    
+                    if (sftpCheck.enabled) {
+                        Logger.info('Uploading LATEST file to SFTP: {0}', latestFile.name);
+                        var uploadResult = SFTPHelper.uploadFile(latestFile, Logger);
+                        
+                        if (uploadResult.success) {
+                            Logger.info('LATEST file successfully uploaded to SFTP: {0}', uploadResult.remotePath);
+                        } else {
+                            Logger.warn('LATEST file upload to SFTP failed: {0}. File remains accessible via WebDAV.', uploadResult.error);
+                        }
+                    }
+                }
             }
         } catch (e) {
             Logger.error('Error while creating LATEST file: {0}', e.message);
