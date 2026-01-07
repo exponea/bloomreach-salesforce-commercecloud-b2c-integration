@@ -242,7 +242,11 @@ function triggerFileImport() {
         Logger.info('Using WebDAV path for Bloomreach API: {0}', filePath);
     }
 
-    var result = BREngagementAPIHelper.bloomReachEngagementAPIService(variationProductFeedImportId, filePath);
+    try {
+        var result = BREngagementAPIHelper.bloomReachEngagementAPIService(variationProductFeedImportId, filePath);
+    } catch (e) {
+        Logger.error('Error while triggering bloomreach import start {0}', e.message);
+    }
 }
 
 function splitFile() {

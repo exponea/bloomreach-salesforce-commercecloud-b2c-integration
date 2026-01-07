@@ -375,7 +375,11 @@ function triggerFileImport() {
     }
 
     // Call Bloomreach API with appropriate file path
-    var result = BREngagementAPIHelper.bloomReachEngagementAPIService(customerFeedImportId, filePath);
+    try {
+        var result = BREngagementAPIHelper.bloomReachEngagementAPIService(customerFeedImportId, filePath);
+    } catch (e) {
+        Logger.error('Error while triggering bloomreach import start {0}', e.message);
+    }
 }
 
 function splitFile() {
