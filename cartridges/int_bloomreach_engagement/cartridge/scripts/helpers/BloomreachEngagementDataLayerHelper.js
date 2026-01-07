@@ -10,7 +10,18 @@ var PromotionMgr = require('dw/campaign/PromotionMgr');
 var URLUtils = require('dw/web/URLUtils');
 var PagingModel = require('dw/web/PagingModel');
 var domain = require('dw/system/System').getInstanceHostname();
-var language = Locale.getLocale(request.getLocale()).getLanguage();
+
+/**
+ * Get language from request locale
+ * @returns {string} language code or empty string if request is not available
+ */
+function getLanguage() {
+    try {
+        return Locale.getLocale(request.getLocale()).getLanguage();
+    } catch (e) {
+        return '';
+    }
+}
 
 /**
  * Check if brSdkIntegrationSnippet is exist and configured in BM
@@ -95,7 +106,7 @@ function createViewItemDataLayer(productId, selectedProductUrl) {
                 'discount_value': productPrices.discountValue,
                 'original_price': productPrices.originalPrice,
                 'domain': domain,
-                'language': language,
+                'language': getLanguage(),
                 'stock_level': getAvailableStock(product)
             }
         };
@@ -193,12 +204,13 @@ function getViewItemDataLayer(productId, selectedProductUrl) {
     
     productPrices.originalPrice = productPrices.originalPrice.value;
     productPrices.price = productPrices.price.value;
-    
+
     if (productPrices.price < productPrices.originalPrice) {
         productPrices.discountValue = parseFloat((productPrices.originalPrice - productPrices.price).toFixed(2));
-        productPrices.discountPercentage = Math.round(100 - (productPrices.price * 100 / productPrices.originalPrice), 2);
+        productPrices.discountPercentage = Math.round(100 - (productPrices.price * 100 / productPrices.originalPrice));
     } else {
         productPrices.discountValue = 0;
+        productPrices.discountPercentage = 0;
     }
 
     return productPrices;
@@ -521,7 +533,7 @@ function getSortingRuleName(sortingRule, category) {
                 'filter_by': getSelectedFilters(productSearchObj.productSearch),
                 'sort_by': getSortingRuleName(productSearchObj.productSort, category),
                 'domain': domain,
-                'language': language,
+                'language': getLanguage(),
             }
         };
 
@@ -557,7 +569,7 @@ function getSortingRuleName(sortingRule, category) {
                 'filter_by': getSelectedFilters(productSearchResult),
                 'sort_by': getSortingRuleName(productSearchResult.getSortingRule(), category),
                 'domain': domain,
-                'language': language,
+                'language': getLanguage(),
             }
         };
 
@@ -678,7 +690,7 @@ function isBrDataLayerCartUpdate() {
                 'discount_value': productPrices.discountValue,
                 'original_price': productPrices.originalPrice,
                 'domain': domain,
-                'language': language,
+                'language': getLanguage(),
                 'product_list': lineItemsObj.product_list,
                 'product_ids': lineItemsObj.product_ids,
                 'variant_list': lineItemsObj.variant_list,
@@ -744,7 +756,7 @@ function getCartUpdateEmptyDataLayer(orderNumber) {
                 'discount_value': 0,
                 'original_price': 0,
                 'domain': domain,
-                'language': language,
+                'language': getLanguage(),
                 'product_list': lineItemsObj.product_list,
                 'product_ids': lineItemsObj.product_ids,
                 'variant_list': lineItemsObj.variant_list,

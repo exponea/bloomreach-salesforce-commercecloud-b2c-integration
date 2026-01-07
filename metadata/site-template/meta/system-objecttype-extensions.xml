@@ -310,14 +310,6 @@
                 <externally-managed-flag>false</externally-managed-flag>
                 <min-length>0</min-length>
             </attribute-definition>
-            <attribute-definition attribute-id="brEngSFTPEnabled">
-                <display-name xml:lang="x-default">Enable SFTP File Transfer</display-name>
-                <description xml:lang="x-default">Enable SFTP file transfer to customer SFTP server. When disabled, only WebDAV is used (default behavior).</description>
-                <type>boolean</type>
-                <mandatory-flag>false</mandatory-flag>
-                <externally-managed-flag>false</externally-managed-flag>
-                <default-value>false</default-value>
-            </attribute-definition>
             <attribute-definition attribute-id="brEngSFTPHostname">
                 <display-name xml:lang="x-default">SFTP Server Hostname</display-name>
                 <description xml:lang="x-default">SFTP server hostname or IP address (e.g., sftp.example.com)</description>
@@ -417,7 +409,6 @@
             </attribute-group>
             <attribute-group group-id="BloomreachEngagementSFTP">
                 <display-name xml:lang="x-default">Bloomreach Engagement SFTP</display-name>
-                <attribute attribute-id="brEngSFTPEnabled"/>
                 <attribute attribute-id="brEngSFTPHostname"/>
                 <attribute attribute-id="brEngSFTPPort"/>
                 <attribute attribute-id="brEngSFTPUsername"/>

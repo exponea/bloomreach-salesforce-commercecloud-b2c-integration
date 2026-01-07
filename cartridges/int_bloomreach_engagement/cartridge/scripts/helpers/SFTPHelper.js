@@ -15,7 +15,8 @@ var FileWriter = require('dw/io/FileWriter');
 var KeyRef = require('dw/crypto/KeyRef');
 
 /**
- * Check if SFTP is enabled and properly configured
+ * Check if SFTP is properly configured (credentials-based, not flag-based)
+ * The system implicitly determines SFTP usage based on credential presence
  * @returns {Object} Result object with {enabled: boolean, error: string}
  */
 function isSFTPEnabled() {
@@ -24,43 +25,36 @@ function isSFTPEnabled() {
         var sitePrefs = currentSite.getPreferences();
         var custom = sitePrefs.getCustom();
 
-        // Check if SFTP is enabled
-        var enabled = custom.brEngSFTPEnabled;
-        if (!enabled) {
-            return {
-                enabled: false,
-                error: 'SFTP is disabled in site preferences'
-            };
-        }
-
-        // Validate required fields
+        // Validate required fields - implicitly check for SFTP credentials
         var hostname = custom.brEngSFTPHostname;
         var username = custom.brEngSFTPUsername;
-        // Get the actual value from the enum, not the display name
-        var authMethodRaw = custom.brEngSFTPAuthMethod;
-        var authMethod = authMethodRaw && authMethodRaw.value ? authMethodRaw.value : (authMethodRaw || 'password');
         var remoteDir = custom.brEngSFTPRemoteDirectory;
 
+        // If core SFTP credentials are not configured, use WebDAV
         if (!hostname || hostname.trim() === '') {
             return {
                 enabled: false,
-                error: 'SFTP hostname is not configured'
+                error: 'SFTP hostname is not configured - using WebDAV'
             };
         }
 
         if (!username || username.trim() === '') {
             return {
                 enabled: false,
-                error: 'SFTP username is not configured'
+                error: 'SFTP username is not configured - using WebDAV'
             };
         }
 
         if (!remoteDir || remoteDir.trim() === '') {
             return {
                 enabled: false,
-                error: 'SFTP remote directory is not configured'
+                error: 'SFTP remote directory is not configured - using WebDAV'
             };
         }
+
+        // Get the actual value from the enum, not the display name
+        var authMethodRaw = custom.brEngSFTPAuthMethod;
+        var authMethod = authMethodRaw && authMethodRaw.value ? authMethodRaw.value : (authMethodRaw || 'password');
 
         // Validate authentication credentials based on method
         if (authMethod === 'ssh-key') {
@@ -68,7 +62,7 @@ function isSFTPEnabled() {
             if (!keyAlias || keyAlias.trim() === '') {
                 return {
                     enabled: false,
-                    error: 'SFTP SSH key alias is not configured'
+                    error: 'SFTP SSH key alias is not configured - using WebDAV'
                 };
             }
         } else {
@@ -76,7 +70,7 @@ function isSFTPEnabled() {
             if (!password || password.trim() === '') {
                 return {
                     enabled: false,
-                    error: 'SFTP password is not configured'
+                    error: 'SFTP password is not configured - using WebDAV'
                 };
             }
         }
@@ -109,7 +103,6 @@ function getSFTPConfig() {
         var authMethod = authMethodRaw && authMethodRaw.value ? authMethodRaw.value : (authMethodRaw || 'password');
 
         return {
-            enabled: custom.brEngSFTPEnabled || false,
             hostname: custom.brEngSFTPHostname || '',
             port: custom.brEngSFTPPort || 22,
             username: custom.brEngSFTPUsername || '',
@@ -166,11 +159,11 @@ function uploadFile(localFile, Logger) {
     try {
         // Get SFTP configuration
         var config = getSFTPConfig();
-        if (!config || !config.enabled) {
+        if (!config) {
             return {
                 success: false,
                 remotePath: null,
-                error: 'SFTP is not enabled or configured'
+                error: 'SFTP configuration is not available'
             };
         }
 
@@ -330,10 +323,10 @@ function testSFTPConnection(Logger) {
 
         // Get SFTP configuration
         var config = getSFTPConfig();
-        if (!config || !config.enabled) {
+        if (!config) {
             return {
                 success: false,
-                message: 'SFTP is not enabled or configured'
+                message: 'SFTP configuration is not available'
             };
         }
 
