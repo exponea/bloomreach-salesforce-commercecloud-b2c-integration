@@ -10,7 +10,7 @@ Installation of cartridge is performed on a client side by a developer who has a
 
 Note
 
-The cartridge can be installed on these SFCC versions: the older SiteGenesis (also known as Demandware) since the Commerce Cloud Platform Release 16.8 and Site Genesis 105.2.0, and the newer Storefront Reference Architecture (SFRA) since the Commerce Cloud Platform Release 16.8 and SFRA 6.0.0.
+The cartridge can be installed on these SFCC versions: the older SiteGenesis (also known as Demandware) since the Commerce Cloud Platform Release 16.8 and Site Genesis 105.2.0, and the newer Storefront Reference Architecture (SFRA) since the Commerce Cloud Platform Release 16.8 and SFRA 6.0.0+ (tested on SFRA 6.3).
 
 ## Features
 
@@ -53,53 +53,28 @@ Cartridge provides full initial data export and incremental updates in near real
 
 ### SFTP File Transfer Support
 
-The cartridge now supports secure SFTP file transfer as an alternative to WebDAV for all feed exports. This feature enables:
+The cartridge supports secure SFTP file transfer (recommended):
 
 - **Secure file transfer** to your own SFTP server
 - **Customer-managed file storage** with full control over feed data
-- **Automatic fallback** to WebDAV if SFTP is unavailable (no job failures)
+- **Job failure notifications** when SFTP upload fails (triggers SFCC email alerts)
 - **SSH key authentication** for both SFCC and Bloomreach (most secure)
 - **Seamless integration** with existing feed jobs - no code changes required
 
-> **Secure Setup**: Both SFCC and Bloomreach use SSH key authentication. SFCC uses a local SSH key you generate. Bloomreach generates its own SSH key. Both public keys go to your SFTP server. This is the most secure approach!
-
-#### Key Benefits
-
-- **Maximum Security**: Both SFCC and Bloomreach use SSH key authentication
-- **Control**: Store feed files on your own infrastructure
-- **Separate Keys**: Each system has its own SSH key pair for isolation
-- **Flexibility**: Optional feature - disable anytime without affecting existing functionality
-- **Reliability**: Automatic WebDAV fallback ensures jobs never fail due to SFTP issues
-- **Compatibility**: Works with all 7 feed types (Customer, Purchase, Purchase Item, Product, Variant, Inventory)
-- **Industry Standard**: Uses standard SSH public key cryptography
-
 #### How It Works
 
-When SFTP is enabled and configured:
-1. Feed job generates CSV file in IMPEX directory (as usual)
-2. System attempts to upload file to your SFTP server
+**When SFTP configured:**
+1. Feed job generates CSV file in IMPEX directory (file always remains in IMPEX)
+2. System uploads file to your SFTP server
 3. If SFTP upload succeeds:
+   - Bloomreach API is triggered with SFTP file path
    - Bloomreach fetches file from your SFTP server
-   - File path passed to Bloomreach API is the SFTP path
 4. If SFTP upload fails:
-   - System automatically falls back to WebDAV (no job failure)
-   - Bloomreach fetches file from SFCC via WebDAV
-   - Error logged for troubleshooting
+   - Job throws an error and fails
+   - SFCC sends email notification (if configured)
+   - File remains in IMPEX for troubleshooting
 
-#### Configuration
-
-SFTP is configured through Business Manager site preferences.
-
-**Quick Setup:**
-1. Generate SSH key for SFCC locally (`ssh-keygen` command)
-2. In Bloomreach Engagement: Generate SSH key and copy the public key
-3. Add BOTH public keys to your SFTP server's authorized_keys
-4. Upload SFCC private key to Business Manager (Administration > Operations > Private Keys)
-5. In SFCC: **Merchant Tools > Site Preferences > Custom Preferences > BloomreachEngagementSFTP**
-6. Enable SFTP, enter server details, select "SSH Private Key Authentication"
-7. Test connection using the Test SFTP Connection job
-8. Configure Bloomreach imports to use "File storage" with SFTP integration
-9. Run feed jobs - SFTP upload happens automatically
-
-**Note:** If SFCC key upload fails, password authentication is available as fallback
-
+**When SFTP is NOT configured:**
+1. Feed job generates CSV file in IMPEX directory
+2. Bloomreach API is triggered with WebDAV file URL
+3. Bloomreach fetches file from SFCC via WebDAV
