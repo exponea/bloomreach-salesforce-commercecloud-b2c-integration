@@ -1,7 +1,7 @@
 /* BloomreachEngagement Variations Product Inventory Export Job */
 'use strict';
 
-var Logger = require('dw/system/Logger').getLogger('BloomreachEngagementVariationsInventoryFeedExport');
+var Logger = require('dw/system/Logger').getLogger('BloomreachEngagementVariationInventoryFeedExport');
 var Status = require('dw/system/Status');
 var File = require('dw/io/File');
 var Transaction = require('dw/system/Transaction');
