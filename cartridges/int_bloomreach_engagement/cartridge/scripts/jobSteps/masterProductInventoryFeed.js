@@ -231,11 +231,7 @@ function triggerFileImport(skipAPICall) {
         throw new Error('Missing Feed Import ID: brEngProductInventoryFeedImportId. Configure in Business Manager Site Preferences.');
     }
 
-    try {
-        var result = BREngagementAPIHelper.bloomReachEngagementAPIService(masterProductInventoryFeedImportId, filePath);
-    } catch (e) {
-        Logger.error('Error while triggering bloomreach import start {0}', e.message);
-    }
+    BREngagementAPIHelper.bloomReachEngagementAPIService(masterProductInventoryFeedImportId, filePath);
 }
 
 function splitFile() {

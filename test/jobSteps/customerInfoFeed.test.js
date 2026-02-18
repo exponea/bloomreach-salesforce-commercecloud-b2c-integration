@@ -140,6 +140,7 @@ describe('customerInfoFeed Job Step', function() {
             ]
         });
         mockBREngagementAPIHelper.bloomReachEngagementAPIService.reset();
+        mockBREngagementAPIHelper.bloomReachEngagementAPIService.returns({ success: true });
 
         // Setup default site preferences
         Site.__setCurrentSite({
@@ -703,6 +704,42 @@ describe('customerInfoFeed Job Step', function() {
             // Verify: Should complete successfully
             expect(result).to.be.instanceOf(Status);
             expect(result.isOK()).to.be.true;
+        });
+
+        it('should skip API call when StartImportByAPI is false', function() {
+            const args = {
+                TargetFolder: 'customer-feed', FileNamePrefix: 'customers-FULL',
+                MaxNumberOfRows: 10000, GeneratePreInitFile: false, StartImportByAPI: false
+            };
+            const customer = { customerNo: 'CUST-001', email: 'test@example.com' };
+            CustomerMgr.__setCustomers([customer]);
+            customerInfoFeed.beforeStep(args);
+            const lines = new ArrayList();
+            lines.push(new ArrayList(customerInfoFeed.process(customer)));
+            customerInfoFeed.write(lines);
+
+            const result = customerInfoFeed.afterStep();
+
+            expect(result.isOK()).to.be.true;
+            expect(mockBREngagementAPIHelper.bloomReachEngagementAPIService.called).to.be.false;
+        });
+
+        it('should throw and fail the job when StartImportByAPI is true and API throws', function() {
+            const args = {
+                TargetFolder: 'customer-feed', FileNamePrefix: 'customers-FULL',
+                MaxNumberOfRows: 10000, GeneratePreInitFile: false
+                // StartImportByAPI defaults to true
+            };
+            const customer = { customerNo: 'CUST-001', email: 'test@example.com' };
+            CustomerMgr.__setCustomers([customer]);
+            customerInfoFeed.beforeStep(args);
+            const lines = new ArrayList();
+            lines.push(new ArrayList(customerInfoFeed.process(customer)));
+            customerInfoFeed.write(lines);
+
+            mockBREngagementAPIHelper.bloomReachEngagementAPIService.throws(new Error('API unavailable'));
+
+            expect(() => customerInfoFeed.afterStep()).to.throw('API unavailable');
         });
     });
 

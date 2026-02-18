@@ -705,6 +705,47 @@ describe('generatePurchaseCSV', function() {
             // Execute and verify that error is thrown
             expect(() => generatePurchaseCSV.afterStep()).to.throw('Could not process all the purchase orders');
         });
+
+        it('should skip API call when StartImportByAPI is false', function() {
+            mockCsvGeneratorHelper.createPurchaseFeedFile.returns(mockFile);
+            mockCsvGeneratorHelper.getPurchaseFeedFileHeaders.returns(JSON.stringify([]));
+            mockCsvGeneratorHelper.getFeedAttributes.returns({ headers: [], SFCCAttributesValue: [] });
+            mockCsvGeneratorHelper.getOrdersForPurchaseFeed.returns({
+                hasNext: () => false, close: sinon.stub(), count: 0
+            });
+
+            const args = {
+                UpdateFromDatePreference: false, MaxNumberOfRows: 10000,
+                TargetFolder: 'export', FileNamePrefix: 'purchase-feed',
+                GeneratePreInitFile: false, StartImportByAPI: false, NEW: true
+            };
+            generatePurchaseCSV.beforeStep(args);
+
+            const result = generatePurchaseCSV.afterStep();
+
+            expect(result.isOK()).to.be.true;
+            expect(mockBREngagementAPIHelper.bloomReachEngagementAPIService.called).to.be.false;
+        });
+
+        it('should throw and fail the job when StartImportByAPI is true and API throws', function() {
+            mockCsvGeneratorHelper.createPurchaseFeedFile.returns(mockFile);
+            mockCsvGeneratorHelper.getPurchaseFeedFileHeaders.returns(JSON.stringify([]));
+            mockCsvGeneratorHelper.getFeedAttributes.returns({ headers: [], SFCCAttributesValue: [] });
+            mockCsvGeneratorHelper.getOrdersForPurchaseFeed.returns({
+                hasNext: () => false, close: sinon.stub(), count: 0
+            });
+            mockBREngagementAPIHelper.bloomReachEngagementAPIService.throws(new Error('API unavailable'));
+
+            const args = {
+                UpdateFromDatePreference: false, MaxNumberOfRows: 10000,
+                TargetFolder: 'export', FileNamePrefix: 'purchase-feed',
+                GeneratePreInitFile: false, NEW: true
+                // StartImportByAPI defaults to true
+            };
+            generatePurchaseCSV.beforeStep(args);
+
+            expect(() => generatePurchaseCSV.afterStep()).to.throw('API unavailable');
+        });
     });
 
     describe('splitFile()', function() {

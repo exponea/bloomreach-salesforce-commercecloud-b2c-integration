@@ -26,13 +26,13 @@ const bloomReachEngagementAPIService = function(import_Id, webDavFilePath) {
     Logger.info('Response Data: ' + result);
 
     if (result.status === 'OK') {
-        // The result.object is the object returned by the 'after' callback.
-        result = result.object;
+        return result.object;
     } else {
-        // Handle the error. See result.error for more information.
-        result = result.error;
+        var errorMsg = 'Bloomreach API import trigger failed for import ID: ' + import_Id
+            + '. Error: ' + result.errorMessage;
+        Logger.error(errorMsg);
+        throw new Error(errorMsg);
     }
-    return result;
 }
 
 module.exports = {
