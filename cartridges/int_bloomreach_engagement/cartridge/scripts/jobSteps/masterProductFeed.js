@@ -1,4 +1,4 @@
-/* Feedonomics Product Export Job */
+/* BloomreachEngagement Master Product Export Job */
 'use strict';
 
 var Logger = require('dw/system/Logger').getLogger('BloomreachEngagementMasterProductFeedExport');;
