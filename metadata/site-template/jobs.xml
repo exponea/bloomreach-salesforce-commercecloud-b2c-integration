@@ -330,4 +330,23 @@
             </run-once>
         </triggers>
     </job>
+
+    <job job-id="Bloomreach Engagement - Test SFTP Connection" priority="0">
+        <description>Tests the SFTP connection and authentication for Bloomreach Engagement integration.</description>
+        <parameters/>
+        <flow>
+            <context site-id="RefArch"/>
+            <step step-id="testSFTPConnection" type="custom.BloomreachEngagement.TestSFTPConnection" enforce-restart="false">
+                <description/>
+                <parameters/>
+            </step>
+        </flow>
+        <rules/>
+        <triggers>
+            <run-once enabled="false">
+                <date>2026-02-18Z</date>
+                <time>00:00:00.000Z</time>
+            </run-once>
+        </triggers>
+    </job>
 </jobs>
