@@ -196,7 +196,7 @@ exports.write = function (lines) {
     rowsCount = rowsCount + lines.size();
 };
 
-function triggerFileImport(skipAPICall, startImportByAPI) {
+function triggerFileImport(skipAPICall) {
     // Check if SFTP is configured (credentials-based, not failure-based)
     var sftpCheck = SFTPHelper.isSFTPEnabled();
     var filePath;
@@ -249,7 +249,7 @@ function splitFile() {
     fileWriter.flush();
     csvWriter.close();
     fileWriter.close();
-    triggerFileImport(false, startImportByAPI);
+    triggerFileImport(false);
     rowsCount = 1;
 
     if (!targetFolder) {
@@ -293,7 +293,7 @@ function splitFile() {
     fileWriter.close();
 
     if (processedAll) {
-    	triggerFileImport(generatePreInitFile, startImportByAPI);
+    	triggerFileImport(generatePreInitFile);
 
         var currentSite = require('dw/system/Site').getCurrent();
 

@@ -169,7 +169,7 @@ var localCsvFile;
     rowsCount = rowsCount + lines.size();
 };
 
-function triggerFileImport(skipAPICall, startImportByAPI) {
+function triggerFileImport(skipAPICall) {
     // Check if SFTP is configured (credentials-based, not failure-based)
     var sftpCheck = SFTPHelper.isSFTPEnabled();
     var filePath;
@@ -223,7 +223,7 @@ function splitFile() {
     fw.flush();
     csw.close();
     fw.close();
-    triggerFileImport(false, startImportByAPI);
+    triggerFileImport(false);
     fileNum = fileNum + 1;
     rowsCount = 1;
 
@@ -250,7 +250,7 @@ function splitFile() {
     csw.close();
     fw.close();
     if (processedAll) {
-        triggerFileImport(generatePreInitFile, startImportByAPI);
+        triggerFileImport(generatePreInitFile);
 
         if(updateCustomDateExportPreference){
     		var currentSite = require('dw/system/Site').getCurrent();
