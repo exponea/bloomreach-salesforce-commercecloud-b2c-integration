@@ -15,10 +15,12 @@ const bloomReachEngagementAPIService = function(import_Id, webDavFilePath) {
     var requestObject = {
     	webDavFilePath: webDavFilePath
    	};
-    result = BREngagementAPISerivce.call(requestObject);
 
     var serviceURL = bloomreachServiceURL.replace('projectToken', bloomreachProjectToken).replace('import_id', import_Id);
-    
+    Logger.info('Triggering Bloomreach Engagement API import. URL: ' + serviceURL + ' | File path: ' + webDavFilePath);
+
+    result = BREngagementAPISerivce.call(requestObject);
+
     Logger.info('bloomreach.engagement.service call URL: ' + serviceURL);
     Logger.info('Request Data: ' + BREngagementAPISerivce.getRequestData());
     Logger.info('Response Data: ' + result);
