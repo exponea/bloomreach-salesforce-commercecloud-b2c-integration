@@ -1,7 +1,7 @@
 /* BloomreachEngagement Master Product Export Job */
 'use strict';
 
-var Logger = require('dw/system/Logger').getLogger('BloomreachEngagementMasterProductFeedExport');;
+var Logger = require('dw/system/Logger').getLogger('BloomreachEngagementMasterProductFeedExport');
 var Status = require('dw/system/Status');
 var File = require('dw/io/File');
 var Transaction = require('dw/system/Transaction');
@@ -231,7 +231,7 @@ exports.beforeStep = function () {
         }
     } catch (ex) {
         processedAll = false;
-        Logger.info('Not able to process product {0} on column {1} having error : {2}', product.ID, currentColumn.SFCCProductAttribute, ex.toString());
+        Logger.error('Not able to process product {0} on column {1} having error : {2}', product.ID, currentColumn.SFCCProductAttribute, ex.toString());
     }
 };
 
@@ -284,18 +284,19 @@ function triggerFileImport(skipAPICall, startImportByAPI) {
     }
 
     if (skipAPICall) {
-        Logger.info('Pre-init mode: skipping Bloomreach API call.');
+        Logger.info('Pre-init mode: skipping Bloomreach API import trigger. Use the generated CSV to configure an import in Bloomreach.');
+        return;
+    }
+
+    if (!startImportByAPI) {
+        Logger.info('StartImportByAPI=false: skipping Bloomreach API import trigger.');
         return;
     }
 
     var masterProductFeedImportId = currentSite.getCustomPreferenceValue("brEngProductFeedImportId");
 
     if (!masterProductFeedImportId) {
-        if (startImportByAPI) {
-            throw new Error('Missing Feed Import ID: brEngProductFeedImportId. Configure in Business Manager, or set StartImportByAPI=false to skip.');
-        }
-        Logger.warn('Missing Feed Import ID: brEngProductFeedImportId. Skipping API call.');
-        return;
+        throw new Error('Missing Feed Import ID: brEngProductFeedImportId. Configure in Business Manager Site Preferences.');
     }
 
     try {

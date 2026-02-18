@@ -27,6 +27,7 @@ var fileNamePrefix;
 var maxNoOfRows;
 var query;
 var generatePreInitFile = false;
+var startImportByAPI = true;
 var webDavFilePath;
 var localCsvFile;
 
@@ -201,6 +202,9 @@ function getAllCustomerProfiles(searchQuery, sortString, lastModifiedDate) {
     maxNoOfRows = args.MaxNumberOfRows - 1000;
     query = args.Query || '';
     generatePreInitFile = args.GeneratePreInitFile;
+    startImportByAPI = (args.StartImportByAPI !== undefined && args.StartImportByAPI !== null)
+        ? args.StartImportByAPI
+        : true;
 
     if (!targetFolder) {
         throw new Error('One or more mandatory parameters are missing.');
@@ -247,6 +251,9 @@ function getAllCustomerProfiles(searchQuery, sortString, lastModifiedDate) {
     fileNamePrefix = args.FileNamePrefix
     maxNoOfRows = args.MaxNumberOfRows - 1000;
     query = args.Query || 'lastModified > {0}';
+    startImportByAPI = (args.StartImportByAPI !== undefined && args.StartImportByAPI !== null)
+        ? args.StartImportByAPI
+        : true;
     
     var lastCustomerExportCO = CustomObjectMgr.getCustomObject('BloomreachEngagementJobLastExecution', 'lastCustomerExport');
     var lastCustomerExport = lastCustomerExportCO ? lastCustomerExportCO.custom.lastExecution : null;
@@ -319,7 +326,7 @@ function getAllCustomerProfiles(searchQuery, sortString, lastModifiedDate) {
         return csvCustomerArray;
     } catch (ex) {
         processedAll = false;
-        Logger.info('Not able to process customer {0} on column {1} having error : {2}', customer.customerNo, currentColumn.SFCCProductAttribute, ex.toString());
+        Logger.error('Not able to process customer {0} on column {1} having error : {2}', customer.customerNo, currentColumn.SFCCProductAttribute, ex.toString());
     }
 };
 
@@ -346,9 +353,7 @@ function getAllCustomerProfiles(searchQuery, sortString, lastModifiedDate) {
     rowsCount = rowsCount + lines.size();
 };
 
-function triggerFileImport(skipAPICall) {
-    var customerFeedImportId = sitePrefs.getCustom()["brEngCustomerFeedImportId"];
-
+function triggerFileImport(skipAPICall, startImportByAPI) {
     // Check if SFTP is configured (credentials-based, not failure-based)
     var sftpCheck = SFTPHelper.isSFTPEnabled();
     var filePath;
@@ -375,9 +380,16 @@ function triggerFileImport(skipAPICall) {
     }
 
     if (skipAPICall) {
-        Logger.info('Pre-init mode: skipping Bloomreach API import trigger. Use the generated CSV to create the import in Bloomreach Engagement and configure brEngCustomerFeedImportId.');
+        Logger.info('Pre-init mode: skipping Bloomreach API import trigger. Use the generated CSV to configure an import in Bloomreach.');
         return;
     }
+
+    if (!startImportByAPI) {
+        Logger.info('StartImportByAPI=false: skipping Bloomreach API import trigger.');
+        return;
+    }
+
+    var customerFeedImportId = sitePrefs.getCustom()["brEngCustomerFeedImportId"];
 
     if (!customerFeedImportId) {
         throw new Error('Missing Feed Import ID: brEngCustomerFeedImportId. Configure in Business Manager Site Preferences.');
@@ -395,7 +407,7 @@ function splitFile() {
     fileWriter.flush();
     csvWriter.close();
     fileWriter.close();
-    triggerFileImport(false);
+    triggerFileImport(false, startImportByAPI);
     rowsCount = 1;
 
     if (!targetFolder) {
@@ -434,7 +446,7 @@ function splitFile() {
     csvWriter.close();
     fileWriter.close();
     if (processedAll) {
-        triggerFileImport(generatePreInitFile);
+        triggerFileImport(generatePreInitFile, startImportByAPI);
 
 		if (query) {
 	        var lastCustomerExportCO = CustomObjectMgr.getCustomObject('BloomreachEngagementJobLastExecution', 'lastCustomerExport');

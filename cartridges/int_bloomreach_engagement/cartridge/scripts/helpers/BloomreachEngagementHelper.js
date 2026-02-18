@@ -17,7 +17,7 @@ const bloomReachEngagementAPIService = function(import_Id, webDavFilePath) {
    	};
 
     var serviceURL = bloomreachServiceURL.replace('projectToken', bloomreachProjectToken).replace('import_id', import_Id);
-    Logger.info('Triggering Bloomreach Engagement API import. URL: ' + serviceURL + ' | File path: ' + webDavFilePath);
+    Logger.info('Triggering Bloomreach API import. URL: ' + serviceURL + ' | File path: ' + webDavFilePath);
 
     result = BREngagementAPISerivce.call(requestObject);
 
