@@ -27,6 +27,7 @@ var fileNamePrefix;
 var maxNoOfRows;
 var timeStamp = Date.now().toString();
 var generatePreInitFile = false;
+var startImportByAPI = true;
 var webDavFilePath;
 var localCsvFile;
 var generatedFilePaths = []; // Track all generated CSV files for merging
@@ -146,6 +147,9 @@ exports.beforeStep = function () {
     fileNamePrefix = args.FileNamePrefix
     maxNoOfRows = args.MaxNumberOfRows - 1000;
     generatePreInitFile = args.GeneratePreInitFile;
+    startImportByAPI = (args.StartImportByAPI !== undefined && args.StartImportByAPI !== null)
+        ? args.StartImportByAPI
+        : true;
 
     if (!targetFolder) {
         throw new Error('One or more mandatory parameters are missing.');
@@ -262,9 +266,7 @@ exports.beforeStep = function () {
     rowsCount = rowsCount + lines.size();
 };
 
-function triggerFileImport(skipAPICall) {
-    var variationProductFeedImportId = currentSite.getCustomPreferenceValue("brEngVariantFeedImportId");
-
+function triggerFileImport(skipAPICall, startImportByAPI) {
     // Check if SFTP is configured (credentials-based, not failure-based)
     var sftpCheck = SFTPHelper.isSFTPEnabled();
     var filePath;
@@ -291,7 +293,17 @@ function triggerFileImport(skipAPICall) {
     }
 
     if (skipAPICall) {
-        Logger.info('Pre-init mode: skipping Bloomreach API import trigger. Use the generated CSV to create the import in Bloomreach Engagement and configure brEngVariantFeedImportId.');
+        Logger.info('Pre-init mode: skipping Bloomreach API call.');
+        return;
+    }
+
+    var variationProductFeedImportId = currentSite.getCustomPreferenceValue("brEngVariantFeedImportId");
+
+    if (!variationProductFeedImportId) {
+        if (startImportByAPI) {
+            throw new Error('Missing Feed Import ID: brEngVariantFeedImportId. Configure in Business Manager, or set StartImportByAPI=false to skip.');
+        }
+        Logger.warn('Missing Feed Import ID: brEngVariantFeedImportId. Skipping API call.');
         return;
     }
 
@@ -306,7 +318,7 @@ function splitFile() {
     fileWriter.flush();
     csvWriter.close();
     fileWriter.close();
-    triggerFileImport(false);
+    triggerFileImport(false, startImportByAPI);
     rowsCount = 1;
 
     if (!targetFolder) {
@@ -365,7 +377,7 @@ function splitFile() {
         }
 
         Logger.info('Export Product Feed Successful');
-        triggerFileImport(generatePreInitFile);
+        triggerFileImport(generatePreInitFile, startImportByAPI);
         
         // Merge all generated files into LATEST file
         try {

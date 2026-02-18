@@ -201,6 +201,10 @@ function triggerFileImport(skipAPICall) {
         return;
     }
 
+    if (!purchaseProductFeedImportId) {
+        throw new Error('Missing Feed Import ID: brEngPurchaseItemFeedImportId. Configure in Business Manager Site Preferences.');
+    }
+
     // Call Bloomreach API with appropriate file path
     try {
         var result = BREngagementAPIHelper.bloomReachEngagementAPIService(purchaseProductFeedImportId, filePath);

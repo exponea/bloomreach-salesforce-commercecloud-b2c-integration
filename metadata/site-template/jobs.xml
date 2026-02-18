@@ -15,6 +15,7 @@
                     <parameter name="MaxNumberOfRows">1000000</parameter>
                     <parameter name="UpdateFromDatePreference">false</parameter>
                     <parameter name="GeneratePreInitFile">true</parameter>
+                    <parameter name="StartImportByAPI">false</parameter>
                 </parameters>
             </step>
             <step step-id="generatePurchaseItemFeedPreInit" type="custom.BloomreachGeneratePurchaseProductsCSV" enforce-restart="false">
@@ -25,6 +26,7 @@
                     <parameter name="TargetFolder">src/bloomreach_engagement/PreInit</parameter>
                     <parameter name="FileNamePrefix">purchase_item-pre-init-</parameter>
                     <parameter name="GeneratePreInitFile">true</parameter>
+                    <parameter name="StartImportByAPI">false</parameter>
                 </parameters>
             </step>
             <step step-id="generateProductFeedPreInit" type="custom.BloomreachEngagement.Generate.MasterProductFeed" enforce-restart="false">
@@ -34,6 +36,7 @@
                     <parameter name="FileNamePrefix">products-pre-init-</parameter>
                     <parameter name="MaxNumberOfRows">1000000</parameter>
                     <parameter name="GeneratePreInitFile">true</parameter>
+                    <parameter name="StartImportByAPI">false</parameter>
                 </parameters>
             </step>
             <step step-id="generateVariantsFeedPreInit" type="custom.BloomreachEngagement.Generate.VariationProductFeed" enforce-restart="false">
@@ -43,6 +46,7 @@
                     <parameter name="FileNamePrefix">variants-pre-init-</parameter>
                     <parameter name="MaxNumberOfRows">1000000</parameter>
                     <parameter name="GeneratePreInitFile">true</parameter>
+                    <parameter name="StartImportByAPI">false</parameter>
                 </parameters>
             </step>
             <step step-id="generateCustomerFeedPreInit" type="custom.BloomreachEngagement.Generate.CustomerFeed" enforce-restart="false">
@@ -52,6 +56,7 @@
                     <parameter name="FileNamePrefix">customers-pre-init-</parameter>
                     <parameter name="MaxNumberOfRows">1000000</parameter>
                     <parameter name="GeneratePreInitFile">true</parameter>
+                    <parameter name="StartImportByAPI">false</parameter>
                 </parameters>
             </step>
             <step step-id="generateProductInventoryFeedPreInit" type="custom.BloomreachEngagement.Generate.MasterProductInventoryFeed" enforce-restart="false">
@@ -61,6 +66,7 @@
                     <parameter name="FileNamePrefix">products-inventory-pre-init-</parameter>
                     <parameter name="MaxNumberOfRows">1000000</parameter>
                     <parameter name="GeneratePreInitFile">true</parameter>
+                    <parameter name="StartImportByAPI">false</parameter>
                 </parameters>
             </step>
             <step step-id="generateVariantsInventoryFeedPreInit" type="custom.BloomreachEngagement.Generate.VariationProductInventoryFeed" enforce-restart="false">
@@ -70,6 +76,7 @@
                     <parameter name="FileNamePrefix">variants-inventory-pre-init-</parameter>
                     <parameter name="MaxNumberOfRows">1000000</parameter>
                     <parameter name="GeneratePreInitFile">true</parameter>
+                    <parameter name="StartImportByAPI">false</parameter>
                 </parameters>
             </step>
         </flow>

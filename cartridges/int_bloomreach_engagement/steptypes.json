@@ -279,6 +279,13 @@
                             "@type": "boolean",
                             "@required": false,
                             "default-value": "false"
+                        },
+                        {
+                            "@name": "StartImportByAPI",
+                            "description": "When true (default), the job triggers the Bloomreach Engagement API to start the import after uploading the CSV. Requires a Feed Import ID configured in Site Preferences. When false, the job completes after uploading the CSV without triggering the Bloomreach API - use this when the import is scheduled independently via a Bloomreach scheduler.",
+                            "@type": "boolean",
+                            "@required": false,
+                            "default-value": "true"
                         }
                     ]
                 },
@@ -339,6 +346,13 @@
                             "@type": "boolean",
                             "@required": false,
                             "default-value": "false"
+                        },
+                        {
+                            "@name": "StartImportByAPI",
+                            "description": "When true (default), the job triggers the Bloomreach Engagement API to start the import after uploading the CSV. Requires a Feed Import ID configured in Site Preferences. When false, the job completes after uploading the CSV without triggering the Bloomreach API - use this when the import is scheduled independently via a Bloomreach scheduler.",
+                            "@type": "boolean",
+                            "@required": false,
+                            "default-value": "true"
                         }
                     ]
                 },
@@ -534,8 +548,14 @@
                             "@type": "boolean",
                             "@required": false,
                             "default-value": "false"
+                        },
+                        {
+                            "@name": "StartImportByAPI",
+                            "description": "When true (default), the job triggers the Bloomreach Engagement API to start the import after uploading the CSV. Requires a Feed Import ID configured in Site Preferences. When false, the job completes after uploading the CSV without triggering the Bloomreach API - use this when the import is scheduled independently via a Bloomreach scheduler.",
+                            "@type": "boolean",
+                            "@required": false,
+                            "default-value": "true"
                         }
-                        
                     ]
                 },
                 "status-codes": {
@@ -595,6 +615,13 @@
                             "@type": "boolean",
                             "@required": false,
                             "default-value": "false"
+                        },
+                        {
+                            "@name": "StartImportByAPI",
+                            "description": "When true (default), the job triggers the Bloomreach Engagement API to start the import after uploading the CSV. Requires a Feed Import ID configured in Site Preferences. When false, the job completes after uploading the CSV without triggering the Bloomreach API - use this when the import is scheduled independently via a Bloomreach scheduler.",
+                            "@type": "boolean",
+                            "@required": false,
+                            "default-value": "true"
                         }
                     ]
                 },
