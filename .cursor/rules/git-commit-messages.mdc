@@ -1,0 +1,37 @@
+---
+description: Git commit message conventions for this project
+alwaysApply: false
+---
+# Git Commit Messages
+
+## Subject line
+
+- Imperative mood, capitalized, no trailing period
+- Aim for 50 chars; hard limit 72
+- Use `fix:` prefix for bug fixes, `revert:` for reverts; otherwise start with a verb (`Add`, `Fix`, `Update`, `Refactor`, `Remove`, `Enhance`, `Clean up`)
+- Be specific — name the function, parameter, or feature
+
+```
+# Good
+Add StartImportByAPI parameter to catalog feed job steps
+fix: splitFile() header corruption and customer checkpoint on full export
+
+# Bad
+fixed stuff / Update README.md / changes
+```
+
+## Body (optional, encouraged for non-trivial changes)
+
+- Blank line after subject; wrap at 72 chars
+- Explain **why**, not what
+- Prose for single issues; `-` bullets for multiple changes
+
+## Footer
+
+- `Fixes #n` / `Closes #n` / `Resolves #n` to auto-close GitHub issues
+- `Co-authored-by: Name <email>` when applicable
+
+## Avoid
+
+- Vague subjects, present tense ("fixes", "adds"), trailing period
+- `EXPBLD-XXX:` Jira prefix — historical only, no longer used
