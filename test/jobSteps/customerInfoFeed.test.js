@@ -93,6 +93,7 @@ describe('customerInfoFeed Job Step', function() {
         customerInfoFeed = proxyquire.noCallThru()('../../cartridges/int_bloomreach_engagement/cartridge/scripts/jobSteps/customerInfoFeed', {
             'dw/system/Logger': Logger,
             'dw/system/Status': Status,
+            'dw/system/Site': Site,
             'dw/io/File': File,
             'dw/io/FileWriter': FileWriter,
             'dw/io/CSVStreamWriter': ExtendedCSVStreamWriter,
@@ -110,7 +111,11 @@ describe('customerInfoFeed Job Step', function() {
                 getDownloadUrlInfo: sinon.stub().returns({})
             },
             '~/cartridge/scripts/util/customerInfoFeedConstants': mockConstants,
-            '~/cartridge/scripts/util/fileUtils': mockFileUtils
+            '~/cartridge/scripts/util/fileUtils': mockFileUtils,
+            '~/cartridge/scripts/helpers/SFTPHelper.js': {
+                isSFTPEnabled: sinon.stub().returns({ enabled: false, error: 'SFTP not configured' }),
+                uploadFile: sinon.stub()
+            }
         });
     });
 
@@ -235,10 +240,11 @@ describe('customerInfoFeed Job Step', function() {
             const totalCount = customerInfoFeed.getTotalCount();
             expect(totalCount).to.equal(1);
 
-            // Verify: Only one customer should be available to read
+            // Verify: Only one customer should be available to read.
+            // Customers are sorted 'customerNo DESC', so CUST-005 is first.
             const customer = customerInfoFeed.read();
             expect(customer).to.not.be.undefined;
-            expect(customer.customerNo).to.equal('CUST-001');
+            expect(customer.customerNo).to.equal('CUST-005');
 
             // Next read should return undefined
             const nextCustomer = customerInfoFeed.read();
@@ -337,20 +343,18 @@ describe('customerInfoFeed Job Step', function() {
 
             customerInfoFeed.beforeStep(args);
 
-            // Read first customer
+            // Customers are sorted 'customerNo DESC', so CUST-003 comes first
             const customer1 = customerInfoFeed.read();
             expect(customer1).to.not.be.undefined;
-            expect(customer1.customerNo).to.equal('CUST-001');
+            expect(customer1.customerNo).to.equal('CUST-003');
 
-            // Read second customer
             const customer2 = customerInfoFeed.read();
             expect(customer2).to.not.be.undefined;
             expect(customer2.customerNo).to.equal('CUST-002');
 
-            // Read third customer
             const customer3 = customerInfoFeed.read();
             expect(customer3).to.not.be.undefined;
-            expect(customer3.customerNo).to.equal('CUST-003');
+            expect(customer3.customerNo).to.equal('CUST-001');
 
             // No more customers
             const customer4 = customerInfoFeed.read();
@@ -765,12 +769,12 @@ describe('customerInfoFeed Job Step', function() {
             const rows = lastCSVWriter.getRowsWritten();
             expect(rows).to.have.lengthOf(3); // Header + 2 customers
             expect(rows[0]).to.deep.equal(['customer_id', 'email', 'first_name', 'last_name']);
-            // Check first customer row
-            expect(rows[1][0]).to.equal('CUST-001');
-            expect(rows[1][1]).to.equal('john.doe@example.com');
-            // Check second customer row
-            expect(rows[2][0]).to.equal('CUST-002');
-            expect(rows[2][1]).to.equal('jane.smith@example.com');
+            // Customers sorted 'customerNo DESC': CUST-002 (jane.smith) is rows[1]
+            expect(rows[1][0]).to.equal('CUST-002');
+            expect(rows[1][1]).to.equal('jane.smith@example.com');
+            // CUST-001 (john.doe) is rows[2]
+            expect(rows[2][0]).to.equal('CUST-001');
+            expect(rows[2][1]).to.equal('john.doe@example.com');
 
             // Verify: API was called to trigger import
             expect(mockBREngagementAPIHelper.bloomReachEngagementAPIService.called).to.be.true;

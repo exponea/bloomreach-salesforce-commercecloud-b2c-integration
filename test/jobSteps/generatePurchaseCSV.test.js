@@ -703,7 +703,7 @@ describe('generatePurchaseCSV', function() {
             generatePurchaseCSV.process(order); // This will set processedAll to false
             
             // Execute and verify that error is thrown
-            expect(() => generatePurchaseCSV.afterStep()).to.throw('Could not process all the orders');
+            expect(() => generatePurchaseCSV.afterStep()).to.throw('Could not process all the purchase orders');
         });
     });
 
