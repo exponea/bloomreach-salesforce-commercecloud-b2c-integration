@@ -214,7 +214,7 @@ function getAllCustomerProfiles(searchQuery, sortString, lastModifiedDate) {
     var fileName = FileUtils.createFileName(fileNamePrefix, BloomreachEngagementConstants.FILE_EXTENSTION.CSV);
     var folderFile = new File(File.getRootDirectory(File.IMPEX), targetFolder);
     if (!folderFile.exists() && !folderFile.mkdirs()) {
-        Logger.info('Cannot create IMPEX folders {0}', (File.getRootDirectory(File.IMPEX).fullPath + targetFolder));
+        Logger.error('Cannot create IMPEX folders {0}', (File.getRootDirectory(File.IMPEX).fullPath + targetFolder));
         throw new Error('Cannot create IMPEX folders.');
     }
     var csvFile = new File(folderFile.fullPath + File.SEPARATOR + fileName);
@@ -267,7 +267,7 @@ function getAllCustomerProfiles(searchQuery, sortString, lastModifiedDate) {
     var fileName = FileUtils.createFileName(fileNamePrefix, BloomreachEngagementConstants.FILE_EXTENSTION.CSV);
     var folderFile = new File(File.getRootDirectory(File.IMPEX), targetFolder);
     if (!folderFile.exists() && !folderFile.mkdirs()) {
-        Logger.info('Cannot create IMPEX folders {0}', (File.getRootDirectory(File.IMPEX).fullPath + targetFolder));
+        Logger.error('Cannot create IMPEX folders {0}', (File.getRootDirectory(File.IMPEX).fullPath + targetFolder));
         throw new Error('Cannot create IMPEX folders.');
     }
     var csvFile = new File(folderFile.fullPath + File.SEPARATOR + fileName);
@@ -296,7 +296,7 @@ function getAllCustomerProfiles(searchQuery, sortString, lastModifiedDate) {
  	if (generatePreInitFile)
  		return 1;
 
-    Logger.info('Processed customers {0}', customerProfilesItr.count);
+    Logger.info('Starting customer export: {0} customers to process', customerProfilesItr.count);
     return customerProfilesItr.count;
 };
 
@@ -326,7 +326,7 @@ function getAllCustomerProfiles(searchQuery, sortString, lastModifiedDate) {
         return csvCustomerArray;
     } catch (ex) {
         processedAll = false;
-        Logger.error('Not able to process customer {0} on column {1} having error : {2}', customer.customerNo, currentColumn.SFCCProductAttribute, ex.toString());
+        Logger.error('Failed to process customer {0} on column {1}: {2}', customer.customerNo, currentColumn.SFCCProductAttribute, ex.toString());
     }
 };
 
@@ -419,7 +419,7 @@ function splitFile() {
     var fileName = FileUtils.createFileName(fileNamePrefix, BloomreachEngagementConstants.FILE_EXTENSTION.CSV);
     var folderFile = new File(File.getRootDirectory(File.IMPEX), targetFolder);
     if (!folderFile.exists() && !folderFile.mkdirs()) {
-        Logger.info('Cannot create IMPEX folders {0}', (File.getRootDirectory(File.IMPEX).fullPath + targetFolder));
+        Logger.error('Cannot create IMPEX folders {0}', (File.getRootDirectory(File.IMPEX).fullPath + targetFolder));
         throw new Error('Cannot create IMPEX folders.');
     }
     var csvFile = new File(folderFile.fullPath + File.SEPARATOR + fileName);

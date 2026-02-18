@@ -86,7 +86,7 @@ exports.beforeStep = function () {
     var fileName = FileUtils.createFileName(fileNamePrefix);
     var folderFile = new File(File.getRootDirectory(File.IMPEX), targetFolder);
     if (!folderFile.exists() && !folderFile.mkdirs()) {
-        Logger.info('Cannot create IMPEX folders {0}', (File.getRootDirectory(File.IMPEX).fullPath + targetFolder));
+        Logger.error('Cannot create IMPEX folders {0}', (File.getRootDirectory(File.IMPEX).fullPath + targetFolder));
         throw new Error('Cannot create IMPEX folders.');
     }
     var csvFile = new File(folderFile.fullPath + File.SEPARATOR + fileName);
@@ -131,7 +131,7 @@ exports.beforeStep = function () {
  	if (generatePreInitFile)
  		return 1;
 
-    Logger.info('Processed products inventory {0}', productsIter.count);
+    Logger.info('Starting variation product inventory export: {0} products to process', productsIter.count);
     return productsIter.count;
 };
 
@@ -170,7 +170,7 @@ exports.beforeStep = function () {
         }
     } catch (ex) {
         processedAll = false;
-        Logger.error('Not able to process product {0} invnetory on column {1} having error : {2}', product.ID, currentColumn ? currentColumn.SFCCProductAttribute : '', ex.toString());
+        Logger.error('Failed to process variation product {0} inventory on column {1}: {2}', product.ID, currentColumn ? currentColumn.SFCCProductAttribute : '', ex.toString());
     }
 };
 
@@ -261,7 +261,7 @@ function splitFile() {
     var fileName = FileUtils.createFileName(fileNamePrefix);
     var folderFile = new File(File.getRootDirectory(File.IMPEX), targetFolder);
     if (!folderFile.exists() && !folderFile.mkdirs()) {
-        Logger.info('Cannot create IMPEX folders {0}', (File.getRootDirectory(File.IMPEX).fullPath + targetFolder));
+        Logger.error('Cannot create IMPEX folders {0}', (File.getRootDirectory(File.IMPEX).fullPath + targetFolder));
         throw new Error('Cannot create IMPEX folders.');
     }
     var csvFile = new File(folderFile.fullPath + File.SEPARATOR + fileName);
@@ -312,7 +312,7 @@ function splitFile() {
 	        }
         }
 
-        Logger.info('Export Product Inventory Feed Successful');
+        Logger.info('Export Variation Product Inventory Feed Successful');
 
         // Merge all generated files into LATEST file
         try {
@@ -342,8 +342,8 @@ function splitFile() {
             // Don't fail the job if LATEST file creation fails
         }
 
-        return new Status(Status.OK, 'OK', 'Export Product Feed Successful');
+        return new Status(Status.OK, 'OK', 'Export Variation Product Inventory Feed Successful');
     }
 
-    throw new Error('Could not process all the products inventory');
+    throw new Error('Could not process all the variation product inventory records');
 };

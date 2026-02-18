@@ -99,7 +99,7 @@ var localCsvFile;
 	    	ordersToProcess = arrOrders.iterator();
 	    }
     } catch (e) {    	
-        Logger.error('Error: {0}', e.message);
+        Logger.error('Failed to initialize Purchase Item Feed: {0}', e.message);
         return new Status(Status.ERROR);
     }
 };
@@ -112,7 +112,7 @@ var localCsvFile;
   	if (generatePreInitFile)
  		return 1;
 
-    Logger.info('Processed orders {0}', ordersToProcess.count);
+    Logger.info('Starting purchase item export: {0} orders to process', ordersToProcess.count);
     return ordersToProcess.count;
 };
 
@@ -138,7 +138,7 @@ var localCsvFile;
         return order;
     } catch (ex) {
         processedAll = false;
-        Logger.error('Not able to process order {0} having error {1}', bloomreachOrderObject.orderNo, ex.toString());
+        Logger.error('Failed to process purchase order item {0}: {1}', bloomreachOrderObject.orderNo, ex.toString());
     }
 };
 
@@ -269,9 +269,9 @@ function splitFile() {
 		        }
 	        }
     	}
-        Logger.info('Export Order Product Feed Successful');
+        Logger.info('Export Purchase Item Feed Successful');
 
-        return new Status(Status.OK, 'OK', 'Export Order product Feed Successful');
+        return new Status(Status.OK, 'OK', 'Export Purchase Item Feed Successful');
     }
-    throw new Error('Could not process all the orders');
+    throw new Error('Could not process all the purchase order items');
 };

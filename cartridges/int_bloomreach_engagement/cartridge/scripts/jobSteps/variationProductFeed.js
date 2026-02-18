@@ -163,7 +163,7 @@ exports.beforeStep = function () {
     var fileName = FileUtils.createFileName(fileNamePrefix);
     var folderFile = new File(File.getRootDirectory(File.IMPEX), targetFolder);
     if (!folderFile.exists() && !folderFile.mkdirs()) {
-        Logger.info('Cannot create IMPEX folders {0}', (File.getRootDirectory(File.IMPEX).fullPath + targetFolder));
+        Logger.error('Cannot create IMPEX folders {0}', (File.getRootDirectory(File.IMPEX).fullPath + targetFolder));
         throw new Error('Cannot create IMPEX folders.');
     }
     var csvFile = new File(folderFile.fullPath + File.SEPARATOR + fileName);
@@ -208,7 +208,7 @@ exports.beforeStep = function () {
  	if (generatePreInitFile)
  		return 1;
 
-    Logger.info('Processed products {0}', productsIter.count);
+    Logger.info('Starting variation product export: {0} products to process', productsIter.count);
     return productsIter.count;
 };
 
@@ -240,7 +240,7 @@ exports.beforeStep = function () {
         }
     } catch (ex) {
         processedAll = false;
-        Logger.error('Not able to process product {0} on column {1} having error : {2}', product.ID, currentColumn.SFCCProductAttribute, ex.toString());
+        Logger.error('Failed to process variation product {0} on column {1}: {2}', product.ID, currentColumn.SFCCProductAttribute, ex.toString());
     }
 };
 
@@ -331,7 +331,7 @@ function splitFile() {
     var fileName = FileUtils.createFileName(fileNamePrefix);
     var folderFile = new File(File.getRootDirectory(File.IMPEX), targetFolder);
     if (!folderFile.exists() && !folderFile.mkdirs()) {
-        Logger.info('Cannot create IMPEX folders {0}', (File.getRootDirectory(File.IMPEX).fullPath + targetFolder));
+        Logger.error('Cannot create IMPEX folders {0}', (File.getRootDirectory(File.IMPEX).fullPath + targetFolder));
         throw new Error('Cannot create IMPEX folders.');
     }
     var csvFile = new File(folderFile.fullPath + File.SEPARATOR + fileName);
@@ -377,7 +377,7 @@ function splitFile() {
         	}
         }
 
-        Logger.info('Export Product Feed Successful');
+        Logger.info('Export Variation Product Feed Successful');
         triggerFileImport(generatePreInitFile, startImportByAPI);
         
         // Merge all generated files into LATEST file
@@ -408,7 +408,7 @@ function splitFile() {
             // Don't fail the job if LATEST file creation fails
         }
         
-        return new Status(Status.OK, 'OK', 'Export Product Feed Successful');
+        return new Status(Status.OK, 'OK', 'Export Variation Product Feed Successful');
     }
-    throw new Error('Could not process all the products');
+    throw new Error('Could not process all the variation products');
 };
