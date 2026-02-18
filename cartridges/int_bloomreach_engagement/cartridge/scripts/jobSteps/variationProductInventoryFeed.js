@@ -192,7 +192,7 @@ exports.write = function (lines) {
     rowsCount = rowsCount + lines.size();
 };
 
-function triggerFileImport() {
+function triggerFileImport(skipAPICall) {
     var variationProductFeedImportId = currentSite.getCustomPreferenceValue("brEngVariantInventoryFeedImportId");
 
     // Check if SFTP is configured (credentials-based, not failure-based)
@@ -206,7 +206,7 @@ function triggerFileImport() {
 
         if (uploadResult.success) {
             filePath = uploadResult.remotePath;
-            Logger.info('SFTP upload successful. Using SFTP path for Bloomreach API: {0}', filePath);
+            Logger.info('SFTP upload successful. File available at: {0}', filePath);
         } else {
             Logger.error('SFTP upload failed: {0}', uploadResult.error);
             throw new Error('SFTP upload failed: ' + uploadResult.error);
@@ -217,7 +217,12 @@ function triggerFileImport() {
             Logger.info('SFTP not configured: {0}. Using WebDAV.', sftpCheck.error);
         }
         filePath = webDavFilePath;
-        Logger.info('Using WebDAV path for Bloomreach API: {0}', filePath);
+        Logger.info('File available at WebDAV path: {0}', filePath);
+    }
+
+    if (skipAPICall) {
+        Logger.info('Pre-init mode: skipping Bloomreach API import trigger. Use the generated CSV to create the import in Bloomreach Engagement and configure brEngVariantInventoryFeedImportId.');
+        return;
     }
 
     try {
@@ -231,7 +236,7 @@ function splitFile() {
     fileWriter.flush();
     csvWriter.close();
     fileWriter.close();
-    triggerFileImport();
+    triggerFileImport(false);
     rowsCount = 1;
 
     if (!targetFolder) {
@@ -275,7 +280,7 @@ function splitFile() {
     fileWriter.close();
 
     if (processedAll) {
-    	triggerFileImport();
+    	triggerFileImport(generatePreInitFile);
 
         var currentSite = require('dw/system/Site').getCurrent();
 

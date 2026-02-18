@@ -164,7 +164,7 @@ var localCsvFile;
     rowsCount = rowsCount + lines.size();
 };
 
-function triggerFileImport() {
+function triggerFileImport(skipAPICall) {
     var purchaseFeedImportId = currentSite.getCustomPreferenceValue("brEngPurchaseFeedImportId");
 
     // Check if SFTP is configured (credentials-based, not failure-based)
@@ -178,7 +178,7 @@ function triggerFileImport() {
 
         if (uploadResult.success) {
             filePath = uploadResult.remotePath;
-            bloomreachLogger.info('SFTP upload successful. Using SFTP path for Bloomreach API: {0}', filePath);
+            bloomreachLogger.info('SFTP upload successful. File available at: {0}', filePath);
         } else {
             bloomreachLogger.error('SFTP upload failed: {0}', uploadResult.error);
             throw new Error('SFTP upload failed: ' + uploadResult.error);
@@ -189,7 +189,12 @@ function triggerFileImport() {
             bloomreachLogger.info('SFTP not configured: {0}. Using WebDAV.', sftpCheck.error);
         }
         filePath = webDavFilePath;
-        bloomreachLogger.info('Using WebDAV path for Bloomreach API: {0}', filePath);
+        bloomreachLogger.info('File available at WebDAV path: {0}', filePath);
+    }
+
+    if (skipAPICall) {
+        bloomreachLogger.info('Pre-init mode: skipping Bloomreach API import trigger. Use the generated CSV to create the import in Bloomreach Engagement and configure brEngPurchaseFeedImportId.');
+        return;
     }
 
     // Call Bloomreach API with appropriate file path
@@ -204,7 +209,7 @@ function splitFile() {
     fw.flush();
     csw.close();
     fw.close();
-    triggerFileImport();
+    triggerFileImport(false);
     fileNum = fileNum + 1;
     rowsCount = 1;
 
@@ -232,7 +237,7 @@ function splitFile() {
     csw.close();
     fw.close();
     if (processedAll) {
-        triggerFileImport();
+        triggerFileImport(generatePreInitFile);
         
         if(updateCustomDateExportPreference) {
     		if (currentSite) {
