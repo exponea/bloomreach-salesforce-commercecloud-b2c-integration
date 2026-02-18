@@ -1,0 +1,27 @@
+---
+description: How to run tests in this project
+globs: test/**/*.js
+alwaysApply: false
+---
+# Running Tests
+
+```bash
+nvm use
+npm test
+```
+
+Runs `mocha test/**/*.test.js`. All 70 tests should pass in ~130ms.
+
+## Structure
+
+- `test/jobSteps/` — job step unit tests
+- `test/helpers/` — helper function tests
+- `test/util/` — utility tests
+- `test/mocks/` — SFCC `dw.*` API stubs (used via `proxyquire`)
+- `test/examples/` — mock usage reference
+
+## Notes
+
+- Test files use `.test.js` suffix only (no `.spec.js`)
+- SFCC APIs (`dw.*`) are never available in Node — always mock them via `test/mocks/`
+- `triggerFileImport` and other private module functions are not tested directly; test via exported step functions (`beforeStep`, `afterStep`, etc.)

@@ -2,6 +2,14 @@
 description: Git commit message conventions for this project
 alwaysApply: false
 ---
+# Before Committing
+
+Always run tests first. Do not commit if any test fails.
+
+```bash
+nvm use && npm test
+```
+
 # Git Commit Messages
 
 ## Subject line
