@@ -231,8 +231,7 @@ function splitFile() {
     webDavFilePath = 'https://' + dw.system.System.getInstanceHostname().toString() + '/on/demandware.servlet/webdav/Sites' + feedFile.fullPath.toString();
     fw = new FileWriter(feedFile);
     csw = new CSVStreamWriter(fw);
-    headers = JSON.parse(csvGeneratorHelper.getPurchaseFeedFileHeaders());
-    csw.writeNext(Object.keys(headers));
+    csw.writeNext(headers);
 }
 
 /**

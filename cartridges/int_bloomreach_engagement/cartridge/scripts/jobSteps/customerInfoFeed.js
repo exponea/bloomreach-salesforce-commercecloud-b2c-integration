@@ -296,7 +296,7 @@ function getAllCustomerProfiles(searchQuery, sortString, lastModifiedDate) {
  	if (generatePreInitFile)
  		return 1;
 
-    Logger.info('Processed customer {0}', customerProfilesItr.count);
+    Logger.info('Processed customers {0}', customerProfilesItr.count);
     return customerProfilesItr.count;
 };
 
@@ -448,18 +448,17 @@ function splitFile() {
     if (processedAll) {
         triggerFileImport(generatePreInitFile, startImportByAPI);
 
-		if (query) {
-	        var lastCustomerExportCO = CustomObjectMgr.getCustomObject('BloomreachEngagementJobLastExecution', 'lastCustomerExport');
-	    	if (lastCustomerExportCO) {
-		        Transaction.wrap(function() {
-		            lastCustomerExportCO.custom.lastExecution = new Date();
-		        });
-	        } else {
-	        	Transaction.wrap(function() {
-	        		var newlastCustomerExportCO = CustomObjectMgr.createCustomObject('BloomreachEngagementJobLastExecution', 'lastCustomerExport');
-	        		newlastCustomerExportCO.custom.lastExecution = new Date();
-		        });
-	        }
+		var siteCurrentTime = require('dw/system/Site').getCurrent().getCalendar().getTime();
+        var lastCustomerExportCO = CustomObjectMgr.getCustomObject('BloomreachEngagementJobLastExecution', 'lastCustomerExport');
+        if (lastCustomerExportCO) {
+            Transaction.wrap(function() {
+                lastCustomerExportCO.custom.lastExecution = siteCurrentTime;
+            });
+        } else {
+            Transaction.wrap(function() {
+                var newlastCustomerExportCO = CustomObjectMgr.createCustomObject('BloomreachEngagementJobLastExecution', 'lastCustomerExport');
+                newlastCustomerExportCO.custom.lastExecution = siteCurrentTime;
+            });
         }
         
         Logger.info('Export Customer Feed Successful');
