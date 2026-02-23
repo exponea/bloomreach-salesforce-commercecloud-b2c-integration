@@ -1,7 +1,7 @@
-/* Feedonomics Product Export Job */
+/* BloomreachEngagement Master Product Export Job */
 'use strict';
 
-var Logger = require('dw/system/Logger').getLogger('BloomreachEngagementMasterProductFeedExport');;
+var Logger = require('dw/system/Logger').getLogger('BloomreachEngagementMasterProductFeedExport');
 var Status = require('dw/system/Status');
 var File = require('dw/io/File');
 var Transaction = require('dw/system/Transaction');
@@ -27,6 +27,7 @@ var fileNamePrefix;
 var maxNoOfRows;
 var timeStamp = Date.now().toString();
 var generatePreInitFile = false;
+var startImportByAPI = true;
 var webDavFilePath;
 var localCsvFile;
 var generatedFilePaths = []; // Track all generated CSV files for merging
@@ -136,6 +137,9 @@ exports.beforeStep = function () {
     fileNamePrefix = args.FileNamePrefix
     maxNoOfRows = args.MaxNumberOfRows - 1000;
     generatePreInitFile = args.GeneratePreInitFile;
+    startImportByAPI = (args.StartImportByAPI !== undefined && args.StartImportByAPI !== null)
+        ? args.StartImportByAPI
+        : true;
 
     if (!targetFolder) {
         throw new Error('One or more mandatory parameters are missing.');
@@ -149,7 +153,7 @@ exports.beforeStep = function () {
     var fileName = FileUtils.createFileName(fileNamePrefix);
     var folderFile = new File(File.getRootDirectory(File.IMPEX), targetFolder);
     if (!folderFile.exists() && !folderFile.mkdirs()) {
-        Logger.info('Cannot create IMPEX folders {0}', (File.getRootDirectory(File.IMPEX).fullPath + targetFolder));
+        Logger.error('Cannot create IMPEX folders {0}', (File.getRootDirectory(File.IMPEX).fullPath + targetFolder));
         throw new Error('Cannot create IMPEX folders.');
     }
     var csvFile = new File(folderFile.fullPath + File.SEPARATOR + fileName);
@@ -195,7 +199,7 @@ exports.beforeStep = function () {
  	if (generatePreInitFile)
  		return 1;
  
-    Logger.info('Processed products {0}', productsIter.count);
+    Logger.info('Starting master product export: {0} products to process', productsIter.count);
     return productsIter.count;
 };
 
@@ -227,7 +231,7 @@ exports.beforeStep = function () {
         }
     } catch (ex) {
         processedAll = false;
-        Logger.info('Not able to process product {0} on column {1} having error : {2}', product.ID, currentColumn.SFCCProductAttribute, ex.toString());
+        Logger.error('Failed to process master product {0} on column {1}: {2}', product.ID, currentColumn.SFCCProductAttribute, ex.toString());
     }
 };
 
@@ -253,9 +257,7 @@ exports.beforeStep = function () {
     rowsCount = rowsCount + lines.size();
 };
 
-function triggerFileImport(skipAPICall) {
-    var masterProductFeedImportId = currentSite.getCustomPreferenceValue("brEngProductFeedImportId");
-
+function triggerFileImport(skipAPICall, startImportByAPI) {
     // Check if SFTP is configured (credentials-based, not failure-based)
     var sftpCheck = SFTPHelper.isSFTPEnabled();
     var filePath;
@@ -282,22 +284,29 @@ function triggerFileImport(skipAPICall) {
     }
 
     if (skipAPICall) {
-        Logger.info('Pre-init mode: skipping Bloomreach API import trigger. Use the generated CSV to create the import in Bloomreach Engagement and configure brEngProductFeedImportId.');
+        Logger.info('Pre-init mode: skipping Bloomreach API import trigger. Use the generated CSV to configure an import in Bloomreach.');
         return;
     }
 
-    try {
-        var result = BREngagementAPIHelper.bloomReachEngagementAPIService(masterProductFeedImportId, filePath);
-    } catch (e) {
-        Logger.error('Error while triggering bloomreach import start {0}', e.message);
+    if (!startImportByAPI) {
+        Logger.info('StartImportByAPI=false: skipping Bloomreach API import trigger.');
+        return;
     }
+
+    var masterProductFeedImportId = currentSite.getCustomPreferenceValue("brEngProductFeedImportId");
+
+    if (!masterProductFeedImportId) {
+        throw new Error('Missing Feed Import ID: brEngProductFeedImportId. Configure in Business Manager Site Preferences.');
+    }
+
+    BREngagementAPIHelper.bloomReachEngagementAPIService(masterProductFeedImportId, filePath);
 }
 
 function splitFile() {
     fileWriter.flush();
     csvWriter.close();
     fileWriter.close();
-    triggerFileImport(false);
+    triggerFileImport(false, startImportByAPI);
     rowsCount = 1;
 
     if (!targetFolder) {
@@ -309,7 +318,7 @@ function splitFile() {
     var fileName = FileUtils.createFileName(fileNamePrefix);
     var folderFile = new File(File.getRootDirectory(File.IMPEX), targetFolder);
     if (!folderFile.exists() && !folderFile.mkdirs()) {
-        Logger.info('Cannot create IMPEX folders {0}', (File.getRootDirectory(File.IMPEX).fullPath + targetFolder));
+        Logger.error('Cannot create IMPEX folders {0}', (File.getRootDirectory(File.IMPEX).fullPath + targetFolder));
         throw new Error('Cannot create IMPEX folders.');
     }
     var csvFile = new File(folderFile.fullPath + File.SEPARATOR + fileName);
@@ -358,8 +367,8 @@ function splitFile() {
         	}
         }
 
-        Logger.info('Export Product Feed Successful');
-        triggerFileImport(generatePreInitFile);
+        Logger.info('Export Master Product Feed Successful');
+        triggerFileImport(generatePreInitFile, startImportByAPI);
         
         // Merge all generated files into LATEST file
         try {
@@ -389,7 +398,7 @@ function splitFile() {
             // Don't fail the job if LATEST file creation fails
         }
         
-        return new Status(Status.OK, 'OK', 'Export Product Feed Successful');
+        return new Status(Status.OK, 'OK', 'Export Master Product Feed Successful');
     }
-    throw new Error('Could not process all the products');
+    throw new Error('Could not process all the master products');
 };

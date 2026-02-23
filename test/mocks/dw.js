@@ -69,6 +69,16 @@ module.exports = {
     campaign: {
         Promotion: require('./dw/campaign/Promotion'),
         PromotionMgr: require('./dw/campaign/PromotionMgr')
+    },
+
+    // Network APIs
+    net: {
+        SFTPClient: require('./dw/net/SFTPClient')
+    },
+
+    // Crypto APIs
+    crypto: {
+        KeyRef: require('./dw/crypto/KeyRef')
     }
 };
 

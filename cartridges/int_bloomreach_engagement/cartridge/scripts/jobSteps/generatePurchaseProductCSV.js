@@ -1,6 +1,6 @@
 'use strict';
 
-const Logger = require('dw/system/Logger');
+var Logger = require('dw/system/Logger').getLogger('BloomreachEngagementPurchaseProductFeedExport');
 const Order = require('dw/order/Order');
 const Status = require('dw/system/Status');
 const FileWriter = require('dw/io/FileWriter');
@@ -9,8 +9,6 @@ const CSVStreamWriter = require('dw/io/CSVStreamWriter');
 var CustomObjectMgr = require('dw/object/CustomObjectMgr');
 var Transaction = require('dw/system/Transaction');
 
-const bloomreachLogger = Logger.getLogger('bloomreach_purchase_job', 'bloomreach');
-const logger = Logger.getLogger('Bloomreach', 'bloomreach');
 var BREngagementAPIHelper = require('~/cartridge/scripts/helpers/BloomreachEngagementHelper.js');
 var currentSite = require('dw/system/Site').getCurrent();
 var SFTPHelper = require('~/cartridge/scripts/helpers/SFTPHelper.js');
@@ -26,12 +24,12 @@ var maxNoOfRows;
 var targetFolder;
 var FileNamePrefix;
 var chunks = 0;
-var headers;
 var SFCCAttributesValue;
 var updateCustomDateExportPreference = false;
 var feedFileGenerationDate;
 var csvGeneratorHelper = require('~/cartridge/scripts/helpers/BloomreachEngagementGenerateCSVHelper');
 var generatePreInitFile = false;
+var startImportByAPI = true;
 var webDavFilePath;
 var localCsvFile;
 
@@ -45,6 +43,9 @@ var localCsvFile;
 	targetFolder = args.TargetFolder;
 	FileNamePrefix = args.FileNamePrefix;
 	generatePreInitFile = args.GeneratePreInitFile;
+    startImportByAPI = (args.StartImportByAPI !== undefined && args.StartImportByAPI !== null)
+        ? args.StartImportByAPI
+        : true;
     var orderStatusForExport = []; 
     if(args.NEW){
     	orderStatusForExport.push('status=' + Order.ORDER_STATUS_NEW);
@@ -98,7 +99,7 @@ var localCsvFile;
 	    	ordersToProcess = arrOrders.iterator();
 	    }
     } catch (e) {    	
-        logger.error('Error: {0}', e.message);
+        Logger.error('Failed to initialize Purchase Item Feed: {0}', e.message);
         return new Status(Status.ERROR);
     }
 };
@@ -111,7 +112,7 @@ var localCsvFile;
   	if (generatePreInitFile)
  		return 1;
 
-    Logger.info('Processed orders {0}', ordersToProcess.count);
+    Logger.info('Starting purchase item export: {0} orders to process', ordersToProcess.count);
     return ordersToProcess.count;
 };
 
@@ -137,7 +138,7 @@ var localCsvFile;
         return order;
     } catch (ex) {
         processedAll = false;
-        Logger.info('Not able to process order {0} having error {1}', bloomreachOrderObject.orderNo, ex.toString());
+        Logger.error('Failed to process purchase order item {0}: {1}', bloomreachOrderObject.orderNo, ex.toString());
     }
 };
 
@@ -169,44 +170,49 @@ var localCsvFile;
 };
 
 function triggerFileImport(skipAPICall) {
-    var purchaseProductFeedImportId = currentSite.getCustomPreferenceValue("brEngPurchaseItemFeedImportId");
-
     // Check if SFTP is configured (credentials-based, not failure-based)
     var sftpCheck = SFTPHelper.isSFTPEnabled();
     var filePath;
 
     if (sftpCheck.enabled) {
         // SFTP credentials are configured - use SFTP
-        bloomreachLogger.info('SFTP credentials detected. Uploading file via SFTP: {0}', localCsvFile.name);
-        var uploadResult = SFTPHelper.uploadFile(localCsvFile, bloomreachLogger);
+        Logger.info('SFTP credentials detected. Uploading file via SFTP: {0}', localCsvFile.name);
+        var uploadResult = SFTPHelper.uploadFile(localCsvFile, Logger);
 
         if (uploadResult.success) {
             filePath = uploadResult.remotePath;
-            bloomreachLogger.info('SFTP upload successful. File available at: {0}', filePath);
+            Logger.info('SFTP upload successful. File available at: {0}', filePath);
         } else {
-            bloomreachLogger.error('SFTP upload failed: {0}', uploadResult.error);
+            Logger.error('SFTP upload failed: {0}', uploadResult.error);
             throw new Error('SFTP upload failed: ' + uploadResult.error);
         }
     } else {
         // SFTP credentials not configured - use WebDAV
         if (sftpCheck.error) {
-            bloomreachLogger.info('SFTP not configured: {0}. Using WebDAV.', sftpCheck.error);
+            Logger.info('SFTP not configured: {0}. Using WebDAV.', sftpCheck.error);
         }
         filePath = webDavFilePath;
-        bloomreachLogger.info('File available at WebDAV path: {0}', filePath);
+        Logger.info('File available at WebDAV path: {0}', filePath);
     }
 
     if (skipAPICall) {
-        bloomreachLogger.info('Pre-init mode: skipping Bloomreach API import trigger. Use the generated CSV to create the import in Bloomreach Engagement and configure brEngPurchaseItemFeedImportId.');
+        Logger.info('Pre-init mode: skipping Bloomreach API import trigger. Use the generated CSV to configure an import in Bloomreach.');
         return;
     }
 
-    // Call Bloomreach API with appropriate file path
-    try {
-        var result = BREngagementAPIHelper.bloomReachEngagementAPIService(purchaseProductFeedImportId, filePath);
-    } catch (e) {
-        bloomreachLogger.error('Error while triggering bloomreach import start {0}', e.message);
+    if (!startImportByAPI) {
+        Logger.info('StartImportByAPI=false: skipping Bloomreach API import trigger.');
+        return;
     }
+
+    var purchaseProductFeedImportId = currentSite.getCustomPreferenceValue("brEngPurchaseItemFeedImportId");
+
+    if (!purchaseProductFeedImportId) {
+        throw new Error('Missing Feed Import ID: brEngPurchaseItemFeedImportId. Configure in Business Manager Site Preferences.');
+    }
+
+    // Call Bloomreach API with appropriate file path
+    BREngagementAPIHelper.bloomReachEngagementAPIService(purchaseProductFeedImportId, filePath);
 }
 
 function splitFile() {
@@ -225,8 +231,7 @@ function splitFile() {
     webDavFilePath = 'https://' + dw.system.System.getInstanceHostname().toString() + '/on/demandware.servlet/webdav/Sites' + feedFile.fullPath.toString();
     fw = new FileWriter(feedFile);
     csw = new CSVStreamWriter(fw);
-    headers = JSON.parse(csvGeneratorHelper.getPurchaseProductFeedFileHeaders());
-    csw.writeNext(Object.keys(headers));
+    csw.writeNext(headers);
 }
 
 /**
@@ -260,9 +265,9 @@ function splitFile() {
 		        }
 	        }
     	}
-        Logger.info('Export Order Product Feed Successful');
+        Logger.info('Export Purchase Item Feed Successful');
 
-        return new Status(Status.OK, 'OK', 'Export Order product Feed Successful');
+        return new Status(Status.OK, 'OK', 'Export Purchase Item Feed Successful');
     }
-    throw new Error('Could not process all the orders');
+    throw new Error('Could not process all the purchase order items');
 };

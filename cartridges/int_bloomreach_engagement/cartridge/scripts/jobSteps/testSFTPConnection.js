@@ -17,9 +17,9 @@ exports.execute = function () {
         var sftpCheck = SFTPHelper.isSFTPEnabled();
 
         if (!sftpCheck.enabled) {
-            var errorMsg = 'SFTP is not enabled or not properly configured: ' + (sftpCheck.error || 'Unknown error');
-            Logger.error(errorMsg);
-            return new Status(Status.ERROR, 'ERROR', errorMsg);
+            var errorMsg = 'SFTP is not enabled or not properly configured: {0}';
+            Logger.error(errorMsg, sftpCheck.error || 'Unknown error');
+            return new Status(Status.ERROR, 'ERROR', 'SFTP is not enabled or not properly configured: ' + (sftpCheck.error || 'Unknown error'));
         }
 
         Logger.info('SFTP configuration found. Testing connection...');
@@ -28,19 +28,16 @@ exports.execute = function () {
         var testResult = SFTPHelper.testSFTPConnection(Logger);
 
         if (testResult.success) {
-            var successMsg = 'SFTP connection test PASSED: ' + testResult.message;
-            Logger.info(successMsg);
-            return new Status(Status.OK, 'OK', successMsg);
+            Logger.info('SFTP connection test passed: {0}', testResult.message);
+            return new Status(Status.OK, 'OK', 'SFTP connection test passed: ' + testResult.message);
         } else {
-            var failureMsg = 'SFTP connection test FAILED: ' + testResult.message;
-            Logger.error(failureMsg);
-            return new Status(Status.ERROR, 'ERROR', failureMsg);
+            Logger.error('SFTP connection test failed: {0}', testResult.message);
+            return new Status(Status.ERROR, 'ERROR', 'SFTP connection test failed: ' + testResult.message);
         }
 
     } catch (e) {
-        var exceptionMsg = 'SFTP connection test encountered an exception: ' + e.message;
-        Logger.error(exceptionMsg);
+        Logger.error('SFTP connection test encountered an exception: {0}', e.message);
         Logger.error('Stack trace: {0}', e.stack || 'Not available');
-        return new Status(Status.ERROR, 'ERROR', exceptionMsg);
+        return new Status(Status.ERROR, 'ERROR', 'SFTP connection test encountered an exception: ' + e.message);
     }
 };

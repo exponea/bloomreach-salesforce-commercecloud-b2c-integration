@@ -65,6 +65,10 @@ describe('generatePurchaseCSV', function() {
                 validateDownloadCredentialsConfigured: sinon.stub().returns(true),
                 getDownloadUrlInfo: sinon.stub().returns({})
             },
+            '~/cartridge/scripts/helpers/SFTPHelper.js': {
+                isSFTPEnabled: sinon.stub().returns({ enabled: false, error: 'SFTP not configured' }),
+                uploadFile: sinon.stub()
+            },
             // Mock the global dw object that's used in the module
             'dw/system/System': {
                 getInstanceHostname: () => ({ toString: () => 'test-instance.demandware.net' })
@@ -286,7 +290,7 @@ describe('generatePurchaseCSV', function() {
             expect(result.isError()).to.be.true;
             
             // Verify that error was logged
-            const logger = Logger.getLogger('Bloomreach', 'bloomreach');
+            const logger = Logger.getLogger('BloomreachEngagementPurchaseFeedExport');
             const logs = logger.getLogs();
             expect(logs.error.length).to.be.greaterThan(0);
         });
@@ -573,6 +577,10 @@ describe('generatePurchaseCSV', function() {
                     validateDownloadCredentialsConfigured: sinon.stub().returns(true),
                     getDownloadUrlInfo: sinon.stub().returns({})
                 },
+                '~/cartridge/scripts/helpers/SFTPHelper.js': {
+                    isSFTPEnabled: sinon.stub().returns({ enabled: false, error: 'SFTP not configured' }),
+                    uploadFile: sinon.stub()
+                },
                 'dw/system/System': {
                     getInstanceHostname: () => ({ toString: () => 'test-instance.demandware.net' })
                 }
@@ -695,7 +703,164 @@ describe('generatePurchaseCSV', function() {
             generatePurchaseCSV.process(order); // This will set processedAll to false
             
             // Execute and verify that error is thrown
-            expect(() => generatePurchaseCSV.afterStep()).to.throw('Could not process all the orders');
+            expect(() => generatePurchaseCSV.afterStep()).to.throw('Could not process all the purchase orders');
+        });
+
+        it('should skip API call when StartImportByAPI is false', function() {
+            mockCsvGeneratorHelper.createPurchaseFeedFile.returns(mockFile);
+            mockCsvGeneratorHelper.getPurchaseFeedFileHeaders.returns(JSON.stringify([]));
+            mockCsvGeneratorHelper.getFeedAttributes.returns({ headers: [], SFCCAttributesValue: [] });
+            mockCsvGeneratorHelper.getOrdersForPurchaseFeed.returns({
+                hasNext: () => false, close: sinon.stub(), count: 0
+            });
+
+            const args = {
+                UpdateFromDatePreference: false, MaxNumberOfRows: 10000,
+                TargetFolder: 'export', FileNamePrefix: 'purchase-feed',
+                GeneratePreInitFile: false, StartImportByAPI: false, NEW: true
+            };
+            generatePurchaseCSV.beforeStep(args);
+
+            const result = generatePurchaseCSV.afterStep();
+
+            expect(result.isOK()).to.be.true;
+            expect(mockBREngagementAPIHelper.bloomReachEngagementAPIService.called).to.be.false;
+        });
+
+        it('should throw and fail the job when StartImportByAPI is true and API throws', function() {
+            mockCsvGeneratorHelper.createPurchaseFeedFile.returns(mockFile);
+            mockCsvGeneratorHelper.getPurchaseFeedFileHeaders.returns(JSON.stringify([]));
+            mockCsvGeneratorHelper.getFeedAttributes.returns({ headers: [], SFCCAttributesValue: [] });
+            mockCsvGeneratorHelper.getOrdersForPurchaseFeed.returns({
+                hasNext: () => false, close: sinon.stub(), count: 0
+            });
+            mockBREngagementAPIHelper.bloomReachEngagementAPIService.throws(new Error('API unavailable'));
+
+            const args = {
+                UpdateFromDatePreference: false, MaxNumberOfRows: 10000,
+                TargetFolder: 'export', FileNamePrefix: 'purchase-feed',
+                GeneratePreInitFile: false, NEW: true
+                // StartImportByAPI defaults to true
+            };
+            generatePurchaseCSV.beforeStep(args);
+
+            expect(() => generatePurchaseCSV.afterStep()).to.throw('API unavailable');
+        });
+    });
+
+    describe('splitFile()', function() {
+        let generatePurchaseCSVSplit;
+        let cswInstances;
+
+        beforeEach(function() {
+            Site.__reset();
+            Site.__setCurrentSite({
+                brEngPurchaseFeedDataMapping: JSON.stringify([
+                    { XSDField: 'order_id', SFCCProductAttribute: 'orderNo',         isCustomAttribute: false },
+                    { XSDField: 'email',    SFCCProductAttribute: 'customerEmail',   isCustomAttribute: false },
+                    { XSDField: 'total',    SFCCProductAttribute: 'totalGrossPrice', isCustomAttribute: false }
+                ])
+            });
+
+            // Spy constructor: records every CSVStreamWriter instance created during the test
+            cswInstances = [];
+            function SpyCSVStreamWriter() {
+                this.rowsWritten = [];
+                this.closed = false;
+                this.writeNext = function(values) {
+                    this.rowsWritten.push(Array.isArray(values) ? values.slice() : [].concat(values));
+                };
+                this.close = function() { this.closed = true; };
+                this.flush = function() {};
+                cswInstances.push(this);
+            }
+
+            mockCsvGeneratorHelper.createPurchaseFeedFile.reset();
+            mockCsvGeneratorHelper.getPurchaseFeedFileHeaders.reset();
+            mockCsvGeneratorHelper.getFeedAttributes.reset();
+            mockCsvGeneratorHelper.getOrdersForPurchaseFeed.reset();
+
+            delete require.cache[require.resolve('../../cartridges/int_bloomreach_engagement/cartridge/scripts/jobSteps/generatePurchaseCSV')];
+            generatePurchaseCSVSplit = proxyquire.noCallThru()(
+                '../../cartridges/int_bloomreach_engagement/cartridge/scripts/jobSteps/generatePurchaseCSV',
+                {
+                    'dw/system/Logger': Logger,
+                    'dw/order/Order': Order,
+                    'dw/system/Status': Status,
+                    'dw/io/FileWriter': FileWriter,
+                    'dw/io/CSVStreamWriter': SpyCSVStreamWriter,
+                    'dw/system/Transaction': Transaction,
+                    'dw/system/Site': Site,
+                    'dw/object/CustomObjectMgr': CustomObjectMgr,
+                    'dw/util/ArrayList': ArrayList,
+                    '~/cartridge/scripts/helpers/BloomreachEngagementGenerateCSVHelper': mockCsvGeneratorHelper,
+                    '~/cartridge/scripts/helpers/BloomreachEngagementHelper.js': mockBREngagementAPIHelper,
+                    '~/cartridge/scripts/helpers/BloomreachEngagementFileDownloadHelper.js': {
+                        generateDownloadUrl: sinon.stub().returns('https://test.com/download?path=test.csv'),
+                        validateDownloadCredentialsConfigured: sinon.stub().returns(true),
+                        getDownloadUrlInfo: sinon.stub().returns({})
+                    },
+                    '~/cartridge/scripts/helpers/SFTPHelper.js': {
+                        isSFTPEnabled: sinon.stub().returns({ enabled: false, error: 'SFTP not configured' }),
+                        uploadFile: sinon.stub()
+                    },
+                    'dw/system/System': {
+                        getInstanceHostname: () => ({ toString: () => 'test-instance.demandware.net' })
+                    }
+                }
+            );
+        });
+
+        it('should write column-name headers (not numeric indices) on every split file', function() {
+            // Regression test: splitFile() was calling Object.keys(JSON.parse(...)) which
+            // produced ["0","1","2",...] instead of the actual column names.
+
+            const feedFile = new File('/IMPEX/export/purchase-feed-1.csv');
+            mockCsvGeneratorHelper.createPurchaseFeedFile.returns(feedFile);
+
+            const expectedHeaders = ['order_id', 'email', 'total'];
+            mockCsvGeneratorHelper.getPurchaseFeedFileHeaders.returns(JSON.stringify([
+                { XSDField: 'order_id', SFCCProductAttribute: 'orderNo',         isCustomAttribute: false },
+                { XSDField: 'email',    SFCCProductAttribute: 'customerEmail',   isCustomAttribute: false },
+                { XSDField: 'total',    SFCCProductAttribute: 'totalGrossPrice', isCustomAttribute: false }
+            ]));
+            mockCsvGeneratorHelper.getFeedAttributes.returns({
+                headers: expectedHeaders,
+                SFCCAttributesValue: [
+                    { SFCCProductAttribute: 'orderNo',         isCustom: false },
+                    { SFCCProductAttribute: 'customerEmail',   isCustom: false },
+                    { SFCCProductAttribute: 'totalGrossPrice', isCustom: false }
+                ]
+            });
+            mockCsvGeneratorHelper.getOrdersForPurchaseFeed.returns({ hasNext: () => false, count: 5 });
+
+            // MaxNumberOfRows 1001 → maxNoOfRows = 1, so rowsCount > 1 triggers a split
+            generatePurchaseCSVSplit.beforeStep({
+                UpdateFromDatePreference: false,
+                MaxNumberOfRows: 1001,
+                TargetFolder: 'export',
+                FileNamePrefix: 'purchase-feed',
+                GeneratePreInitFile: false,
+                StartImportByAPI: false,
+                NEW: true
+            });
+
+            // First write: rowsCount (1) is not > maxNoOfRows (1) — no split yet. rowsCount → 2.
+            generatePurchaseCSVSplit.write(new ArrayList([new ArrayList(['ORDER-001', 'a@test.com', '9.99'])]));
+
+            // Second write: rowsCount (2) > maxNoOfRows (1) → splitFile() fires
+            generatePurchaseCSVSplit.write(new ArrayList([new ArrayList(['ORDER-002', 'b@test.com', '19.99'])]));
+
+            // One writer from beforeStep, one from splitFile()
+            expect(cswInstances).to.have.lengthOf(2);
+
+            const splitWriter = cswInstances[1];
+
+            // The split file's very first row must be the actual column-name header strings
+            expect(splitWriter.rowsWritten[0]).to.deep.equal(expectedHeaders);
+
+            // Regression guard: must NOT be the numeric array indices the old code produced
+            expect(splitWriter.rowsWritten[0]).to.not.deep.equal(['0', '1', '2']);
         });
     });
 });

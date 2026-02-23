@@ -1,7 +1,7 @@
 /* BloomreachEngagement Master Products Inventory Export Job */
 'use strict';
 
-var Logger = require('dw/system/Logger').getLogger('BloomreachEngagementMasterInventoryFeedExport');;
+var Logger = require('dw/system/Logger').getLogger('BloomreachEngagementMasterInventoryFeedExport');
 var Status = require('dw/system/Status');
 var File = require('dw/io/File');
 var Transaction = require('dw/system/Transaction');
@@ -26,6 +26,7 @@ var targetFolder;
 var fileNamePrefix;
 var maxNoOfRows;
 var generatePreInitFile = false;
+var startImportByAPI = true;
 var webDavFilePath;
 var localCsvFile;
 var generatedFilePaths = []; // Track all generated CSV files for merging
@@ -43,7 +44,7 @@ var generatedFilePaths = []; // Track all generated CSV files for merging
 
     if (isCustomAttribute == 'false' || !isCustomAttribute) {
         if (columnValue == 'allocation') {
-            csvProductArray.push(BloomreachEngagementProductInventoryFeedHelpers.getAvailability(product));;
+            csvProductArray.push(BloomreachEngagementProductInventoryFeedHelpers.getAvailability(product));
         } else {
             csvProductArray.push(columnValue in product ? product[columnValue] : '');
         }
@@ -62,6 +63,9 @@ exports.beforeStep = function () {
     fileNamePrefix = args.FileNamePrefix
     maxNoOfRows = args.MaxNumberOfRows - 1000;
     generatePreInitFile = args.GeneratePreInitFile;
+    startImportByAPI = (args.StartImportByAPI !== undefined && args.StartImportByAPI !== null)
+        ? args.StartImportByAPI
+        : true;
 
     if (!targetFolder) {
         throw new Error('One or more mandatory parameters are missing.');
@@ -75,7 +79,7 @@ exports.beforeStep = function () {
     var fileName = FileUtils.createFileName(fileNamePrefix);
     var folderFile = new File(File.getRootDirectory(File.IMPEX), targetFolder);
     if (!folderFile.exists() && !folderFile.mkdirs()) {
-        Logger.info('Cannot create IMPEX folders {0}', (File.getRootDirectory(File.IMPEX).fullPath + targetFolder));
+        Logger.error('Cannot create IMPEX folders {0}', (File.getRootDirectory(File.IMPEX).fullPath + targetFolder));
         throw new Error('Cannot create IMPEX folders.');
     }
     var csvFile = new File(folderFile.fullPath + File.SEPARATOR + fileName);
@@ -121,7 +125,7 @@ exports.beforeStep = function () {
  	if (generatePreInitFile)
  		return 1;
 
-    Logger.info('Processed products inventory {0}', productsIter.count);
+    Logger.info('Starting master product inventory export: {0} products to process', productsIter.count);
     return productsIter.count;
 };
 
@@ -159,7 +163,7 @@ exports.beforeStep = function () {
         }
     } catch (ex) {
         processedAll = false;
-        Logger.info('Not able to process product {0} invnetory on column {1} having error : {2}', product.ID, currentColumn ? currentColumn.SFCCProductAttribute : '', ex.toString());
+        Logger.error('Failed to process master product {0} inventory on column {1}: {2}', product.ID, currentColumn ? currentColumn.SFCCProductAttribute : '', ex.toString());
     }
 };
 
@@ -186,8 +190,6 @@ exports.beforeStep = function () {
 };
 
 function triggerFileImport(skipAPICall) {
-    var masterProductInventoryFeedImportId = currentSite.getCustomPreferenceValue("brEngProductInventoryFeedImportId");
-
     // Check if SFTP is configured (credentials-based, not failure-based)
     var sftpCheck = SFTPHelper.isSFTPEnabled();
     var filePath;
@@ -214,15 +216,22 @@ function triggerFileImport(skipAPICall) {
     }
 
     if (skipAPICall) {
-        Logger.info('Pre-init mode: skipping Bloomreach API import trigger. Use the generated CSV to create the import in Bloomreach Engagement and configure brEngProductInventoryFeedImportId.');
+        Logger.info('Pre-init mode: skipping Bloomreach API import trigger. Use the generated CSV to configure an import in Bloomreach.');
         return;
     }
 
-    try {
-        var result = BREngagementAPIHelper.bloomReachEngagementAPIService(masterProductInventoryFeedImportId, filePath);
-    } catch (e) {
-        Logger.error('Error while triggering bloomreach import start {0}', e.message);
+    if (!startImportByAPI) {
+        Logger.info('StartImportByAPI=false: skipping Bloomreach API import trigger.');
+        return;
     }
+
+    var masterProductInventoryFeedImportId = currentSite.getCustomPreferenceValue("brEngProductInventoryFeedImportId");
+
+    if (!masterProductInventoryFeedImportId) {
+        throw new Error('Missing Feed Import ID: brEngProductInventoryFeedImportId. Configure in Business Manager Site Preferences.');
+    }
+
+    BREngagementAPIHelper.bloomReachEngagementAPIService(masterProductInventoryFeedImportId, filePath);
 }
 
 function splitFile() {
@@ -241,7 +250,7 @@ function splitFile() {
     var fileName = FileUtils.createFileName(fileNamePrefix);
     var folderFile = new File(File.getRootDirectory(File.IMPEX), targetFolder);
     if (!folderFile.exists() && !folderFile.mkdirs()) {
-        Logger.info('Cannot create IMPEX folders {0}', (File.getRootDirectory(File.IMPEX).fullPath + targetFolder));
+        Logger.error('Cannot create IMPEX folders {0}', (File.getRootDirectory(File.IMPEX).fullPath + targetFolder));
         throw new Error('Cannot create IMPEX folders.');
     }
     var csvFile = new File(folderFile.fullPath + File.SEPARATOR + fileName);
@@ -291,7 +300,7 @@ function splitFile() {
 	        }
         }
 
-        Logger.info('Export Product Inventory Feed Successful');
+        Logger.info('Export Master Product Inventory Feed Successful');
 
         // Merge all generated files into LATEST file
         try {
@@ -321,8 +330,8 @@ function splitFile() {
             // Don't fail the job if LATEST file creation fails
         }
 
-        return new Status(Status.OK, 'OK', 'Export Product Inventory Feed Successful');
+        return new Status(Status.OK, 'OK', 'Export Master Product Inventory Feed Successful');
     }
 
-    throw new Error('Could not process all the products inventory');
+    throw new Error('Could not process all the master product inventory records');
 };

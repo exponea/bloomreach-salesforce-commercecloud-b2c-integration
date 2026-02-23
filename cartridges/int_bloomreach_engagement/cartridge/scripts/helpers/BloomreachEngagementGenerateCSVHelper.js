@@ -15,12 +15,10 @@ const BloomreachEngagementCustomerInfoFeedHelpers = require('~/cartridge/scripts
 * @returns {File} created file in CSV format
 */
 function createPurchaseFeedFile(filename,targetFolder,fileNum) {
-	//var WORKING_FOLDER = [File.IMPEX, 'src', 'feeds'].join(File.SEPARATOR);
     var workingFolder = new File(File.getRootDirectory(File.IMPEX), targetFolder);
     if (!workingFolder.exists()) {
         workingFolder.mkdirs();
     }
-    //var currentDate = new Calendar(Date.now());
     var fileName = [filename,Date.now(),fileNum, '.csv'].join('');
     var purchaseFeedFile = new File(workingFolder, fileName);
     
@@ -271,7 +269,6 @@ function getOrderPurchaseFeedAttributes() {
     }
    results.headers = csvHeaderArray;
    results.SFCCAttributesValue = SFCCAttributesValue;
-   //csw.writeNext(headers);
    return results;
 }
 /**

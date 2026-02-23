@@ -1,0 +1,35 @@
+---
+description: How to deploy cartridges to the SFCC sandbox
+alwaysApply: false
+---
+# Deploying to the SFCC Sandbox
+
+Target sandbox: `zzra-039.dx.commercecloud.salesforce.com`, code version `version1`.
+Credentials and cartridge list are in `dw.json` (project root).
+
+## Steps
+
+1. Switch to the correct Node version:
+   ```bash
+   nvm use
+   ```
+
+2. Install dependencies if `node_modules` is missing or stale:
+   ```bash
+   npm install
+   ```
+
+3. Upload all three cartridges:
+   ```bash
+   npm run uploadCartridge
+   ```
+   This runs `sgmf-scripts --uploadCartridge` for each cartridge in sequence:
+   - `int_bloomreach_engagement`
+   - `int_bloomreach_engagement_controllers`
+   - `int_bloomreach_engagement_sfra`
+
+## Notes
+
+- Always run from the project root (where `dw.json` lives).
+- `npm run upload` (singular) exists but uploads only one cartridge — prefer `uploadCartridge` to deploy all three.
+- Do **not** use `npx prophet` — it is not installed in this project.

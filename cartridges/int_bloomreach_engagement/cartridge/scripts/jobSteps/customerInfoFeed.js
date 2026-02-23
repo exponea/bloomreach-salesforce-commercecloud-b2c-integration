@@ -27,6 +27,7 @@ var fileNamePrefix;
 var maxNoOfRows;
 var query;
 var generatePreInitFile = false;
+var startImportByAPI = true;
 var webDavFilePath;
 var localCsvFile;
 
@@ -201,6 +202,9 @@ function getAllCustomerProfiles(searchQuery, sortString, lastModifiedDate) {
     maxNoOfRows = args.MaxNumberOfRows - 1000;
     query = args.Query || '';
     generatePreInitFile = args.GeneratePreInitFile;
+    startImportByAPI = (args.StartImportByAPI !== undefined && args.StartImportByAPI !== null)
+        ? args.StartImportByAPI
+        : true;
 
     if (!targetFolder) {
         throw new Error('One or more mandatory parameters are missing.');
@@ -210,7 +214,7 @@ function getAllCustomerProfiles(searchQuery, sortString, lastModifiedDate) {
     var fileName = FileUtils.createFileName(fileNamePrefix, BloomreachEngagementConstants.FILE_EXTENSTION.CSV);
     var folderFile = new File(File.getRootDirectory(File.IMPEX), targetFolder);
     if (!folderFile.exists() && !folderFile.mkdirs()) {
-        Logger.info('Cannot create IMPEX folders {0}', (File.getRootDirectory(File.IMPEX).fullPath + targetFolder));
+        Logger.error('Cannot create IMPEX folders {0}', (File.getRootDirectory(File.IMPEX).fullPath + targetFolder));
         throw new Error('Cannot create IMPEX folders.');
     }
     var csvFile = new File(folderFile.fullPath + File.SEPARATOR + fileName);
@@ -247,6 +251,9 @@ function getAllCustomerProfiles(searchQuery, sortString, lastModifiedDate) {
     fileNamePrefix = args.FileNamePrefix
     maxNoOfRows = args.MaxNumberOfRows - 1000;
     query = args.Query || 'lastModified > {0}';
+    startImportByAPI = (args.StartImportByAPI !== undefined && args.StartImportByAPI !== null)
+        ? args.StartImportByAPI
+        : true;
     
     var lastCustomerExportCO = CustomObjectMgr.getCustomObject('BloomreachEngagementJobLastExecution', 'lastCustomerExport');
     var lastCustomerExport = lastCustomerExportCO ? lastCustomerExportCO.custom.lastExecution : null;
@@ -260,7 +267,7 @@ function getAllCustomerProfiles(searchQuery, sortString, lastModifiedDate) {
     var fileName = FileUtils.createFileName(fileNamePrefix, BloomreachEngagementConstants.FILE_EXTENSTION.CSV);
     var folderFile = new File(File.getRootDirectory(File.IMPEX), targetFolder);
     if (!folderFile.exists() && !folderFile.mkdirs()) {
-        Logger.info('Cannot create IMPEX folders {0}', (File.getRootDirectory(File.IMPEX).fullPath + targetFolder));
+        Logger.error('Cannot create IMPEX folders {0}', (File.getRootDirectory(File.IMPEX).fullPath + targetFolder));
         throw new Error('Cannot create IMPEX folders.');
     }
     var csvFile = new File(folderFile.fullPath + File.SEPARATOR + fileName);
@@ -289,7 +296,7 @@ function getAllCustomerProfiles(searchQuery, sortString, lastModifiedDate) {
  	if (generatePreInitFile)
  		return 1;
 
-    Logger.info('Processed customer {0}', customerProfilesItr.count);
+    Logger.info('Starting customer export: {0} customers to process', customerProfilesItr.count);
     return customerProfilesItr.count;
 };
 
@@ -319,7 +326,7 @@ function getAllCustomerProfiles(searchQuery, sortString, lastModifiedDate) {
         return csvCustomerArray;
     } catch (ex) {
         processedAll = false;
-        Logger.info('Not able to process customer {0} on column {1} having error : {2}', customer.customerNo, currentColumn.SFCCProductAttribute, ex.toString());
+        Logger.error('Failed to process customer {0} on column {1}: {2}', customer.customerNo, currentColumn.SFCCProductAttribute, ex.toString());
     }
 };
 
@@ -347,8 +354,6 @@ function getAllCustomerProfiles(searchQuery, sortString, lastModifiedDate) {
 };
 
 function triggerFileImport(skipAPICall) {
-    var customerFeedImportId = sitePrefs.getCustom()["brEngCustomerFeedImportId"];
-
     // Check if SFTP is configured (credentials-based, not failure-based)
     var sftpCheck = SFTPHelper.isSFTPEnabled();
     var filePath;
@@ -375,16 +380,23 @@ function triggerFileImport(skipAPICall) {
     }
 
     if (skipAPICall) {
-        Logger.info('Pre-init mode: skipping Bloomreach API import trigger. Use the generated CSV to create the import in Bloomreach Engagement and configure brEngCustomerFeedImportId.');
+        Logger.info('Pre-init mode: skipping Bloomreach API import trigger. Use the generated CSV to configure an import in Bloomreach.');
         return;
     }
 
-    // Call Bloomreach API with appropriate file path
-    try {
-        var result = BREngagementAPIHelper.bloomReachEngagementAPIService(customerFeedImportId, filePath);
-    } catch (e) {
-        Logger.error('Error while triggering bloomreach import start {0}', e.message);
+    if (!startImportByAPI) {
+        Logger.info('StartImportByAPI=false: skipping Bloomreach API import trigger.');
+        return;
     }
+
+    var customerFeedImportId = sitePrefs.getCustom()["brEngCustomerFeedImportId"];
+
+    if (!customerFeedImportId) {
+        throw new Error('Missing Feed Import ID: brEngCustomerFeedImportId. Configure in Business Manager Site Preferences.');
+    }
+
+    // Call Bloomreach API with appropriate file path
+    BREngagementAPIHelper.bloomReachEngagementAPIService(customerFeedImportId, filePath);
 }
 
 function splitFile() {
@@ -403,7 +415,7 @@ function splitFile() {
     var fileName = FileUtils.createFileName(fileNamePrefix, BloomreachEngagementConstants.FILE_EXTENSTION.CSV);
     var folderFile = new File(File.getRootDirectory(File.IMPEX), targetFolder);
     if (!folderFile.exists() && !folderFile.mkdirs()) {
-        Logger.info('Cannot create IMPEX folders {0}', (File.getRootDirectory(File.IMPEX).fullPath + targetFolder));
+        Logger.error('Cannot create IMPEX folders {0}', (File.getRootDirectory(File.IMPEX).fullPath + targetFolder));
         throw new Error('Cannot create IMPEX folders.');
     }
     var csvFile = new File(folderFile.fullPath + File.SEPARATOR + fileName);
@@ -432,18 +444,17 @@ function splitFile() {
     if (processedAll) {
         triggerFileImport(generatePreInitFile);
 
-		if (query) {
-	        var lastCustomerExportCO = CustomObjectMgr.getCustomObject('BloomreachEngagementJobLastExecution', 'lastCustomerExport');
-	    	if (lastCustomerExportCO) {
-		        Transaction.wrap(function() {
-		            lastCustomerExportCO.custom.lastExecution = new Date();
-		        });
-	        } else {
-	        	Transaction.wrap(function() {
-	        		var newlastCustomerExportCO = CustomObjectMgr.createCustomObject('BloomreachEngagementJobLastExecution', 'lastCustomerExport');
-	        		newlastCustomerExportCO.custom.lastExecution = new Date();
-		        });
-	        }
+		var siteCurrentTime = require('dw/system/Site').getCurrent().getCalendar().getTime();
+        var lastCustomerExportCO = CustomObjectMgr.getCustomObject('BloomreachEngagementJobLastExecution', 'lastCustomerExport');
+        if (lastCustomerExportCO) {
+            Transaction.wrap(function() {
+                lastCustomerExportCO.custom.lastExecution = siteCurrentTime;
+            });
+        } else {
+            Transaction.wrap(function() {
+                var newlastCustomerExportCO = CustomObjectMgr.createCustomObject('BloomreachEngagementJobLastExecution', 'lastCustomerExport');
+                newlastCustomerExportCO.custom.lastExecution = siteCurrentTime;
+            });
         }
         
         Logger.info('Export Customer Feed Successful');

@@ -80,6 +80,18 @@ module.exports = {
     },
 
     /**
+     * Processes all matching customer profiles by calling a callback for each
+     * @param {Function} callback - Called for each matching customer
+     * @param {string} queryString - The query string
+     * @param {...any} args - Additional query arguments
+     */
+    processProfiles: function(callback, queryString) {
+        customers.forEach(function(customer) {
+            callback(customer);
+        });
+    },
+
+    /**
      * Creates a customer
      * @param {string} login - The customer login/email
      * @param {string} password - The password

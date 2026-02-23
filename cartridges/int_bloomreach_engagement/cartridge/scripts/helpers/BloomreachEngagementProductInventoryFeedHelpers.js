@@ -181,7 +181,7 @@ function IsProductInventoryExportValid(product, lastRun) {
                 var inventoryRecord = setProduct.getAvailabilityModel() ? setProduct.getAvailabilityModel().getInventoryRecord() : null;
                 return inventoryRecord && lastRun <= inventoryRecord.getLastModified();
             });
-        } else { // handle satndard and variant products
+        } else { // handle standard and variant products
             var inventoryRecord = product.getAvailabilityModel() ? product.getAvailabilityModel().getInventoryRecord() : null;
             isValid = inventoryRecord && lastRun <= inventoryRecord.getLastModified();
         }
