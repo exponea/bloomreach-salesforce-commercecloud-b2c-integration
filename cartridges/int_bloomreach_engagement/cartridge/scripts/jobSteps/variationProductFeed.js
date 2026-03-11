@@ -358,6 +358,7 @@ function splitFile() {
     csvWriter.close();
     fileWriter.close();
     if (processedAll) {
+        triggerFileImport(generatePreInitFile, startImportByAPI);
         if (currentSite) {
             var siteCurrentTime =  currentSite.getCalendar().getTime();            
             var lastVariationExportCO = CustomObjectMgr.getCustomObject('BloomreachEngagementJobLastExecution', 'lastVariationExport');
@@ -374,7 +375,6 @@ function splitFile() {
         }
 
         Logger.info('Export Variation Product Feed Successful');
-        triggerFileImport(generatePreInitFile, startImportByAPI);
         
         // Merge all generated files into LATEST file
         try {

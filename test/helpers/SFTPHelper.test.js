@@ -216,6 +216,26 @@ describe('SFTPHelper', function() {
             expect(result.error).to.be.a('string');
         });
 
+        it('should return success:false when filename contains a forward slash (path traversal)', function() {
+            var localFile = makeLocalFile('customers.csv');
+            localFile.name = '../other-dir/customers.csv';
+
+            var result = sftpHelper.uploadFile(localFile, logger);
+
+            expect(result.success).to.equal(false);
+            expect(result.error).to.include('path separators');
+        });
+
+        it('should return success:false when filename contains a backslash (path traversal)', function() {
+            var localFile = makeLocalFile('customers.csv');
+            localFile.name = '..\\other-dir\\customers.csv';
+
+            var result = sftpHelper.uploadFile(localFile, logger);
+
+            expect(result.success).to.equal(false);
+            expect(result.error).to.include('path separators');
+        });
+
         it('should return success:false when connect() returns false', function() {
             MockSFTPClient.__queueBehavior({
                 connect: function() { return false; }
@@ -250,15 +270,20 @@ describe('SFTPHelper', function() {
                     throw new Error('connection timeout');
                 }
             });
-            // Second instance (retry): connect succeeds (default behavior)
-            // connectCallCount increments so we can verify two attempts
+            // Second instance (retry): connect succeeds — still tracks the call
+            MockSFTPClient.__queueBehavior({
+                connect: function() {
+                    connectCallCount++;
+                    return true;
+                }
+            });
 
             var localFile = makeLocalFile('customers.csv');
 
             var result = sftpHelper.uploadFile(localFile, logger);
 
             expect(result.success).to.equal(true);
-            expect(connectCallCount).to.equal(1); // failed once, retried with a new instance
+            expect(connectCallCount).to.equal(2); // first attempt failed, second succeeded
         });
 
         it('should NOT retry on a non-transient error and return success:false', function() {
@@ -279,7 +304,7 @@ describe('SFTPHelper', function() {
             expect(connectCallCount).to.equal(1); // called exactly once, no retry
         });
 
-        it('should pass null as password when using SSH key authentication', function() {
+        it('should use 3-argument connect() for SSH key authentication (no password argument)', function() {
             Site.__setCurrentSite(FULL_SSHKEY_PREFS);
 
             var capturedArgs = null;
@@ -295,8 +320,8 @@ describe('SFTPHelper', function() {
 
             expect(result.success).to.equal(true);
             expect(capturedArgs).to.not.equal(null);
-            expect(capturedArgs[3]).to.equal(null); // no password for SSH key auth
             expect(capturedArgs[2]).to.equal('merchant');
+            expect(capturedArgs[3]).to.equal(undefined); // 3-arg form — no password argument passed
         });
 
     });

@@ -1,6 +1,7 @@
+'use strict';
+
 var bloomReachEngagementAPIServices = require('~/cartridge/scripts/services/BloomreachEngagementAPIService.js');
 var Logger = dw.system.Logger.getLogger('BloomreachEngagementAPI');
-var Site = require('dw/system/Site');
 
 /**
  * Blocks the current thread for the given number of milliseconds.
@@ -35,19 +36,13 @@ function isTransientAPIError(errorMessage) {
 }
 
 const bloomReachEngagementAPIService = function(import_Id, webDavFilePath) {
-    var currentSite = Site.getCurrent();
-    var bloomreachServiceURL = currentSite.getCustomPreferenceValue('brEngApiBaseUrl')
-        + '/data/v2/projects/projectToken/imports/import_id/start';
-    var bloomreachProjectToken = currentSite.getCustomPreferenceValue('brEngProjectToken');
-
     var BREngagementAPISerivce = bloomReachEngagementAPIServices.getBloomreachEngagementAPIService(import_Id);
 
     var requestObject = {
         webDavFilePath: webDavFilePath
     };
 
-    var serviceURL = bloomreachServiceURL.replace('projectToken', bloomreachProjectToken).replace('import_id', import_Id);
-    Logger.info('Triggering Bloomreach API import. URL: ' + serviceURL + ' | File path: ' + webDavFilePath);
+    Logger.info('Triggering Bloomreach API import. Import ID: ' + import_Id + ' | File path: ' + webDavFilePath);
 
     var maxRetries = 2;
     var retryCount = 0;
@@ -55,7 +50,6 @@ const bloomReachEngagementAPIService = function(import_Id, webDavFilePath) {
     while (retryCount <= maxRetries) {
         var result = BREngagementAPISerivce.call(requestObject);
 
-        Logger.info('bloomreach.engagement.service call URL: ' + serviceURL);
         Logger.info('Request Data: ' + BREngagementAPISerivce.getRequestData());
         Logger.info('Response Data: ' + result);
 
@@ -63,14 +57,27 @@ const bloomReachEngagementAPIService = function(import_Id, webDavFilePath) {
             return result.object;
         }
 
+        if (result.status === 'SERVICE_UNAVAILABLE') {
+            var cbMsg = 'Bloomreach API service circuit breaker is open for import ID: ' + import_Id
+                + '. Check service configuration in Business Manager.';
+            Logger.error(cbMsg);
+            throw new Error(cbMsg);
+        }
+
         if (isTransientAPIError(result.errorMessage) && retryCount < maxRetries) {
+            var delayMs = Math.pow(2, retryCount) * 1000; // 1s, 2s
+            Logger.warn('Bloomreach API call failed (attempt ' + (retryCount + 1) + '/' + (maxRetries + 1) + '), retrying in ' + delayMs + 'ms: ' + result.errorMessage);
             retryCount++;
-            var delayMs = Math.pow(2, retryCount - 1) * 1000; // 1s, 2s
-            Logger.warn('Bloomreach API call failed (attempt ' + retryCount + '/' + (maxRetries + 1) + '), retrying in ' + delayMs + 'ms: ' + result.errorMessage);
             sleep(delayMs);
         } else {
+            if (retryCount === maxRetries) {
+                Logger.warn('Bloomreach API call failed (attempt ' + (retryCount + 1) + '/' + (maxRetries + 1) + ')');
+            }
+            var errorDetail = result.errorMessage
+                || (result.error ? 'HTTP ' + result.error : null)
+                || 'unknown error (check service logs in Business Manager)';
             var errorMsg = 'Bloomreach API import trigger failed for import ID: ' + import_Id
-                + '. Error: ' + result.errorMessage;
+                + '. Error: ' + errorDetail;
             Logger.error(errorMsg);
             throw new Error(errorMsg);
         }

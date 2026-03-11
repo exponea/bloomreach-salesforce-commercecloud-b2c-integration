@@ -74,6 +74,7 @@ module.exports = {
         const CustomerMgr = require('./dw/customer/CustomerMgr');
         const LocalServiceRegistry = require('./dw/svc/LocalServiceRegistry');
         const PromotionMgr = require('./dw/campaign/PromotionMgr');
+        const SFTPClient = require('./dw/net/SFTPClient');
 
         Logger.__reset();
         Site.__reset();
@@ -85,6 +86,7 @@ module.exports = {
         CustomerMgr.__reset();
         LocalServiceRegistry.__reset();
         PromotionMgr.__reset();
+        SFTPClient.__reset();
     }
 };
 

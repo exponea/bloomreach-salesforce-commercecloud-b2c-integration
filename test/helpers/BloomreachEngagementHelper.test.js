@@ -235,6 +235,24 @@ describe('BloomreachEngagementHelper', function() {
             expect(thrownError.message).to.include('import-special-id');
         });
 
+        it('should use result.object as error detail when errorMessage is null (HTTP 4xx/5xx)', function() {
+            currentMockFactory = function() {
+                return makeService([{ status: 'ERROR', object: '{"error":"Unauthorized","status":401}', errorMessage: null }]);
+            };
+
+            var thrownError = null;
+            try {
+                brHelper.bloomReachEngagementAPIService('import-401', '/path/to/file.csv');
+            } catch (e) {
+                thrownError = e;
+            }
+
+            expect(thrownError).to.not.equal(null);
+            expect(thrownError.message).to.include('import-401');
+            expect(thrownError.message).to.not.include('null');
+            expect(thrownError.message).to.include('Unauthorized');
+        });
+
         it('should propagate errors thrown by getBloomreachEngagementAPIService (e.g. missing credentials)', function() {
             currentMockFactory = function() {
                 throw new Error('Error while triggering bloomreach engagement api: credentials not provided');

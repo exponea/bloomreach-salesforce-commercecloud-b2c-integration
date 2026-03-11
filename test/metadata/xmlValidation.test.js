@@ -145,6 +145,27 @@ describe('Metadata XML Files', function () {
                 });
             });
         });
+
+        it('contains the "Bloomreach Engagement - Test SFTP Connection" job', function () {
+            var jobIds = toArray(parsed.jobs.job).map(function (j) {
+                return j['@_job-id'];
+            });
+            expect(jobIds).to.include('Bloomreach Engagement - Test SFTP Connection');
+        });
+
+        it('"Bloomreach Engagement - Test SFTP Connection" job has the testSFTPConnection step with the correct type', function () {
+            var jobs = toArray(parsed.jobs.job);
+            var sftpJob = jobs.find(function (j) {
+                return j['@_job-id'] === 'Bloomreach Engagement - Test SFTP Connection';
+            });
+            expect(sftpJob, 'SFTP job not found').to.not.equal(undefined);
+            var steps = toArray(sftpJob.flow ? sftpJob.flow.step : []);
+            var sftpStep = steps.find(function (s) {
+                return s['@_step-id'] === 'testSFTPConnection';
+            });
+            expect(sftpStep, 'testSFTPConnection step not found').to.not.equal(undefined);
+            expect(sftpStep['@_type']).to.equal('custom.BloomreachEngagement.TestSFTPConnection');
+        });
     });
 
     // =========================================================================

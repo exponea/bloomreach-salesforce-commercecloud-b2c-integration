@@ -3,7 +3,7 @@
         "chunk-script-module-step": [
         	{
                 "@type-id":"custom.BloomreachGeneratePurchaseCSV",
-                "description":"Export BloomreachEngagement Master Product Feed",
+                "description":"Export BloomreachEngagement Purchase Order Feed",
                 "@supports-site-context":true,
                 "@supports-organization-context":"false",
                 "@supports-parallel-execution":"false",
@@ -130,7 +130,7 @@
             },
             {
                 "@type-id":"custom.BloomreachGeneratePurchaseProductsCSV",
-                "description":"Export BloomreachEngagement Master Product Feed",
+                "description":"Export BloomreachEngagement Purchase Product Feed",
                 "@supports-site-context":true,
                 "@supports-organization-context":"false",
                 "@supports-parallel-execution":"false",
@@ -213,6 +213,13 @@
                             "@required":"false",
                             "@trim":"true",
                             "default-value":"purchase-product-feed"
+                        },
+                        {
+                            "@name":"MaxNumberOfRows",
+                            "description":"Maximum number of rows in one csv file",
+                            "@type":"long",
+                            "@required":"true",
+                            "default-value":"1000000"
                         },
                         {
                             "@name":"UpdateFromDatePreference",

@@ -92,7 +92,7 @@ function isSFTPEnabled() {
  * Get SFTP configuration from site preferences
  * @returns {Object} Configuration object or null if invalid
  */
-function getSFTPConfig() {
+function getSFTPConfig(Logger) {
     try {
         var currentSite = Site.getCurrent();
         var sitePrefs = currentSite.getPreferences();
@@ -112,6 +112,7 @@ function getSFTPConfig() {
             remoteDirectory: custom.brEngSFTPRemoteDirectory || '/'
         };
     } catch (e) {
+        Logger.error('Error in SFTP configurations: {0}', e.message);
         return null;
     }
 }
@@ -158,7 +159,7 @@ function uploadFile(localFile, Logger) {
 
     try {
         // Get SFTP configuration
-        var config = getSFTPConfig();
+        var config = getSFTPConfig(Logger);
         if (!config) {
             return {
                 success: false,
@@ -176,6 +177,15 @@ function uploadFile(localFile, Logger) {
             };
         }
 
+        // Prevent path traversal: filename must not contain path separators
+        if (localFile.name.indexOf('/') !== -1 || localFile.name.indexOf('\\') !== -1) {
+            return {
+                success: false,
+                remotePath: null,
+                error: 'Invalid filename — path separators are not allowed: ' + localFile.name
+            };
+        }
+
         Logger.info('Starting SFTP upload for file: {0} (size: {1} bytes)', localFile.name, localFile.length());
 
         // Attempt upload with retry logic
@@ -188,8 +198,8 @@ function uploadFile(localFile, Logger) {
                 Logger.info('Connecting to SFTP server: {0}:{1} as user: {2}', config.hostname, config.port, config.username);
                 var connected;
                 if (config.authMethod === 'ssh-key') {
-                    // SSH key auth - username is required, password is null
-                    connected = sftpClient.connect(config.hostname, config.port, config.username, null);
+                    // SSH key auth - use 3-arg form; identity already set via setIdentity(keyRef)
+                    connected = sftpClient.connect(config.hostname, config.port, config.username);
                 } else {
                     // Password auth
                     connected = sftpClient.connect(config.hostname, config.port, config.username, config.password);
@@ -221,6 +231,7 @@ function uploadFile(localFile, Logger) {
 
                 // Disconnect
                 sftpClient.disconnect();
+                sftpClient = null;
                 Logger.info('SFTP connection closed');
 
                 return {
@@ -271,6 +282,7 @@ function uploadFile(localFile, Logger) {
         try {
             if (sftpClient) {
                 sftpClient.disconnect();
+                sftpClient = null;
             }
         } catch (e) {
             // Ignore disconnect errors
@@ -322,7 +334,7 @@ function testSFTPConnection(Logger) {
         Logger.info('Starting SFTP connection test...');
 
         // Get SFTP configuration
-        var config = getSFTPConfig();
+        var config = getSFTPConfig(Logger);
         if (!config) {
             return {
                 success: false,
@@ -337,8 +349,8 @@ function testSFTPConnection(Logger) {
         Logger.info('Test 1: Connecting to SFTP server {0}:{1} as user: {2}', config.hostname, config.port, config.username);
         var connected;
         if (config.authMethod === 'ssh-key') {
-            // SSH key auth - username is required, password is null
-            connected = sftpClient.connect(config.hostname, config.port, config.username, null);
+            // SSH key auth - use 3-arg form; identity already set via setIdentity(keyRef)
+            connected = sftpClient.connect(config.hostname, config.port, config.username);
         } else {
             // Password auth
             connected = sftpClient.connect(config.hostname, config.port, config.username, config.password);
@@ -360,10 +372,13 @@ function testSFTPConnection(Logger) {
         testFile = new File(tempFolder, testFileName);
 
         var fileWriter = new FileWriter(testFile);
-        fileWriter.writeLine('SFTP Connection Test File');
-        fileWriter.writeLine('Generated: ' + new Date().toISOString());
-        fileWriter.writeLine('Test successful!');
-        fileWriter.close();
+        try {
+            fileWriter.writeLine('SFTP Connection Test File');
+            fileWriter.writeLine('Generated: ' + new Date().toISOString());
+            fileWriter.writeLine('Test successful!');
+        } finally {
+            fileWriter.close();
+        }
 
         Logger.info('Test 2: Uploading test file: {0}', testFileName);
 
@@ -417,6 +432,7 @@ function testSFTPConnection(Logger) {
         try {
             if (sftpClient) {
                 sftpClient.disconnect();
+                sftpClient = null;
                 Logger.info('SFTP connection closed');
             }
         } catch (e) {

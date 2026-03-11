@@ -349,6 +349,7 @@ function splitFile() {
     csvWriter.close();
     fileWriter.close();
     if (processedAll) {
+        triggerFileImport(generatePreInitFile, startImportByAPI);
         var currentSite = require('dw/system/Site').getCurrent();
 
         if (currentSite) {
@@ -368,7 +369,6 @@ function splitFile() {
         }
 
         Logger.info('Export Master Product Feed Successful');
-        triggerFileImport(generatePreInitFile, startImportByAPI);
         
         // Merge all generated files into LATEST file
         try {

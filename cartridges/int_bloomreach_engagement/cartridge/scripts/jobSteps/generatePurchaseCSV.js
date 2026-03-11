@@ -100,7 +100,7 @@ var localCsvFile;
     	
     } catch (e) {    	
         Logger.error('Failed to initialize Purchase Order Feed: {0}', e.message);
-        return new Status(Status.ERROR);
+        throw new Error('Failed while pre processing the job.');
     }
 };
 
