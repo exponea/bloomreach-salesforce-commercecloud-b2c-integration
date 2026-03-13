@@ -20,7 +20,7 @@ function getBloomreachEngagementAPIService(import_Id) {
         	createRequest: function (svc, requestObject) {
             	var webDavFilePath = requestObject.webDavFilePath;
 
-				return '{"path":"' + webDavFilePath + '"}';
+				return JSON.stringify({ path: webDavFilePath });
         	},
         	parseResponse: function (svc, response) {
             	return response.text;

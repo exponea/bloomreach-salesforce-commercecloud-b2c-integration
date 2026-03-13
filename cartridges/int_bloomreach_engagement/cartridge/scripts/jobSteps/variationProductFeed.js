@@ -1,7 +1,7 @@
-/* Feedonomics Product Export Job */
+/* BloomreachEngagement Variation Product Export Job */
 'use strict';
 
-var Logger = require('dw/system/Logger').getLogger('BloomreachEngagementVariationProductFeedExport');;
+var Logger = require('dw/system/Logger').getLogger('BloomreachEngagementVariationProductFeedExport');
 var Status = require('dw/system/Status');
 var File = require('dw/io/File');
 var Transaction = require('dw/system/Transaction');
@@ -12,6 +12,7 @@ var FileUtils = require('~/cartridge/scripts/util/fileUtils');
 var BREngagementAPIHelper = require('~/cartridge/scripts/helpers/BloomreachEngagementHelper.js');
 var currentSite = require('dw/system/Site').getCurrent();
 var CustomObjectMgr = require('dw/object/CustomObjectMgr');
+var SFTPHelper = require('~/cartridge/scripts/helpers/SFTPHelper.js');
 
 var productsIter;
 var fileWriter;
@@ -26,7 +27,9 @@ var fileNamePrefix;
 var maxNoOfRows;
 var timeStamp = Date.now().toString();
 var generatePreInitFile = false;
+var startImportByAPI = true;
 var webDavFilePath;
+var localCsvFile;
 var generatedFilePaths = []; // Track all generated CSV files for merging
 
 
@@ -144,6 +147,9 @@ exports.beforeStep = function () {
     fileNamePrefix = args.FileNamePrefix
     maxNoOfRows = args.MaxNumberOfRows - 1000;
     generatePreInitFile = args.GeneratePreInitFile;
+    startImportByAPI = (args.StartImportByAPI !== undefined && args.StartImportByAPI !== null)
+        ? args.StartImportByAPI
+        : true;
 
     if (!targetFolder) {
         throw new Error('One or more mandatory parameters are missing.');
@@ -157,10 +163,11 @@ exports.beforeStep = function () {
     var fileName = FileUtils.createFileName(fileNamePrefix);
     var folderFile = new File(File.getRootDirectory(File.IMPEX), targetFolder);
     if (!folderFile.exists() && !folderFile.mkdirs()) {
-        Logger.info('Cannot create IMPEX folders {0}', (File.getRootDirectory(File.IMPEX).fullPath + targetFolder));
+        Logger.error('Cannot create IMPEX folders {0}', (File.getRootDirectory(File.IMPEX).fullPath + targetFolder));
         throw new Error('Cannot create IMPEX folders.');
     }
     var csvFile = new File(folderFile.fullPath + File.SEPARATOR + fileName);
+    localCsvFile = csvFile; // Store for SFTP upload
     webDavFilePath = 'https://' + dw.system.System.getInstanceHostname().toString() + '/on/demandware.servlet/webdav/Sites' + csvFile.fullPath.toString();
     
     // Track the first file
@@ -201,7 +208,7 @@ exports.beforeStep = function () {
  	if (generatePreInitFile)
  		return 1;
 
-    Logger.info('Processed products {0}', productsIter.count);
+    Logger.info('Starting variation product export: {0} products to process', productsIter.count);
     return productsIter.count;
 };
 
@@ -233,7 +240,7 @@ exports.beforeStep = function () {
         }
     } catch (ex) {
         processedAll = false;
-        Logger.info('Not able to process product {0} on column {1} having error : {2}', product.ID, currentColumn.SFCCProductAttribute, ex.toString());
+        Logger.error('Failed to process variation product {0} on column {1}: {2}', product.ID, currentColumn.SFCCProductAttribute, ex.toString());
     }
 };
 
@@ -259,20 +266,56 @@ exports.beforeStep = function () {
     rowsCount = rowsCount + lines.size();
 };
 
-function triggerFileImport() {
-    var variationProductFeedImportId = currentSite.getCustomPreferenceValue("brEngVariantFeedImportId");
-    try {
-        var result = BREngagementAPIHelper.bloomReachEngagementAPIService(variationProductFeedImportId, webDavFilePath);
-    } catch (e) {
-        Logger.error('Error while triggering bloomreach import start {0}', e.message);
+function triggerFileImport(skipAPICall, startImportByAPI) {
+    // Check if SFTP is configured (credentials-based, not failure-based)
+    var sftpCheck = SFTPHelper.isSFTPEnabled();
+    var filePath;
+
+    if (sftpCheck.enabled) {
+        // SFTP credentials are configured - use SFTP
+        Logger.info('SFTP credentials detected. Uploading file via SFTP: {0}', localCsvFile.name);
+        var uploadResult = SFTPHelper.uploadFile(localCsvFile, Logger);
+
+        if (uploadResult.success) {
+            filePath = uploadResult.remotePath;
+            Logger.info('SFTP upload successful. File available at: {0}', filePath);
+        } else {
+            Logger.error('SFTP upload failed: {0}', uploadResult.error);
+            throw new Error('SFTP upload failed: ' + uploadResult.error);
+        }
+    } else {
+        // SFTP credentials not configured - use WebDAV
+        if (sftpCheck.error) {
+            Logger.info('SFTP not configured: {0}. Using WebDAV.', sftpCheck.error);
+        }
+        filePath = webDavFilePath;
+        Logger.info('File available at WebDAV path: {0}', filePath);
     }
+
+    if (skipAPICall) {
+        Logger.info('Pre-init mode: skipping Bloomreach API import trigger. Use the generated CSV to configure an import in Bloomreach.');
+        return;
+    }
+
+    if (!startImportByAPI) {
+        Logger.info('StartImportByAPI=false: skipping Bloomreach API import trigger.');
+        return;
+    }
+
+    var variationProductFeedImportId = currentSite.getCustomPreferenceValue("brEngVariantFeedImportId");
+
+    if (!variationProductFeedImportId) {
+        throw new Error('Missing Feed Import ID: brEngVariantFeedImportId. Configure in Business Manager Site Preferences.');
+    }
+
+    BREngagementAPIHelper.bloomReachEngagementAPIService(variationProductFeedImportId, filePath);
 }
 
 function splitFile() {
     fileWriter.flush();
     csvWriter.close();
     fileWriter.close();
-    triggerFileImport();
+    triggerFileImport(false, startImportByAPI);
     rowsCount = 1;
 
     if (!targetFolder) {
@@ -284,10 +327,11 @@ function splitFile() {
     var fileName = FileUtils.createFileName(fileNamePrefix);
     var folderFile = new File(File.getRootDirectory(File.IMPEX), targetFolder);
     if (!folderFile.exists() && !folderFile.mkdirs()) {
-        Logger.info('Cannot create IMPEX folders {0}', (File.getRootDirectory(File.IMPEX).fullPath + targetFolder));
+        Logger.error('Cannot create IMPEX folders {0}', (File.getRootDirectory(File.IMPEX).fullPath + targetFolder));
         throw new Error('Cannot create IMPEX folders.');
     }
     var csvFile = new File(folderFile.fullPath + File.SEPARATOR + fileName);
+    localCsvFile = csvFile; // Store for SFTP upload
     webDavFilePath = 'https://' + dw.system.System.getInstanceHostname().toString() + '/on/demandware.servlet/webdav/Sites' + csvFile.fullPath.toString();
     
     // Track the new split file
@@ -314,6 +358,7 @@ function splitFile() {
     csvWriter.close();
     fileWriter.close();
     if (processedAll) {
+        triggerFileImport(generatePreInitFile, startImportByAPI);
         if (currentSite) {
             var siteCurrentTime =  currentSite.getCalendar().getTime();            
             var lastVariationExportCO = CustomObjectMgr.getCustomObject('BloomreachEngagementJobLastExecution', 'lastVariationExport');
@@ -329,21 +374,37 @@ function splitFile() {
         	}
         }
 
-        Logger.info('Export Product Feed Successful');
-        triggerFileImport();
+        Logger.info('Export Variation Product Feed Successful');
         
         // Merge all generated files into LATEST file
         try {
             if (generatedFilePaths.length > 0) {
                 Logger.info('Merging {0} file(s) into LATEST file', generatedFilePaths.length);
-                FileUtils.mergeCSVFilesIntoLatest(generatedFilePaths, targetFolder, fileNamePrefix, Logger);
+                var latestFilePath = FileUtils.mergeCSVFilesIntoLatest(generatedFilePaths, targetFolder, fileNamePrefix, Logger);
+                
+                // Upload LATEST file to SFTP if enabled
+                if (latestFilePath) {
+                    var latestFile = new File(latestFilePath);
+                    var sftpCheck = SFTPHelper.isSFTPEnabled();
+                    
+                    if (sftpCheck.enabled) {
+                        Logger.info('Uploading LATEST file to SFTP: {0}', latestFile.name);
+                        var uploadResult = SFTPHelper.uploadFile(latestFile, Logger);
+                        
+                        if (uploadResult.success) {
+                            Logger.info('LATEST file successfully uploaded to SFTP: {0}', uploadResult.remotePath);
+                        } else {
+                            Logger.warn('LATEST file upload to SFTP failed: {0}. File remains accessible via WebDAV.', uploadResult.error);
+                        }
+                    }
+                }
             }
         } catch (e) {
             Logger.error('Error while creating LATEST file: {0}', e.message);
             // Don't fail the job if LATEST file creation fails
         }
         
-        return new Status(Status.OK, 'OK', 'Export Product Feed Successful');
+        return new Status(Status.OK, 'OK', 'Export Variation Product Feed Successful');
     }
-    throw new Error('Could not process all the products');
+    throw new Error('Could not process all the variation products');
 };

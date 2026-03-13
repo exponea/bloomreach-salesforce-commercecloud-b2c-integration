@@ -10,7 +10,7 @@ Installation of cartridge is performed on a client side by a developer who has a
 
 Note
 
-The cartridge can be installed on these SFCC versions: the older SiteGenesis (also known as Demandware) since the Commerce Cloud Platform Release 16.8 and Site Genesis 105.2.0, and the newer Storefront Reference Architecture (SFRA) since the Commerce Cloud Platform Release 16.8 and SFRA 6.0.0.
+The cartridge can be installed on these SFCC versions: the older SiteGenesis (also known as Demandware) since the Commerce Cloud Platform Release 16.8 and Site Genesis 105.2.0, and the newer Storefront Reference Architecture (SFRA) since the Commerce Cloud Platform Release 16.8 and SFRA 6.0.0+ (tested on SFRA 6.3).
 
 ## Features
 
@@ -50,3 +50,31 @@ Cartridge provides full initial data export and incremental updates in near real
   - full dumps every 4 hours from PRODUCTION
   - variant_id, stock level
   - As a partial import for Variants Catalog (to update stock)
+
+### SFTP File Transfer Support
+
+The cartridge supports secure SFTP file transfer (recommended):
+
+- **Secure file transfer** to your own SFTP server
+- **Customer-managed file storage** with full control over feed data
+- **Job failure notifications** when SFTP upload fails (triggers SFCC email alerts)
+- **SSH key authentication** for both SFCC and Bloomreach (most secure)
+- **Seamless integration** with existing feed jobs - no code changes required
+
+#### How It Works
+
+**When SFTP configured:**
+1. Feed job generates CSV file in IMPEX directory (file always remains in IMPEX)
+2. System uploads file to your SFTP server
+3. If SFTP upload succeeds:
+   - Bloomreach API is triggered with SFTP file path
+   - Bloomreach fetches file from your SFTP server
+4. If SFTP upload fails:
+   - Job throws an error and fails
+   - SFCC sends email notification (if configured)
+   - File remains in IMPEX for troubleshooting
+
+**When SFTP is NOT configured:**
+1. Feed job generates CSV file in IMPEX directory
+2. Bloomreach API is triggered with WebDAV file URL
+3. Bloomreach fetches file from SFCC via WebDAV

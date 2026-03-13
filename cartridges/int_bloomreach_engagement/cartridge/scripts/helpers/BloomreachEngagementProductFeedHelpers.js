@@ -65,7 +65,7 @@ function generateCSVHeader(exportType) {
 /**
  * Gets Product Primary Category
  * @param {dw.catalog.Product} product - Product
- * @returns {dw.catalog.Category} Product's Primary Category Display Name
+ * @returns {dw.catalog.Category} Product's Primary Category
  */
  function getPrimaryCategory(product) {
     var primaryCat = product.primaryCategory ? product.primaryCategory : product.classificationCategory;

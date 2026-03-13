@@ -60,15 +60,17 @@ module.exports = {
         return currentSite;
     },
     
-    // Helper for tests to set mock data
+    // Helper for tests to set mock data.
+    // Updates the EXISTING currentSite's preferences in-place so that module-level
+    // variables captured from getCurrent() at load time still see the updated values.
     __setCurrentSite: function(preferences) {
-        currentSite = new Site(preferences);
+        currentSite.preferences.customPrefs = Object.assign({}, preferences || {});
         Site.current = currentSite;
     },
-    
-    // Helper to reset
+
+    // Helper to reset — clears preferences in-place on the same object.
     __reset: function() {
-        currentSite = new Site({});
+        currentSite.preferences.customPrefs = {};
         Site.current = currentSite;
     }
 };
