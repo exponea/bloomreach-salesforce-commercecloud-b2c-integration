@@ -198,8 +198,8 @@ function uploadFile(localFile, Logger) {
                 Logger.info('Connecting to SFTP server: {0}:{1} as user: {2}', config.hostname, config.port, config.username);
                 var connected;
                 if (config.authMethod === 'ssh-key') {
-                    // SSH key auth - use 3-arg form; identity already set via setIdentity(keyRef)
-                    connected = sftpClient.connect(config.hostname, config.port, config.username);
+                    // SSH key auth - username is required, password is null
+                    connected = sftpClient.connect(config.hostname, config.port, config.username, null);
                 } else {
                     // Password auth
                     connected = sftpClient.connect(config.hostname, config.port, config.username, config.password);
@@ -349,8 +349,8 @@ function testSFTPConnection(Logger) {
         Logger.info('Test 1: Connecting to SFTP server {0}:{1} as user: {2}', config.hostname, config.port, config.username);
         var connected;
         if (config.authMethod === 'ssh-key') {
-            // SSH key auth - use 3-arg form; identity already set via setIdentity(keyRef)
-            connected = sftpClient.connect(config.hostname, config.port, config.username);
+            // SSH key auth - username is required, password is null
+            connected = sftpClient.connect(config.hostname, config.port, config.username, null);
         } else {
             // Password auth
             connected = sftpClient.connect(config.hostname, config.port, config.username, config.password);
