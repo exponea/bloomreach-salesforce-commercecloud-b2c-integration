@@ -75,6 +75,7 @@ const bloomReachEngagementAPIService = function(import_Id, webDavFilePath) {
             }
             var errorDetail = result.errorMessage
                 || (result.error ? 'HTTP ' + result.error : null)
+                || result.object
                 || 'unknown error (check service logs in Business Manager)';
             var errorMsg = 'Bloomreach API import trigger failed for import ID: ' + import_Id
                 + '. Error: ' + errorDetail;

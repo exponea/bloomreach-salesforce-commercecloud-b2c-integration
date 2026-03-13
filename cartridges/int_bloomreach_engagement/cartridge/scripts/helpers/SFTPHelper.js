@@ -214,7 +214,7 @@ function uploadFile(localFile, Logger) {
                 // Construct remote file path
                 var remoteDir = config.remoteDirectory;
                 // Ensure remote directory ends with /
-                if (!remoteDir.endsWith('/')) {
+                if (remoteDir.charAt(remoteDir.length - 1) !== '/') {
                     remoteDir += '/';
                 }
                 var remoteFilePath = remoteDir + localFile.name;
@@ -383,7 +383,7 @@ function testSFTPConnection(Logger) {
         Logger.info('Test 2: Uploading test file: {0}', testFileName);
 
         var remoteDir = config.remoteDirectory;
-        if (!remoteDir.endsWith('/')) {
+        if (remoteDir.charAt(remoteDir.length - 1) !== '/') {
             remoteDir += '/';
         }
         var remoteTestPath = remoteDir + testFileName;
